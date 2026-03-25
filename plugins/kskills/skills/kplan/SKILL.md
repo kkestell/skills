@@ -53,13 +53,13 @@ Optionally summarize findings and ask the user if anything looks off before proc
 
 ## 5. Carry Forward Related Docs
 
-If this plan comes from a brainstorm, add a `Related documents` section near the top with the exact repo-relative brainstorm path. `/kwork` uses this to checkpoint both documents on `main` before creating a worktree.
+If this plan comes from a brainstorm, add a `Related documents` section near the top with the exact repo-relative brainstorm path.
 
 If there is no related brainstorm, omit the section.
 
 ## 6. Write the Plan
 
-Use `${CLAUDE_SKILL_DIR}/assets/plan-template.md` as a starting scaffold, not a rigid form. Remove sections that do not apply, add sections when needed, and keep the `Related code` section with repo-relative paths and one-line reasons; `/kwork` reads those files first.
+Use `${CLAUDE_SKILL_DIR}/assets/plan-template.md` as a starting scaffold, not a rigid form. Remove sections that do not apply, add sections when needed, and include a `Related code` section with repo-relative paths and one-line reasons.
 
 **Filename:** Use the timestamp from the top of this document:
 
@@ -68,7 +68,5 @@ Use `${CLAUDE_SKILL_DIR}/assets/plan-template.md` as a starting scaffold, not a 
 Use kebab-case for the topic slug. Keep it descriptive (3–5 words) so plans are findable by context.
 
 Write the plan with actionable checkboxes. After writing, print the path and stop.
-
-The plan stays in the main checkout. If `/kwork` later executes from an untracked or modified plan, it checkpoints it on `main` before creating the feature worktree.
 
 NEVER CODE — just research and write the plan.

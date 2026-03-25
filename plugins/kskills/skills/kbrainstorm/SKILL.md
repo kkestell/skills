@@ -1,13 +1,13 @@
 ---
 name: kbrainstorm
-description: Explore fuzzy feature ideas, product problems, requirements, constraints, and tradeoffs through collaborative dialogue before writing a concrete implementation plan. Use when the request is ambiguous, scope is still moving, or you need to compare approaches before `/kplan`.
+description: Explore fuzzy feature ideas, product problems, requirements, constraints, and tradeoffs through collaborative dialogue. Use when the request is ambiguous, scope is still moving, or you need to compare approaches.
 argument-hint: "[feature idea or problem to explore]"
 disable-model-invocation: true
 ---
 
 # Brainstorm a Feature or Improvement
 
-Brainstorming answers **WHAT** to build through collaborative dialogue. It precedes `/kplan`, which answers **HOW** to build it.
+Brainstorming answers **WHAT** to build through collaborative dialogue.
 
 **Current timestamp:** !`date +"%Y-%m-%d-%H-%M-%S"`
 
@@ -21,7 +21,7 @@ If the feature description is empty, ask the user what they'd like to explore. D
 
 ### Phase 0: Assess Requirements Clarity
 
-If the user's description already has specific acceptance criteria, exact expected behavior, and constrained scope, suggest proceeding directly to `/kplan` instead.
+If the user's description already has specific acceptance criteria, exact expected behavior, and constrained scope, the idea may not need brainstorming. Suggest proceeding directly to /kplan.
 
 ### Phase 1: Understand the Idea
 
@@ -67,13 +67,11 @@ Use kebab-case for the topic slug. Ensure the directory exists before writing.
 
 Key sections: How Might We, Why This Approach, Assumptions (validated), Constraints, Key Decisions, Failure Modes, Open Questions.
 
-If this brainstorm leads to `/kplan`, the plan should reference this document's exact repo-relative path in a `Related documents` section so `/kwork` can checkpoint both.
-
 ### Phase 4: Handoff
 
 Ask the user:
 
-1. **Proceed to planning** — run `/kplan`
+1. **Ready to implement** — the brainstorm is complete
 2. **Refine further** — continue exploring
 3. **Done for now** — return later
 

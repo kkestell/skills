@@ -1,6 +1,6 @@
 ---
 name: kwork
-description: Execute a repo plan in a dedicated worktree branched from `main`. Use after `/kplan`, ideally in a fresh or compacted chat session, to implement the plan, test continuously, update plan checkboxes, commit logical chunks, and prepare a merge-ready branch.
+description: Execute a repo plan systematically. Use after `/kplan` (and `/kstart`), ideally in a fresh or compacted chat session, to implement the plan, test continuously, update plan checkboxes, commit logical chunks, and prepare a merge-ready branch.
 argument-hint: "[plan file, specification, or todo file path]"
 disable-model-invocation: true
 ---
@@ -9,11 +9,19 @@ disable-model-invocation: true
 
 Execute a work plan systematically. The focus is on shipping complete features: understand requirements, follow existing patterns, maintain quality throughout.
 
+## Workflow Context
+
+This skill is part of a structured workflow: kinit -> kstart -> kbrainstorm -> kplan -> **kwork** -> kverify -> kend.
+You are currently in the **kwork** step. You are working in a git worktree, not the original repository.
+
+### Current Task
+!`cat .k/current_task.json 2>/dev/null || echo '{"error": "No current task. Run /kstart first."}'`
+
 ## Input Document
 
 <input_document> $ARGUMENTS </input_document>
 
-All `/kwork` execution uses dedicated worktrees under `<repo_root>/.worktrees/` on `feature/<timestamp>-<topic-slug>` branches from `main`.
+If no input document is provided, look for a plan at `<docs_path>/plan.md` (read `docs_path` from `.k/current_task.json`).
 
 ## Phase 1: Quick Start
 
@@ -21,27 +29,15 @@ All `/kwork` execution uses dedicated worktrees under `<repo_root>/.worktrees/` 
 
 Read the work document completely, including any references or links. If anything is unclear, ask clarifying questions now — better to ask than build the wrong thing. Get user approval to proceed.
 
-### 2. Checkpoint and Create Worktree
+### 2. Verify Setup
 
-Before creating the worktree, checkpoint planning docs on `main` if needed:
-
-- If the plan (`docs/internal/plans/`) is untracked or modified, commit it on `main`
-- If the plan references a brainstorm doc (via `Related documents`), include that too if untracked or modified
-- Stage only the plan/brainstorm docs; never bundle unrelated changes
-
-Then derive a kebab-case topic slug from the plan title or filename and run `${CLAUDE_SKILL_DIR}/scripts/create_worktree.sh <topic-slug>`.
-
-The script creates the worktree and prints `repo_root`, `branch_name`, and `worktree_path`. `cd` into the printed `worktree_path` before editing.
-
-Confirm dependencies and project setup in the worktree. Verify tests/lint run before major edits.
+Confirm dependencies and project setup. Verify tests/lint run before major edits.
 
 ### 3. Create Todo List
 
 Use TodoWrite to break the plan into actionable tasks. Include testing tasks. Keep tasks specific and completable.
 
 ## Phase 2: Execute
-
-All work happens in the worktree, never in the main checkout.
 
 ### Task Execution Loop
 
@@ -85,9 +81,9 @@ Run the full suite before handoff: tests, lint, formatter, type checks. Use CLAU
    - What was completed
    - Tests and lint results
    - Commit summary
-   - Worktree path and branch name
+   - Branch name
    - Any follow-up work needed
-3. Ask: "Do you want me to run `/kmerge <worktree_path>` now?"
+3. Ask: "Do you want me to run `/kverify` now, or `/kend` to merge?"
 
 ## Principles
 

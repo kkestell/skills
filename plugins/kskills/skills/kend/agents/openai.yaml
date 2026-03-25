@@ -1,0 +1,7 @@
+interface:
+  display_name: "End Task"
+  short_description: "Merge worktree back to main and clean up"
+  default_prompt: "Use $kend to merge this worktree back into main and clean up."
+
+policy:
+  allow_implicit_invocation: false

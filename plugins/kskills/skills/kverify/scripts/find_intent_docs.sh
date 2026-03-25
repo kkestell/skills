@@ -4,10 +4,11 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: find_intent_docs.sh <worktree-path> [doc-path]
+Usage: find_intent_docs.sh <docs-path> [user-doc-path]
 
-Print likely intent documents for verification as:
-worktree_path=...
+Find intent documents (plan, brainstorm) in the task docs directory.
+
+Prints:
 repo_root=...
 plan_path=...
 brainstorm_path=...
@@ -20,15 +21,10 @@ if (($# < 1 || $# > 2)); then
   exit 1
 fi
 
-worktree_path="$1"
+docs_path="$1"
 user_doc_path="${2:-}"
 
-if [[ ! -d "$worktree_path" ]]; then
-  echo "Worktree path does not exist: $worktree_path" >&2
-  exit 1
-fi
-
-repo_root=$(git -C "$worktree_path" rev-parse --show-toplevel)
+repo_root=$(git rev-parse --show-toplevel)
 declare -A seen=()
 declare -a candidates=()
 
@@ -44,29 +40,36 @@ add_candidate() {
   fi
 }
 
+# User-provided path takes priority
 if [[ -n "$user_doc_path" ]]; then
   add_candidate "$user_doc_path"
 fi
 
-while IFS= read -r path; do
-  add_candidate "$path"
-done < <(git -C "$worktree_path" diff --name-only main...HEAD -- docs/internal/plans docs/internal/brainstorms)
+# Check task docs directory for plan and brainstorm
+add_candidate "${docs_path}/plan.md"
+add_candidate "${docs_path}/brainstorm.md"
 
+# Also check branch-only changes in .k/tasks/
 while IFS= read -r path; do
   add_candidate "$path"
-done < <(git -C "$worktree_path" status --porcelain -- docs/internal/plans docs/internal/brainstorms | awk '{print $NF}')
+done < <(git diff --name-only main...HEAD -- .k/tasks/ 2>/dev/null || true)
+
+# Check uncommitted changes in .k/tasks/
+while IFS= read -r path; do
+  add_candidate "$path"
+done < <(git status --porcelain -- .k/tasks/ 2>/dev/null | awk '{print $NF}')
 
 plan_path=""
 brainstorm_path=""
 
 for candidate in "${candidates[@]}"; do
   case "$candidate" in
-    */docs/internal/plans/*)
+    */plan.md)
       if [[ -z "$plan_path" ]]; then
         plan_path="$candidate"
       fi
       ;;
-    */docs/internal/brainstorms/*)
+    */brainstorm.md)
       if [[ -z "$brainstorm_path" ]]; then
         brainstorm_path="$candidate"
       fi
@@ -74,15 +77,15 @@ for candidate in "${candidates[@]}"; do
   esac
 done
 
-if [[ -n "$plan_path" ]]; then
-  related_brainstorm=$(rg -o 'docs/internal/brainstorms/[A-Za-z0-9._/-]+' "$plan_path" | head -n 1 || true)
+# If plan references a brainstorm, pick it up
+if [[ -n "$plan_path" && -z "$brainstorm_path" ]]; then
+  related_brainstorm=$(rg -o '\.k/tasks/[A-Za-z0-9._/-]+/brainstorm\.md' "$plan_path" | head -n 1 || true)
   if [[ -n "$related_brainstorm" ]]; then
     add_candidate "$related_brainstorm"
     brainstorm_path="${repo_root}/${related_brainstorm}"
   fi
 fi
 
-printf 'worktree_path=%s\n' "$(cd "$worktree_path" && pwd)"
 printf 'repo_root=%s\n' "$repo_root"
 printf 'plan_path=%s\n' "$plan_path"
 printf 'brainstorm_path=%s\n' "$brainstorm_path"

@@ -9,7 +9,13 @@ disable-model-invocation: true
 
 Transform a feature description, bug report, or improvement idea into a structured markdown plan.
 
-**Current timestamp:** !`date +"%Y-%m-%d-%H-%M-%S"`
+## Workflow Context
+
+This skill is part of a structured workflow: kinit -> kstart -> kbrainstorm -> **kplan** -> kwork -> kverify -> kend.
+You are currently in the **kplan** step. You are working in a git worktree, not the original repository.
+
+### Current Task
+!`cat .k/current_task.json 2>/dev/null || echo '{"error": "No current task. Run /kstart first."}'`
 
 ## Feature Description
 
@@ -53,7 +59,7 @@ Optionally summarize findings and ask the user if anything looks off before proc
 
 ## 5. Carry Forward Related Docs
 
-If this plan comes from a brainstorm, add a `Related documents` section near the top with the exact repo-relative brainstorm path.
+If a brainstorm exists at `<docs_path>/brainstorm.md` (read `docs_path` from `.k/current_task.json`), add a `Related documents` section near the top with the exact repo-relative brainstorm path.
 
 If there is no related brainstorm, omit the section.
 
@@ -61,11 +67,11 @@ If there is no related brainstorm, omit the section.
 
 Use `${CLAUDE_SKILL_DIR}/assets/plan-template.md` as a starting scaffold, not a rigid form. Remove sections that do not apply, add sections when needed, and include a `Related code` section with repo-relative paths and one-line reasons.
 
-**Filename:** Use the timestamp from the top of this document:
+**Filename:** Write to the task docs directory from `current_task.json`:
 
-`docs/internal/plans/<timestamp>-<topic-slug>-plan.md`
+`<docs_path>/plan.md`
 
-Use kebab-case for the topic slug. Keep it descriptive (3–5 words) so plans are findable by context.
+Read `docs_path` from `.k/current_task.json`.
 
 Write the plan with actionable checkboxes. After writing, print the path and stop.
 

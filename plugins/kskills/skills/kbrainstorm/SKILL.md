@@ -9,7 +9,13 @@ disable-model-invocation: true
 
 Brainstorming answers **WHAT** to build through collaborative dialogue.
 
-**Current timestamp:** !`date +"%Y-%m-%d-%H-%M-%S"`
+## Workflow Context
+
+This skill is part of a structured workflow: kinit -> kstart -> **kbrainstorm** -> kplan -> kwork -> kverify -> kend.
+You are currently in the **kbrainstorm** step. You are working in a git worktree, not the original repository.
+
+### Current Task
+!`cat .k/current_task.json 2>/dev/null || echo '{"error": "No current task. Run /kstart first."}'`
 
 ## Feature Description
 
@@ -59,11 +65,11 @@ If the user's description already has specific acceptance criteria, exact expect
 
 Use `${CLAUDE_SKILL_DIR}/assets/brainstorm-template.md` as the default shape. Keep the headings, drop sections that do not apply, and fill in validated assumptions rather than guesses.
 
-Write to `docs/internal/brainstorms/` using the timestamp from the top of this document:
+Write to the task docs directory from `current_task.json`:
 
-`docs/internal/brainstorms/<timestamp>-<topic-slug>-brainstorm.md`
+`<docs_path>/brainstorm.md`
 
-Use kebab-case for the topic slug. Ensure the directory exists before writing.
+Read `docs_path` from `.k/current_task.json`. Ensure the directory exists before writing.
 
 Key sections: How Might We, Why This Approach, Assumptions (validated), Constraints, Key Decisions, Failure Modes, Open Questions.
 

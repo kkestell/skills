@@ -1,0 +1,7 @@
+interface:
+  display_name: "Start Task"
+  short_description: "Create a worktree and task context"
+  default_prompt: "Use $kstart to create a new worktree and task context for this work."
+
+policy:
+  allow_implicit_invocation: false

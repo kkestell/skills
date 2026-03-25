@@ -1,7 +1,7 @@
 {
   "name": "kskills",
   "version": "1.0.0",
-  "description": "A structured workflow for longer-lived coding work: brainstorm, plan, work, verify, merge.",
+  "description": "A structured workflow for longer-lived coding work: init, start, brainstorm, plan, work, verify, end.",
   "author": {
     "name": "Kyle Kestell",
     "url": "https://github.com/kkestell"

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Commit Hygiene"
+  short_description: "Stage intentional changes and commit"
+  default_prompt: "Use $kcommit to stage the intended files and create a clean git commit."
+
+policy:
+  allow_implicit_invocation: false

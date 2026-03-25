@@ -1,0 +1,7 @@
+interface:
+  display_name: "Worktree Verification"
+  short_description: "Verify work against plan and checks"
+  default_prompt: "Use $kverify to verify the worktree at `.worktrees/...` against its plan before merge."
+
+policy:
+  allow_implicit_invocation: false

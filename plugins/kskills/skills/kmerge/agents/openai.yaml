@@ -1,0 +1,7 @@
+interface:
+  display_name: "Worktree Merge"
+  short_description: "Merge a verified worktree cleanly"
+  default_prompt: "Use $kmerge to merge the verified worktree at `.worktrees/...` back into `main`."
+
+policy:
+  allow_implicit_invocation: false

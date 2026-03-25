@@ -1,59 +1,49 @@
-# k-Skills Workflow
+# Claude Code Skills
 
-These skills are a simple workflow for longer-lived coding work. The point is to keep each phase focused: explore the problem, write down the plan, do the work in isolation, verify it against the plan, then merge it cleanly.
+## Install
 
-The core ideas are straightforward. Use different contexts for different kinds of thinking. Write important decisions down instead of keeping them in chat history. Do code work in a worktree, not on `main`. Commit in small pieces. Verify against intent, not just whether tests happen to pass.
-
-## Main Flow
-
-| Skill | Use it for | Main output |
-| --- | --- | --- |
-| `kbrainstorm` | Optional. Figure out what to build when the problem is still fuzzy. | Brainstorm doc |
-| `kplan` | Turn an idea or bug report into a concrete plan. | Plan doc |
-| `kwork` | Execute the plan in a dedicated worktree. | Feature branch + commits |
-| `kverify` | Check the work against the plan and run the quality gate. | Verification report |
-| `kmerge` | Merge a clean, verified worktree back to `main`. | Merged change |
-
-Typical path:
-
-```text
-(Optional) Brainstorm -> Plan -> Work -> Verify -> Merge
+```bash
+claude plugin marketplace add kkestell/skills
+claude plugin install skills@kskills
 ```
 
-## Ground Rules
+Update:
 
-- Use a fresh session for `kbrainstorm`, `kplan`, and `kwork`.
-- Keep planning docs on `main`.
-- Do implementation in a dedicated worktree under `.worktrees/`.
-- Skip phases that do not add value. If the work is already clear, start at `kplan` or `kwork`.
-- Prefer existing repo patterns over inventing new ones.
-- Test as you go.
-
-## Supporting Skills
-
-- `kcommit`: helps make clean, deliberate commits
-- `krust`: required before editing any Rust code
-
-Specialist skills exist for focused domains such as APIs, architecture, Kubernetes, WebSockets, pytest, and simplification work. Use them when the problem actually needs them.
-
-## Example
-
-Explore the problem if needed:
-
-```
-/kbrainstorm I'd like to add a user onboarding flow
+```bash
+claude plugin marketplace update kskills
+claude plugin update kskills
 ```
 
+## Skills
+
+| Skill         | What it does                                                   |
+| ------------- | -------------------------------------------------------------- |
+| `kbrainstorm` | Explore a fuzzy problem before committing to a plan            |
+| `kplan`       | Write a concrete plan from an idea, bug report, or brainstorm  |
+| `kwork`       | Build the plan in a worktree off `main`                        |
+| `kverify`     | Check the work against the plan                                |
+| `kmerge`      | Merge the worktree back to `main`                              |
+| `kcommit`     | Clean, deliberate commits                                      |
+| `krust`       | Rust-specific guidelines (required before editing `.rs` files) |
+
+## Usage
+
+Each phase gets its own session. Brainstorm is optional; plan, work, verify, and merge should be run in order.
+
 ```
-# 2. In a fresh session, write the plan from the brainstorm doc
-/kplan @THE_BRAINSTORM_FILENAME
-
-# 3. In a fresh session, build from the plan
-/kwork @THE_PLAN_FILENAME
-
-# 4. Verify
-/kverify .worktrees/2026-03-24-16-00-00-user-onboarding
-
-# 5. Merge
-/kmerge .worktrees/2026-03-24-16-00-00-user-onboarding
+/kbrainstorm <description>
+/kplan <@brainstorm | description>
+/kwork <@plan>
+/kverify <worktree>
+/kmerge <worktree>
 ```
+
+## Output
+
+| Skill          | Writes to                    |
+| -------------- | ---------------------------- |
+| `/kbrainstorm` | `docs/internal/brainstorms/` |
+| `/kplan`       | `docs/internal/plans/`       |
+| `/kwork`       | `.worktrees/`                |
+
+Worktrees branch off `main`; `/kverify` and `/kmerge` operate on them.

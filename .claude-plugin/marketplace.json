@@ -1,17 +1,13 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "kskills",
-  "description": "A structured workflow for longer-lived coding work: brainstorm, plan, work, verify, merge.",
   "owner": {
-    "name": "Kyle Kestell",
-    "email": "kyle@kestell.org"
+    "name": "Kyle Kestell"
   },
   "plugins": [
     {
       "name": "kskills",
-      "description": "A structured workflow for longer-lived coding work: brainstorm, plan, work, verify, merge.",
-      "source": ".",
-      "category": "development"
+      "source": "./plugins/kskills",
+      "description": "A structured workflow for longer-lived coding work: brainstorm, plan, work, verify, merge."
     }
   ]
 }

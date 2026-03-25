@@ -1,0 +1,7 @@
+interface:
+  display_name: "Docs Slop Audit"
+  short_description: "Audit docs for AI-generated slop"
+  default_prompt: "Use $kdeslop to audit `README.md` and `docs/` for AI-generated slop."
+
+policy:
+  allow_implicit_invocation: false

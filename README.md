@@ -4,7 +4,7 @@
 
 ```bash
 claude plugin marketplace add kkestell/skills
-claude plugin install skills@kskills
+claude plugin install kskills@kskills
 ```
 
 Update:

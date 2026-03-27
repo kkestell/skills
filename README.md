@@ -1,4 +1,13 @@
-# Claude Code Skills
+# k Workflow Plugin for Claude Code
+
+`k` is a structured workflow plugin for longer-lived coding work. It gives Claude a task lifecycle (`init`, `start-task`, `brainstorm`, `plan`, `work`, `verify`, `end-task`) plus supporting skills for research, commit hygiene, doc review, and language-specific guidance.
+
+Task state lives under `.k/`, including:
+
+- `.k/current_task.json`
+- `.k/tasks/<task_id>/brainstorm.md`
+- `.k/tasks/<task_id>/plan.md`
+- `.k/tasks/<task_id>/research/*.md`
 
 ## Install
 
@@ -14,7 +23,7 @@ claude plugin marketplace update k
 claude plugin update k@k
 ```
 
-## Skills
+## Workflow Skills
 
 | Skill        | What it does                                                   |
 | ------------ | -------------------------------------------------------------- |
@@ -26,6 +35,11 @@ claude plugin update k@k
 | `work`       | Execute the plan on the active task branch                     |
 | `verify`     | Check the work against the plan                                |
 | `end-task`   | Merge the task branch back to `main`                           |
+
+## Supporting Skills
+
+| Skill       | What it does                                                   |
+| ----------- | -------------------------------------------------------------- |
 | `commit`     | Clean, deliberate commits                                      |
 | `deslop`     | Audit user-facing docs for AI slop                             |
 | `go-lang`    | Go-specific guidelines (required before editing `.go` files)   |
@@ -33,12 +47,12 @@ claude plugin update k@k
 
 ## Usage
 
-Each phase gets its own session when you use a separate workspace. `init` is run once per repo. `start-task` now asks whether to create a sibling worktree or work in place on a task branch, and in workspace mode it will try to open Claude in a terminal rooted at that worktree. Brainstorm is optional; plan, work, verify, and end-task should then be run in that chosen task repo.
+Run `init` once per repo, then use `start-task` to choose whether the task should run in a sibling worktree or in-place on a task branch. `brainstorm` is optional; `research` can be used from `brainstorm`, `plan`, or `work` whenever the task needs evidence.
 
 ```
 /k:init
-/k:start-task <topic>    # asks whether to create a workspace
-# -- if you chose a workspace, continue in the new Claude terminal session there --
+/k:start-task <topic>    # asks whether to create a worktree
+# -- if you chose a worktree, continue in the new Claude terminal session there --
 /k:brainstorm <description>
 /k:research <topic>      # optional, repeat during brainstorm/plan/work
 /k:plan <@brainstorm | description>
@@ -47,19 +61,31 @@ Each phase gets its own session when you use a separate workspace. `init` is run
 /k:end-task
 ```
 
+Use `/k:commit` during `/k:work` whenever a tested logical chunk is ready to checkpoint.
+
+## Workflow Notes
+
+- `start-task` can create either a sibling worktree or an in-place task branch.
+- In worktree mode, the script tries to open Claude in a terminal rooted at that worktree.
+- On macOS, terminal auto-launch currently supports iTerm2.
+- On Linux, terminal auto-launch uses `xdg-terminal-exec`, then `x-terminal-emulator`, then `xterm`.
+- If auto-launch is unavailable, the script falls back to a manual `cd <worktree> && claude` instruction.
+- `end-task` retains a separate worktree after merging so post-merge validation can still run cleanly on `main`.
+- Supporting skills like `/k:commit`, `/k:deslop`, `/k:go-lang`, and `/k:rust-lang` are usually invoked from `/k:work` or `/k:verify`, not used as the main workflow spine.
+
 
 ## Skill Matrix
 
 | Skill | Reads | Writes / effects | Runs / uses | Invokes / hands off |
 | ----- | ----- | ---------------- | ----------- | ------------------- |
 | `/k:init` | repo root | `.k/tasks/`, `.k/.gitignore`, `.k/tasks/.gitkeep` | `init/scripts/init.sh` | optional `/k:commit` for new `.k/` |
-| `/k:start-task` | task description, `.k/`, workspace preference | optional sibling worktree, feature branch, `.k/current_task.json`, `.k/tasks/<task_id>/` | `start-task/scripts/start-task.sh` | current session or new Claude terminal session, then `/k:brainstorm`, `/k:plan`, or `/k:work` |
+| `/k:start-task` | task description, `.k/`, worktree preference | optional sibling worktree, feature branch, `.k/current_task.json`, `.k/tasks/<task_id>/` | `start-task/scripts/start-task.sh` | current session or new Claude terminal session, then `/k:brainstorm`, `/k:plan`, or `/k:work` |
 | `/k:brainstorm` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar repo code, optional `research/*.md` | `<docs_path>/brainstorm.md` | `brainstorm/assets/brainstorm-template.md` | `/k:research`, loops on itself, or proceeds to `/k:plan` |
 | `/k:research` | `.k/current_task.json`, one research topic, repo code, local docs, optional web sources | `<docs_path>/research/<topic-slug>.md` | `research/assets/research-template.md` | reused by `/k:brainstorm`, `/k:plan`, and `/k:work` |
 | `/k:plan` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar code, issues, PRs, optional `brainstorm.md`, optional `research/*.md`, optional external docs | `<docs_path>/plan.md` | `plan/assets/plan-template.md` | `/k:research`, then `/k:work` |
 | `/k:work` | `.k/current_task.json`, input doc or `plan.md`, linked references, optional `research/*.md`, `CLAUDE.md` | code, tests, config, docs, plan checkboxes, todo state | repo quality commands | `/k:research`, `/k:commit`, `/k:go-lang`, `/k:rust-lang`, then `/k:verify` or `/k:end-task` |
 | `/k:verify` | `.k/current_task.json`, plan/brainstorm, `git status`, `git log main..HEAD`, `git diff main...HEAD`, `CLAUDE.md` | verification report to the user | `verify/scripts/find_intent_docs.sh`, `verify/assets/verification-report-template.md` | `/k:rust-lang`, `/k:deslop`, back to `/k:work`, `/k:commit`, or onward to `/k:end-task` |
-| `/k:end-task` | `.k/current_task.json`, original repo `main` when using a workspace, `CLAUDE.md` | merge to `main`, retain optional workspace for post-merge validation, delete branch only when safe | `end-task/scripts/end-task.sh` | none |
+| `/k:end-task` | `.k/current_task.json`, original repo `main` when using a worktree, `CLAUDE.md` | merge to `main`, retain optional worktree for post-merge validation, delete branch only when safe | `end-task/scripts/end-task.sh` | none |
 | `/k:commit` | `CLAUDE.md`, `git status`, `git diff`, `git diff --staged` | checkpoint commit on the feature branch | repo quality commands | none |
 | `/k:deslop` | audit target(s), user-facing docs | audit findings reported to the user | repo markdown scan, `deslop/references/slop_tells.md`, `deslop/assets/audit-report-template.md` | usually from `/k:verify` |
 | `/k:go-lang` | relevant `.go` files | none | relevant guidance files under `go-lang/resources/` | usually from `/k:work` |
@@ -75,4 +101,4 @@ Each phase gets its own session when you use a separate workspace. `init` is run
 | `/k:research` | `.k/tasks/<task_id>/research/<topic-slug>.md` |
 | `/k:plan` | `.k/tasks/<task_id>/plan.md` |
 | `/k:work` | code/tests/config/docs as needed, plus plan checkbox updates |
-| `/k:end-task` | merges into `main`, retains any optional workspace for post-merge validation, deletes branch only when safe |
+| `/k:end-task` | merges into `main`, retains any optional worktree for post-merge validation, deletes branch only when safe |

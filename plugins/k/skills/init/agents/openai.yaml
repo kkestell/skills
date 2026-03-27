@@ -1,5 +1,5 @@
 interface:
-  display_name: "Workspace Init"
+  display_name: "Repository Init"
   short_description: "Initialize .k/ directory for k workflow"
   default_prompt: "Use $init to set up the .k/ directory structure in this repository."
 

@@ -3,7 +3,7 @@
 ## Target
 
 - Task root:
-- Workspace path:
+- Worktree path:
 - Branch:
 
 ## Intent docs

@@ -7,13 +7,12 @@ usage() {
 Usage: end-task.sh
 
 Reads .k/current_task.json from the current directory, merges the feature
-branch into main, retains any optional workspace for post-merge validation,
+branch into main, retains any optional worktree for post-merge validation,
 and deletes the feature branch only when running in place.
 
 Prints:
 original_repo_path=...
 branch_name=...
-workspace_path=...
 worktree_path=...
 merge_result=success|failed
 cleanup_result=success|failed|skipped
@@ -30,7 +29,7 @@ fi
 
 # Parse current_task.json
 original_repo_path=$(python3 -c "import json,sys; print(json.load(sys.stdin)['original_repo_path'])" < "$task_file")
-workspace_path=$(python3 -c "import json,sys; print(json.load(sys.stdin).get('workspace_path', ''))" < "$task_file")
+worktree_path=$(python3 -c "import json,sys; print(json.load(sys.stdin).get('worktree_path', ''))" < "$task_file")
 
 branch_name=$(git -C "$current_repo_path" branch --show-current)
 
@@ -48,7 +47,7 @@ fi
 merge_result="failed"
 cleanup_result="skipped"
 
-if [[ -n "$workspace_path" ]]; then
+if [[ -n "$worktree_path" ]]; then
   if [[ -n "$(git -C "$original_repo_path" status --porcelain)" ]]; then
     echo "Original repo has uncommitted changes. Clean it up first." >&2
     exit 1
@@ -69,8 +68,7 @@ if [[ -n "$workspace_path" ]]; then
   if [[ "$merge_result" != "success" ]]; then
     printf 'original_repo_path=%s\n' "$original_repo_path"
     printf 'branch_name=%s\n' "$branch_name"
-    printf 'workspace_path=%s\n' "$workspace_path"
-    printf 'worktree_path=%s\n' "$workspace_path"
+    printf 'worktree_path=%s\n' "$worktree_path"
     printf 'merge_result=%s\n' "$merge_result"
     printf 'cleanup_result=%s\n' "$cleanup_result"
     exit 1
@@ -79,7 +77,7 @@ if [[ -n "$workspace_path" ]]; then
   echo "--- Merged commits ---"
   git -C "$original_repo_path" log --oneline "${pre_merge_main}..main"
   echo "---"
-  echo "Workspace retained at $workspace_path for post-merge validation." >&2
+  echo "Worktree retained at $worktree_path for post-merge validation." >&2
 else
   pre_merge_main=$(git -C "$current_repo_path" rev-parse main)
 
@@ -90,7 +88,6 @@ else
   if [[ "$merge_result" != "success" ]]; then
     printf 'original_repo_path=%s\n' "$original_repo_path"
     printf 'branch_name=%s\n' "$branch_name"
-    printf 'workspace_path=\n'
     printf 'worktree_path=\n'
     printf 'merge_result=%s\n' "$merge_result"
     printf 'cleanup_result=%s\n' "$cleanup_result"
@@ -114,7 +111,6 @@ fi
 
 printf 'original_repo_path=%s\n' "$original_repo_path"
 printf 'branch_name=%s\n' "$branch_name"
-printf 'workspace_path=%s\n' "$workspace_path"
-printf 'worktree_path=%s\n' "$workspace_path"
+printf 'worktree_path=%s\n' "$worktree_path"
 printf 'merge_result=%s\n' "$merge_result"
 printf 'cleanup_result=%s\n' "$cleanup_result"

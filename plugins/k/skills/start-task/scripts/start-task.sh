@@ -3,10 +3,10 @@
 set -euo pipefail
 
 warn_manual_claude_launch() {
-  local workspace_path="$1"
+  local worktree_path="$1"
 
-  echo "WARNING: Open a terminal manually at: $workspace_path" >&2
-  echo "Then run: cd \"$workspace_path\" && claude" >&2
+  echo "WARNING: Open a terminal manually at: $worktree_path" >&2
+  echo "Then run: cd \"$worktree_path\" && claude" >&2
 }
 
 detect_terminal_emulator() {
@@ -23,28 +23,28 @@ detect_terminal_emulator() {
   ps -o comm= -p "${PPID:-$$}" 2>/dev/null | tr -d '[:space:]'
 }
 
-launch_workspace_terminal() {
-  local workspace_path="$1"
+launch_worktree_terminal() {
+  local worktree_path="$1"
   local os_type
   local terminal_emulator
   local launch_cmd
 
   if ! command -v claude >/dev/null 2>&1; then
     echo "WARNING: 'claude' command not found on PATH." >&2
-    warn_manual_claude_launch "$workspace_path"
+    warn_manual_claude_launch "$worktree_path"
     return
   fi
 
   os_type=$(uname -s)
   terminal_emulator=$(detect_terminal_emulator)
-  printf -v launch_cmd 'cd %q && exec claude' "$workspace_path"
+  printf -v launch_cmd 'cd %q && exec claude' "$worktree_path"
 
   case "$os_type" in
     Darwin)
       if [[ "$terminal_emulator" == "iTerm.app" || "$terminal_emulator" == "iTerm2" ]]; then
-        echo "Launching Claude in a new iTerm2 split at: $workspace_path" >&2
+        echo "Launching Claude in a new iTerm2 split at: $worktree_path" >&2
 
-        if ! osascript - "$workspace_path" <<'APPLESCRIPT'
+        if ! osascript - "$worktree_path" <<'APPLESCRIPT'
 on run argv
     set workspacePath to item 1 of argv
 
@@ -67,18 +67,18 @@ end run
 APPLESCRIPT
         then
           echo "WARNING: Failed to open an iTerm2 split automatically." >&2
-          warn_manual_claude_launch "$workspace_path"
+          warn_manual_claude_launch "$worktree_path"
         fi
       else
         echo "WARNING: macOS auto-launch only supports iTerm2." >&2
         if [[ -n "$terminal_emulator" ]]; then
           echo "Detected terminal emulator: $terminal_emulator" >&2
         fi
-        warn_manual_claude_launch "$workspace_path"
+        warn_manual_claude_launch "$worktree_path"
       fi
       ;;
     Linux)
-      echo "Launching Claude in a new terminal at: $workspace_path" >&2
+      echo "Launching Claude in a new terminal at: $worktree_path" >&2
 
       if command -v xdg-terminal-exec >/dev/null 2>&1; then
         xdg-terminal-exec bash -lc "$launch_cmd" &
@@ -88,19 +88,19 @@ APPLESCRIPT
         xterm -e bash -lc "$launch_cmd" &
       else
         echo "WARNING: No supported terminal launcher found on Linux." >&2
-        warn_manual_claude_launch "$workspace_path"
+        warn_manual_claude_launch "$worktree_path"
       fi
       ;;
     *)
       echo "WARNING: Unsupported OS for automatic Claude launch: $os_type" >&2
-      warn_manual_claude_launch "$workspace_path"
+      warn_manual_claude_launch "$worktree_path"
       ;;
   esac
 }
 
 usage() {
   cat <<'EOF'
-Usage: start-task.sh <task-slug> [workspace|in-place]
+Usage: start-task.sh <task-slug> [worktree|in-place]
 
 Create a task branch and task context. Prints:
 repo_root=...
@@ -109,7 +109,6 @@ task_id=...
 branch_name=...
 mode=...
 task_root=...
-workspace_path=...
 worktree_path=...
 docs_path=...
 EOF
@@ -121,7 +120,7 @@ if (($# < 1 || $# > 2)); then
 fi
 
 task_slug="$1"
-mode="${2:-workspace}"
+mode="${2:-worktree}"
 
 if [[ ! "$task_slug" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   echo "Task slug must be kebab-case: $task_slug" >&2
@@ -129,10 +128,10 @@ if [[ ! "$task_slug" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
 fi
 
 case "$mode" in
-  workspace|in-place)
+  worktree|in-place)
     ;;
   *)
-    echo "Mode must be 'workspace' or 'in-place': $mode" >&2
+    echo "Mode must be 'worktree' or 'in-place': $mode" >&2
     exit 1
     ;;
 esac
@@ -154,29 +153,27 @@ fi
 timestamp=$(date +"%Y%m%d%H%M%S")
 task_id="${timestamp}-${task_slug}"
 branch_name="feature/${task_id}"
-workspace_name=$(basename "$repo_root")
-workspace_parent=$(dirname "$repo_root")
-worktree_path="${workspace_parent}/${workspace_name}-worktree-${task_slug}"
+repo_name=$(basename "$repo_root")
+repo_parent=$(dirname "$repo_root")
+worktree_path="${repo_parent}/${repo_name}-worktree-${task_slug}"
 docs_path=".k/tasks/${task_id}"
-workspace_path=""
 task_root="$repo_root"
 
-if [[ "$mode" == "workspace" ]]; then
+if [[ "$mode" == "worktree" ]]; then
   git -C "$repo_root" worktree add -b "$branch_name" "$worktree_path" main
-  workspace_path="$worktree_path"
-  task_root="$workspace_path"
+  task_root="$worktree_path"
 else
   git -C "$repo_root" switch -c "$branch_name" main
 fi
 
 mkdir -p "${task_root}/${docs_path}"
 
-if [[ -n "$workspace_path" ]]; then
+if [[ -n "$worktree_path" && "$mode" == "worktree" ]]; then
   cat > "${task_root}/.k/current_task.json" <<TASKEOF
 {
   "task_id": "${task_id}",
   "original_repo_path": "${repo_root}",
-  "workspace_path": "${workspace_path}",
+  "worktree_path": "${worktree_path}",
   "docs_path": "${docs_path}"
 }
 TASKEOF
@@ -190,8 +187,8 @@ else
 TASKEOF
 fi
 
-if [[ "$mode" == "workspace" ]]; then
-  launch_workspace_terminal "$workspace_path"
+if [[ "$mode" == "worktree" ]]; then
+  launch_worktree_terminal "$worktree_path"
 fi
 
 printf 'repo_root=%s\n' "$repo_root"
@@ -200,6 +197,5 @@ printf 'task_id=%s\n' "$task_id"
 printf 'branch_name=%s\n' "$branch_name"
 printf 'mode=%s\n' "$mode"
 printf 'task_root=%s\n' "$task_root"
-printf 'workspace_path=%s\n' "$workspace_path"
-printf 'worktree_path=%s\n' "$workspace_path"
+printf 'worktree_path=%s\n' "$worktree_path"
 printf 'docs_path=%s\n' "$docs_path"

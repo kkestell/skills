@@ -15,4 +15,4 @@ disable-model-invocation: true
    - If the user says yes, stage only `.k/` and commit.
    - Keep the scope narrow: initialize the workflow structure, but do not bundle unrelated repo changes into the follow-up commit.
    - The only commit prompt here is for the new `.k/` files themselves.
-4. If `already_existed=true`, report that the workspace is already initialized and no action is needed.
+4. If `already_existed=true`, report that the repository is already initialized and no action is needed.

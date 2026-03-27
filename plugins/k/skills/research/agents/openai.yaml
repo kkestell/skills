@@ -1,0 +1,7 @@
+interface:
+  display_name: "Research Topic"
+  short_description: "Research one topic and save the note"
+  default_prompt: "Use $research to answer this repo, library, or web question and save the findings as a task research note."
+
+policy:
+  allow_implicit_invocation: false

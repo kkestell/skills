@@ -1,7 +1,0 @@
-interface:
-  display_name: "Worktree Execution"
-  short_description: "Execute plans in a worktree"
-  default_prompt: "Use $kwork to execute the plan at `docs/internal/plans/...` in a dedicated worktree."
-
-policy:
-  allow_implicit_invocation: false

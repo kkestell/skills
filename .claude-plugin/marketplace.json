@@ -1,13 +1,13 @@
 {
-  "name": "kskills",
+  "name": "k",
   "owner": {
     "name": "Kyle Kestell"
   },
   "plugins": [
     {
-      "name": "kskills",
-      "source": "./plugins/kskills",
-      "description": "A structured workflow for longer-lived coding work: brainstorm, plan, work, verify, merge."
+      "name": "k",
+      "source": "./plugins/k",
+      "description": "A structured workflow for longer-lived coding work: research, brainstorm, plan, work, verify, merge."
     }
   ]
 }

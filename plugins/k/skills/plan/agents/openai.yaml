@@ -1,0 +1,7 @@
+interface:
+  display_name: "Implementation Plan"
+  short_description: "Turn ideas into repo-specific plans"
+  default_prompt: "Use $plan to turn this feature request into a repo-specific implementation plan."
+
+policy:
+  allow_implicit_invocation: false

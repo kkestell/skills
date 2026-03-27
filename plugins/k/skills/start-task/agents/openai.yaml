@@ -1,0 +1,7 @@
+interface:
+  display_name: "Start Task"
+  short_description: "Create a task branch and task context"
+  default_prompt: "Use $start-task to create a new task branch and task context for this work, optionally in a separate workspace."
+
+policy:
+  allow_implicit_invocation: false

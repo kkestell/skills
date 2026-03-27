@@ -1,0 +1,7 @@
+interface:
+  display_name: "Task Verification"
+  short_description: "Verify work against plan and checks"
+  default_prompt: "Use $verify to verify the active task branch against its plan before merge."
+
+policy:
+  allow_implicit_invocation: false

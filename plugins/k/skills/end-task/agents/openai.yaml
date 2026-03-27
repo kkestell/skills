@@ -1,0 +1,7 @@
+interface:
+  display_name: "End Task"
+  short_description: "Merge task branch back to main"
+  default_prompt: "Use $end-task to merge the active task branch back into main while retaining any optional workspace for post-merge validation."
+
+policy:
+  allow_implicit_invocation: false

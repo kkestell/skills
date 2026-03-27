@@ -42,4 +42,4 @@
 
 ## Next Step
 
-- `/k:plan <this brainstorm path>`
+- `/plan <this brainstorm path>`

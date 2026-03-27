@@ -56,19 +56,21 @@ claude plugin marketplace remove kkestell
 
 Run `init` once per repo, then use `start-task` to choose whether the task should run in a sibling worktree or in-place on a task branch. `brainstorm` is optional; `research` can be used from `brainstorm`, `plan`, or `work` whenever the task needs evidence.
 
+Claude currently exposes these as plain slash commands like `/init` and `/start-task`, with `(k)` shown in the picker. `/k:init` is not a valid invocation.
+
 ```
-/k:init
-/k:start-task <topic>    # asks whether to create a worktree
+/init
+/start-task <topic>    # asks whether to create a worktree
 # -- if you chose a worktree, continue in the new Claude terminal session there --
-/k:brainstorm <description>
-/k:research <topic>      # optional, repeat during brainstorm/plan/work
-/k:plan <@brainstorm | description>
-/k:work <@plan>
-/k:verify
-/k:end-task
+/brainstorm <description>
+/research <topic>      # optional, repeat during brainstorm/plan/work
+/plan <@brainstorm | description>
+/work <@plan>
+/verify
+/end-task
 ```
 
-Use `/k:commit` during `/k:work` whenever a tested logical chunk is ready to checkpoint.
+Use `/commit` during `/work` whenever a tested logical chunk is ready to checkpoint.
 
 ## Workflow Notes
 
@@ -78,34 +80,34 @@ Use `/k:commit` during `/k:work` whenever a tested logical chunk is ready to che
 - On Linux, terminal auto-launch uses `xdg-terminal-exec`, then `x-terminal-emulator`, then `xterm`.
 - If auto-launch is unavailable, the script falls back to a manual `cd <worktree> && claude` instruction.
 - `end-task` retains a separate worktree after merging so post-merge validation can still run cleanly on `main`.
-- Supporting skills like `/k:commit`, `/k:deslop`, `/k:go-lang`, and `/k:rust-lang` are usually invoked from `/k:work` or `/k:verify`, not used as the main workflow spine.
+- Supporting skills like `/commit`, `/deslop`, `/go-lang`, and `/rust-lang` are usually invoked from `/work` or `/verify`, not used as the main workflow spine.
 
 
 ## Skill Matrix
 
 | Skill | Reads | Writes / effects | Runs / uses | Invokes / hands off |
 | ----- | ----- | ---------------- | ----------- | ------------------- |
-| `/k:init` | repo root | `.k/tasks/`, `.k/.gitignore`, `.k/tasks/.gitkeep` | `init/scripts/init.sh` | optional `/k:commit` for new `.k/` |
-| `/k:start-task` | task description, `.k/`, worktree preference | optional sibling worktree, feature branch, `.k/current_task.json`, `.k/tasks/<task_id>/` | `start-task/scripts/start-task.sh` | current session or new Claude terminal session, then `/k:brainstorm`, `/k:plan`, or `/k:work` |
-| `/k:brainstorm` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar repo code, optional `research/*.md` | `<docs_path>/brainstorm.md` | `brainstorm/assets/brainstorm-template.md` | `/k:research`, loops on itself, or proceeds to `/k:plan` |
-| `/k:research` | `.k/current_task.json`, one research topic, repo code, local docs, optional web sources | `<docs_path>/research/<topic-slug>.md` | `research/assets/research-template.md` | reused by `/k:brainstorm`, `/k:plan`, and `/k:work` |
-| `/k:plan` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar code, issues, PRs, optional `brainstorm.md`, optional `research/*.md`, optional external docs | `<docs_path>/plan.md` | `plan/assets/plan-template.md` | `/k:research`, then `/k:work` |
-| `/k:work` | `.k/current_task.json`, input doc or `plan.md`, linked references, optional `research/*.md`, `CLAUDE.md` | code, tests, config, docs, plan checkboxes, todo state | repo quality commands | `/k:research`, `/k:commit`, `/k:go-lang`, `/k:rust-lang`, then `/k:verify` or `/k:end-task` |
-| `/k:verify` | `.k/current_task.json`, plan/brainstorm, `git status`, `git log main..HEAD`, `git diff main...HEAD`, `CLAUDE.md` | verification report to the user | `verify/scripts/find_intent_docs.sh`, `verify/assets/verification-report-template.md` | `/k:rust-lang`, `/k:deslop`, back to `/k:work`, `/k:commit`, or onward to `/k:end-task` |
-| `/k:end-task` | `.k/current_task.json`, original repo `main` when using a worktree, `CLAUDE.md` | merge to `main`, retain optional worktree for post-merge validation, delete branch only when safe | `end-task/scripts/end-task.sh` | none |
-| `/k:commit` | `CLAUDE.md`, `git status`, `git diff`, `git diff --staged` | checkpoint commit on the feature branch | repo quality commands | none |
-| `/k:deslop` | audit target(s), user-facing docs | audit findings reported to the user | repo markdown scan, `deslop/references/slop_tells.md`, `deslop/assets/audit-report-template.md` | usually from `/k:verify` |
-| `/k:go-lang` | relevant `.go` files | none | relevant guidance files under `go-lang/resources/` | usually from `/k:work` |
-| `/k:rust-lang` | relevant `.rs` files | optional compliance comment in Rust files | relevant guidance files under `rust-lang/resources/` | from `/k:work` and `/k:verify` |
+| `/init` | repo root | `.k/tasks/`, `.k/.gitignore`, `.k/tasks/.gitkeep` | `init/scripts/init.sh` | optional `/commit` for new `.k/` |
+| `/start-task` | task description, `.k/`, worktree preference | optional sibling worktree, feature branch, `.k/current_task.json`, `.k/tasks/<task_id>/` | `start-task/scripts/start-task.sh` | current session or new Claude terminal session, then `/brainstorm`, `/plan`, or `/work` |
+| `/brainstorm` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar repo code, optional `research/*.md` | `<docs_path>/brainstorm.md` | `brainstorm/assets/brainstorm-template.md` | `/research`, loops on itself, or proceeds to `/plan` |
+| `/research` | `.k/current_task.json`, one research topic, repo code, local docs, optional web sources | `<docs_path>/research/<topic-slug>.md` | `research/assets/research-template.md` | reused by `/brainstorm`, `/plan`, and `/work` |
+| `/plan` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar code, issues, PRs, optional `brainstorm.md`, optional `research/*.md`, optional external docs | `<docs_path>/plan.md` | `plan/assets/plan-template.md` | `/research`, then `/work` |
+| `/work` | `.k/current_task.json`, input doc or `plan.md`, linked references, optional `research/*.md`, `CLAUDE.md` | code, tests, config, docs, plan checkboxes, todo state | repo quality commands | `/research`, `/commit`, `/go-lang`, `/rust-lang`, then `/verify` or `/end-task` |
+| `/verify` | `.k/current_task.json`, plan/brainstorm, `git status`, `git log main..HEAD`, `git diff main...HEAD`, `CLAUDE.md` | verification report to the user | `verify/scripts/find_intent_docs.sh`, `verify/assets/verification-report-template.md` | `/rust-lang`, `/deslop`, back to `/work`, `/commit`, or onward to `/end-task` |
+| `/end-task` | `.k/current_task.json`, original repo `main` when using a worktree, `CLAUDE.md` | merge to `main`, retain optional worktree for post-merge validation, delete branch only when safe | `end-task/scripts/end-task.sh` | none |
+| `/commit` | `CLAUDE.md`, `git status`, `git diff`, `git diff --staged` | checkpoint commit on the feature branch | repo quality commands | none |
+| `/deslop` | audit target(s), user-facing docs | audit findings reported to the user | repo markdown scan, `deslop/references/slop_tells.md`, `deslop/assets/audit-report-template.md` | usually from `/verify` |
+| `/go-lang` | relevant `.go` files | none | relevant guidance files under `go-lang/resources/` | usually from `/work` |
+| `/rust-lang` | relevant `.rs` files | optional compliance comment in Rust files | relevant guidance files under `rust-lang/resources/` | from `/work` and `/verify` |
 
 ## Files Written
 
 | Command | Main files written |
 | ------- | ------------------ |
-| `/k:init` | `.k/`, `.k/tasks/`, `.k/.gitignore`, `.k/tasks/.gitkeep` |
-| `/k:start-task` | optional sibling worktree, `.k/current_task.json`, `.k/tasks/<task_id>/` |
-| `/k:brainstorm` | `.k/tasks/<task_id>/brainstorm.md` |
-| `/k:research` | `.k/tasks/<task_id>/research/<topic-slug>.md` |
-| `/k:plan` | `.k/tasks/<task_id>/plan.md` |
-| `/k:work` | code/tests/config/docs as needed, plus plan checkbox updates |
-| `/k:end-task` | merges into `main`, retains any optional worktree for post-merge validation, deletes branch only when safe |
+| `/init` | `.k/`, `.k/tasks/`, `.k/.gitignore`, `.k/tasks/.gitkeep` |
+| `/start-task` | optional sibling worktree, `.k/current_task.json`, `.k/tasks/<task_id>/` |
+| `/brainstorm` | `.k/tasks/<task_id>/brainstorm.md` |
+| `/research` | `.k/tasks/<task_id>/research/<topic-slug>.md` |
+| `/plan` | `.k/tasks/<task_id>/plan.md` |
+| `/work` | code/tests/config/docs as needed, plus plan checkbox updates |
+| `/end-task` | merges into `main`, retains any optional worktree for post-merge validation, deletes branch only when safe |

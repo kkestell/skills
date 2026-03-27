@@ -1,7 +1,6 @@
 ---
 name: commit
 description: Stage intentional changes and create a clean git commit with deliberate staging, required quality checks, and a well-formed message.
-disable-model-invocation: true
 ---
 
 ## Workflow

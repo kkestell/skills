@@ -140,7 +140,7 @@ repo_root=$(git rev-parse --show-toplevel)
 
 # Verify .k/ exists
 if [[ ! -d "${repo_root}/.k" ]]; then
-  echo ".k/ directory not found. Run /k:init first." >&2
+  echo ".k/ directory not found. Run /init first." >&2
   exit 1
 fi
 

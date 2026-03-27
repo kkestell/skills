@@ -1,6 +1,6 @@
 ---
 name: start-task
-description: Create a task branch plus `.k/current_task.json` context for new work, optionally in a separate worktree. Use after `/k:init`, before `/k:brainstorm`, `/k:plan`, or `/k:work`.
+description: Create a task branch plus `.k/current_task.json` context for new work, optionally in a separate worktree. Use after `/init`, before `/brainstorm`, `/plan`, or `/work`.
 argument-hint: "[task description or topic slug]"
 disable-model-invocation: true
 ---
@@ -12,7 +12,7 @@ disable-model-invocation: true
 2. Derive a 3-5 word kebab-case slug.
    - If the input is already a valid slug, use it directly.
 3. Verify prerequisites.
-   - Check that `.k/` exists; otherwise tell the user to run `/k:init` first.
+   - Check that `.k/` exists; otherwise tell the user to run `/init` first.
 4. Choose the worktree mode.
    - If the user has not already made their preference clear, ask whether they want a separate worktree or to work in place on a branch in the current repo.
    - The goal here is not to start implementation. It is to establish clean task context and the right worktree shape.
@@ -25,4 +25,4 @@ disable-model-invocation: true
    - If `mode=worktree`, tell the user Claude should open in a new terminal session rooted in the worktree. On macOS this is currently iTerm2-only; on Linux it uses terminal-launcher detection and falls back to a manual instruction if needed.
    - Worktree mode should hand the user directly into a terminal that is already in the worktree and ready to run Claude.
    - If `mode=in-place`, tell the user they can continue in the current session.
-   - From that session, continue with `/k:brainstorm`, `/k:plan`, or `/k:work`.
+   - From that session, continue with `/brainstorm`, `/plan`, or `/work`.

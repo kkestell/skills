@@ -40,7 +40,7 @@ fi
 
 # Safety: current repo must be clean
 if [[ -n "$(git -C "$current_repo_path" status --porcelain)" ]]; then
-  echo "Current repo has uncommitted changes. Run /k:commit first." >&2
+  echo "Current repo has uncommitted changes. Run /commit first." >&2
   exit 1
 fi
 

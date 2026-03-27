@@ -1,16 +1,16 @@
 ---
 name: research
-description: Research one repo, library, dependency, API, or web topic and save the findings as a reusable task note. Use from `/k:brainstorm`, `/k:plan`, or `/k:work` whenever a question needs evidence.
+description: Research one repo, library, dependency, API, or web topic and save the findings as a reusable task note. Use from `/brainstorm`, `/plan`, or `/work` whenever a question needs evidence.
 argument-hint: "[research topic]"
 disable-model-invocation: true
 ---
 
 ## Workflow
 
-1. Read `.k/current_task.json`; if it is missing, stop and tell the user to run `/k:start-task`.
+1. Read `.k/current_task.json`; if it is missing, stop and tell the user to run `/start-task`.
 2. Read `<research_topic> $ARGUMENTS </research_topic>`; if it is empty, ask and stop.
 3. Resolve `docs_path` from `.k/current_task.json`, then choose the note path under `<docs_path>/research/<topic-slug>.md`.
-   - Keep one file per topic so the notes stay reusable from `/k:brainstorm`, `/k:plan`, and `/k:work`.
+   - Keep one file per topic so the notes stay reusable from `/brainstorm`, `/plan`, and `/work`.
    - If the user asks for multiple topics, create multiple files.
    - If revisiting a topic, update the existing note instead of creating a duplicate.
 4. Gather evidence.

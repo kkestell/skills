@@ -1,6 +1,6 @@
 ---
 name: work
-description: Execute a repo plan end to end: implement, test continuously, update plan checkboxes, commit logical chunks, and prepare the branch for `/k:verify` or `/k:end-task`.
+description: "Execute a repo plan end to end: implement, test continuously, update plan checkboxes, commit logical chunks, and prepare the branch for `/k:verify` or `/k:end-task`."
 argument-hint: "[plan file, specification, or todo file path]"
 disable-model-invocation: true
 ---

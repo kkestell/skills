@@ -1,5 +1,5 @@
 {
-  "name": "k",
+  "name": "kkestell",
   "owner": {
     "name": "Kyle Kestell"
   },
@@ -7,7 +7,7 @@
     {
       "name": "k",
       "source": "./plugins/k",
-      "description": "A structured workflow for longer-lived coding work: research, brainstorm, plan, work, verify, merge."
+      "description": "A structured workflow for longer-lived coding work: init, start-task, research, brainstorm, plan, work, verify, end-task."
     }
   ]
 }

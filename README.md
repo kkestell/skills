@@ -13,14 +13,21 @@ Task state lives under `.k/`, including:
 
 ```bash
 claude plugin marketplace add kkestell/skills
-claude plugin install k@k
+claude plugin install k@kkestell
 ```
 
 Update:
 
 ```bash
-claude plugin marketplace update k
-claude plugin update k@k
+claude plugin marketplace update kkestell
+claude plugin update k@kkestell
+```
+
+Uninstall:
+
+```bash
+claude plugin uninstall k@kkestell
+claude plugin marketplace remove kkestell
 ```
 
 ## Workflow Skills

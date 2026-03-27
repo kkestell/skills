@@ -11,7 +11,7 @@ Update:
 
 ```bash
 claude plugin marketplace update kskills
-claude plugin update kskills
+claude plugin update kskills@kskills
 ```
 
 ## Skills

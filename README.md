@@ -11,6 +11,8 @@ Task state lives under `.k/`, including:
 
 ## Install
 
+### From GitHub
+
 ```bash
 claude plugin marketplace add kkestell/skills
 claude plugin install k@kkestell
@@ -29,6 +31,22 @@ Uninstall:
 claude plugin uninstall k@kkestell
 claude plugin marketplace remove kkestell
 ```
+
+### Local Development
+
+Clone the repo, then add it as a local marketplace:
+
+```bash
+git clone https://github.com/kkestell/skills.git
+```
+
+From inside Claude Code:
+
+```
+/plugin marketplace add /path/to/skills
+```
+
+Then install `k` from the plugin UI. The marketplace points at your local directory, so edits to skill files are picked up on restart or `/reload-plugins`.
 
 ## Workflow Skills
 

@@ -1,7 +1,7 @@
 interface:
-  display_name: "Implementation Plan"
-  short_description: "Turn ideas into repo-specific plans"
-  default_prompt: "Use $plan to turn this feature request into a repo-specific implementation plan."
+  display_name: "Plan"
+  short_description: "Brainstorm, explore, and plan a feature or change"
+  default_prompt: "Use $plan to brainstorm this idea with the user, explore how it fits the repo, and produce an implementation plan."
 
 policy:
   allow_implicit_invocation: false

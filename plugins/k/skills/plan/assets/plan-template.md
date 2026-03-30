@@ -6,14 +6,34 @@ Use this template as a scaffold, not a cage. Drop sections that do not apply, ex
 
 ## Desired outcome
 
-## Related documents
+## How we got here
 
-- `docs/internal/brainstorms/...-brainstorm.md`
-- `.k/tasks/<task-id>/research/<topic>.md`
+Brief summary of the brainstorming process: the problem framing, key assumptions validated with the user, and why this approach was chosen over alternatives.
+
+## Approaches considered
+
+### Option 1
+
+- Summary:
+- Pros:
+- Cons:
+- Failure modes:
+
+### Option 2
+
+- Summary:
+- Pros:
+- Cons:
+- Failure modes:
+
+## Recommended approach
+
+- Why this approach:
+- Key tradeoffs:
 
 ## Related code
 
-- `path/to/file` - Why this file or pattern matters
+- `path/to/file` — Why this file or pattern matters
 
 ## Current state
 
@@ -21,43 +41,26 @@ Use this template as a scaffold, not a cage. Drop sections that do not apply, ex
 - Existing patterns to follow:
 - Constraints from the current implementation:
 
-## Constraints
+## Structural considerations
 
-- Constraint:
+How the change fits the existing architecture. Note any PHAME concerns (hierarchy, abstraction, modularization, encapsulation) and how the plan addresses them.
+
+## Refactoring
+
+Refactoring needed before or during the feature work, and what each refactor achieves structurally. Omit if none needed.
 
 ## Research
 
-Summarize the saved notes under `.k/tasks/<task-id>/research/` that matter for this plan.
+Summarize findings that matter for this plan.
 
 ### Repo findings
 
 - Finding:
 
-### External docs or dependency research
+### External research
 
 - Source:
 - Why it matters:
-
-## Assumptions to validate
-
-- Assumption:
-  - Why it matters:
-  - How to confirm:
-
-## Open questions
-
-- Question:
-
-## Approach
-
-- Proposed shape of the change:
-- Key tradeoffs:
-- Areas likely to change:
-
-## Proofs or spikes
-
-- Small experiment or inspection needed before implementation:
-- Expected outcome:
 
 ## Implementation plan
 
@@ -70,7 +73,6 @@ Summarize the saved notes under `.k/tasks/<task-id>/research/` that matter for t
 - Code paths affected:
 - Data or schema impact:
 - Dependency or API impact:
-- Ops, rollout, or migration concerns:
 
 ## Validation
 
@@ -78,7 +80,13 @@ Summarize the saved notes under `.k/tasks/<task-id>/research/` that matter for t
 - Lint/format/typecheck:
 - Manual verification:
 
-## Risks and follow-up
+## Gaps and follow-up
 
-- Risk:
+Features or functionality this plan depends on but cannot deliver. Stub plans for these live in `.k/todo/` if created.
+
+- Gap:
 - Follow-up:
+
+## Open questions
+
+- Question:

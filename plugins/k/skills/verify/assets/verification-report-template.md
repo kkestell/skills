@@ -2,12 +2,14 @@
 
 ## Target
 
-- Task root:
-- Worktree path:
+- Repo root:
 - Branch:
+- Verification target:
+- Comparison base:
 
 ## Intent docs
 
+- Primary doc:
 - Plan:
 - Brainstorm:
 
@@ -40,8 +42,9 @@
 ## Cleanliness
 
 - Repo clean:
+- Uncommitted changes covered:
 
-## Merge readiness
+## Readiness
 
-- Ready to merge:
+- Ready:
 - Next action:

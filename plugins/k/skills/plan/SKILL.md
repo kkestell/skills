@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates `.k/plans/<timestamp>-<slug>.md`.
+description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates `docs/plans/<timestamp>-<slug>.md`.
 argument-hint: "[feature idea, bug report, or improvement to explore]"
 disable-model-invocation: true
 ---
@@ -51,13 +51,10 @@ disable-model-invocation: true
    - Present the 2-3 strongest approaches with: brief description, pros, cons, failure modes, and when it's best suited.
    - Lead with your recommendation and why. Prefer simpler approaches (YAGNI). Highlight any refactoring the recommended approach requires and why it's worthwhile.
    - Ask the user which approach they prefer using `AskUserQuestion`. Refine until aligned.
-8. Identify gaps.
-   - If the recommended approach depends on functionality that does not exist yet and cannot be built within this plan's scope, call these out explicitly.
-   - Offer to create stub plan files in `.k/todo/` for each missing piece. Each stub should contain just a title, a one-line description of what it needs to accomplish, and why it's needed. Create the `.k/todo/` directory if it does not exist.
 
 ### Phase 4 — Write the plan
 
-9. Generate the plan filename: `.k/plans/MM-DD-YY-HH-MM-SS-slug.md` where the timestamp is the current time and the slug is a short kebab-case summary (3-5 words). Create the `.k/plans/` directory if it does not exist.
+9. Generate the plan filename: `docs/plans/MM-DD-YY-HH-MM-SS-slug.md` where the timestamp is the current time and the slug is a short kebab-case summary (3-5 words). Create the `docs/plans/` directory if it does not exist.
 10. Write the plan from `${CLAUDE_SKILL_DIR}/assets/plan-template.md`.
     - Use the template as a scaffold, not a rigid form. Keep only the sections that apply, and add sections when the work needs more structure.
     - Every implementation task gets an actionable checkbox. A reader should be able to execute the plan without re-reading the codebase.

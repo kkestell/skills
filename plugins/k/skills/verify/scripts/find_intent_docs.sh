@@ -4,67 +4,109 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: find_intent_docs.sh <docs-path> [user-doc-path]
+Usage: find_intent_docs.sh <target-path>
 
-Find intent documents (plan, brainstorm) in the task docs directory.
+Resolve the primary verification document plus nearby plan or brainstorm docs.
 
 Prints:
 repo_root=...
+primary_path=...
 plan_path=...
 brainstorm_path=...
 candidate=...
 EOF
 }
 
-if (($# < 1 || $# > 2)); then
+if (($# != 1)); then
   usage >&2
   exit 1
 fi
 
-docs_path="$1"
-user_doc_path="${2:-}"
+target_path="$1"
 
 repo_root=$(git rev-parse --show-toplevel)
 declare -A seen=()
 declare -a candidates=()
 
+resolve_path() {
+  local path="$1"
+
+  if [[ "$path" = /* ]]; then
+    printf '%s\n' "$path"
+    return 0
+  fi
+
+  if [[ -e "$path" ]]; then
+    (
+      cd "$(dirname "$path")"
+      printf '%s/%s\n' "$(pwd -P)" "$(basename "$path")"
+    )
+    return 0
+  fi
+
+  printf '%s/%s\n' "$repo_root" "$path"
+}
+
 add_candidate() {
   local candidate="$1"
   [[ -n "$candidate" ]] || return 0
-  if [[ "$candidate" != /* ]]; then
-    candidate="${repo_root}/${candidate}"
-  fi
+  candidate="$(resolve_path "$candidate")"
   if [[ -f "$candidate" && -z "${seen[$candidate]:-}" ]]; then
     seen["$candidate"]=1
     candidates+=("$candidate")
   fi
 }
 
-# User-provided path takes priority
-if [[ -n "$user_doc_path" ]]; then
-  add_candidate "$user_doc_path"
+find_linked_docs() {
+  local source_path="$1"
+  local source_dir
+  source_dir="$(dirname "$source_path")"
+  local ref
+
+  while IFS= read -r ref; do
+    [[ -n "$ref" ]] || continue
+    if [[ "$ref" = /* ]]; then
+      add_candidate "$ref"
+    else
+      add_candidate "${source_dir}/${ref}"
+      add_candidate "${repo_root}/${ref}"
+    fi
+  done < <(rg -o --no-filename '(?:/)?(?:[A-Za-z0-9._-]+/)*(?:plan|brainstorm)\.md|(?:/)?(?:[A-Za-z0-9._-]+/)*docs/plans/[A-Za-z0-9._-]+\.md' "$source_path" || true)
+}
+
+primary_path=""
+resolved_target="$(resolve_path "$target_path")"
+
+if [[ -f "$resolved_target" ]]; then
+  add_candidate "$resolved_target"
+  primary_path="$resolved_target"
+  find_linked_docs "$resolved_target"
+
+  case "$resolved_target" in
+    */plan.md|*/docs/plans/*.md)
+      add_candidate "${resolved_target%/*}/brainstorm.md"
+      ;;
+    */brainstorm.md)
+      add_candidate "${resolved_target%/*}/plan.md"
+      ;;
+  esac
+elif [[ -d "$resolved_target" ]]; then
+  add_candidate "${resolved_target}/plan.md"
+  add_candidate "${resolved_target}/brainstorm.md"
+
+  if [[ -z "$primary_path" && -f "${resolved_target}/plan.md" ]]; then
+    primary_path="$(resolve_path "${resolved_target}/plan.md")"
+  elif [[ -z "$primary_path" && -f "${resolved_target}/brainstorm.md" ]]; then
+    primary_path="$(resolve_path "${resolved_target}/brainstorm.md")"
+  fi
 fi
-
-# Check task docs directory for plan and brainstorm
-add_candidate "${docs_path}/plan.md"
-add_candidate "${docs_path}/brainstorm.md"
-
-# Also check branch-only changes in .k/tasks/
-while IFS= read -r path; do
-  add_candidate "$path"
-done < <(git diff --name-only main...HEAD -- .k/tasks/ 2>/dev/null || true)
-
-# Check uncommitted changes in .k/tasks/
-while IFS= read -r path; do
-  add_candidate "$path"
-done < <(git status --porcelain -- .k/tasks/ 2>/dev/null | awk '{print $NF}')
 
 plan_path=""
 brainstorm_path=""
 
 for candidate in "${candidates[@]}"; do
   case "$candidate" in
-    */plan.md)
+    */plan.md|*/docs/plans/*.md)
       if [[ -z "$plan_path" ]]; then
         plan_path="$candidate"
       fi
@@ -77,16 +119,16 @@ for candidate in "${candidates[@]}"; do
   esac
 done
 
-# If plan references a brainstorm, pick it up
-if [[ -n "$plan_path" && -z "$brainstorm_path" ]]; then
-  related_brainstorm=$(rg -o '\.k/tasks/[A-Za-z0-9._/-]+/brainstorm\.md' "$plan_path" | head -n 1 || true)
-  if [[ -n "$related_brainstorm" ]]; then
-    add_candidate "$related_brainstorm"
-    brainstorm_path="${repo_root}/${related_brainstorm}"
+if [[ -z "$primary_path" ]]; then
+  if [[ -n "$plan_path" ]]; then
+    primary_path="$plan_path"
+  elif [[ -n "$brainstorm_path" ]]; then
+    primary_path="$brainstorm_path"
   fi
 fi
 
 printf 'repo_root=%s\n' "$repo_root"
+printf 'primary_path=%s\n' "$primary_path"
 printf 'plan_path=%s\n' "$plan_path"
 printf 'brainstorm_path=%s\n' "$brainstorm_path"
 for candidate in "${candidates[@]}"; do

@@ -58,7 +58,7 @@ Then install `k` from the plugin UI. The marketplace points at your local direct
 | `research`   | Research one topic and save a reusable task note               |
 | `plan`       | Write a concrete plan from an idea, bug report, or brainstorm  |
 | `work`       | Execute the plan on the active task branch                     |
-| `verify`     | Check the work against the plan                                |
+| `verify`     | Check the work against a supplied plan or spec                 |
 | `end-task`   | Merge the task branch back to `main`                           |
 
 ## Supporting Skills
@@ -74,6 +74,8 @@ Then install `k` from the plugin UI. The marketplace points at your local direct
 
 Run `init` once per repo, then use `start-task` to choose whether the task should run in a sibling worktree or in-place on a task branch. `brainstorm` is optional; `research` can be used from `brainstorm`, `plan`, or `work` whenever the task needs evidence.
 
+`verify` does not require active task state; point it at the plan or spec you want to check against.
+
 Claude currently exposes these as plain slash commands like `/init` and `/start-task`, with `(k)` shown in the picker. `/k:init` is not a valid invocation.
 
 ```
@@ -84,7 +86,7 @@ Claude currently exposes these as plain slash commands like `/init` and `/start-
 /research <topic>      # optional, repeat during brainstorm/plan/work
 /plan <@brainstorm | description>
 /work <@plan>
-/verify
+/verify <@plan | path/to/spec.md>
 /end-task
 ```
 
@@ -111,7 +113,7 @@ Use `/commit` during `/work` whenever a tested logical chunk is ready to checkpo
 | `/research` | `.k/current_task.json`, one research topic, repo code, local docs, optional web sources | `<docs_path>/research/<topic-slug>.md` | `research/assets/research-template.md` | reused by `/brainstorm`, `/plan`, and `/work` |
 | `/plan` | `.k/current_task.json`, feature description, `CLAUDE.md`, similar code, issues, PRs, optional `brainstorm.md`, optional `research/*.md`, optional external docs | `<docs_path>/plan.md` | `plan/assets/plan-template.md` | `/research`, then `/work` |
 | `/work` | `.k/current_task.json`, input doc or `plan.md`, linked references, optional `research/*.md`, `CLAUDE.md` | code, tests, config, docs, plan checkboxes, todo state | repo quality commands | `/research`, `/commit`, `/go-lang`, `/rust-lang`, then `/verify` or `/end-task` |
-| `/verify` | `.k/current_task.json`, plan/brainstorm, `git status`, `git log main..HEAD`, `git diff main...HEAD`, `CLAUDE.md` | verification report to the user | `verify/scripts/find_intent_docs.sh`, `verify/assets/verification-report-template.md` | `/rust-lang`, `/deslop`, back to `/work`, `/commit`, or onward to `/end-task` |
+| `/verify` | plan/spec path, optional companion docs, `git status`, `git log <base>..HEAD`, `git diff <base>...HEAD`, `CLAUDE.md` | verification report to the user | `verify/scripts/find_intent_docs.sh`, `verify/assets/verification-report-template.md` | `/rust-lang`, `/deslop`, back to `/work` or `/commit` |
 | `/end-task` | `.k/current_task.json`, original repo `main` when using a worktree, `CLAUDE.md` | merge to `main`, retain optional worktree for post-merge validation, delete branch only when safe | `end-task/scripts/end-task.sh` | none |
 | `/commit` | `CLAUDE.md`, `git status`, `git diff`, `git diff --staged` | checkpoint commit on the feature branch | repo quality commands | none |
 | `/deslop` | audit target(s), user-facing docs | audit findings reported to the user | repo markdown scan, `deslop/references/slop_tells.md`, `deslop/assets/audit-report-template.md` | usually from `/verify` |

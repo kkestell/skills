@@ -1,7 +1,7 @@
 interface:
-  display_name: "Task Verification"
-  short_description: "Verify work against plan and checks"
-  default_prompt: "Use $verify to verify the active task branch against its plan before merge."
+  display_name: "Verification"
+  short_description: "Verify repo changes against a plan"
+  default_prompt: "Use $verify to verify the current repo state against a supplied plan or spec."
 
 policy:
   allow_implicit_invocation: false

@@ -1,0 +1,38 @@
+{
+  "name": "k",
+  "version": "0.7.0",
+  "description": "A simple workflow for intentional, high quality coding work.",
+  "author": {
+    "name": "Kyle Kestell",
+    "url": "https://github.com/kkestell"
+  },
+  "homepage": "https://github.com/kkestell/skills",
+  "repository": "https://github.com/kkestell/skills",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "planning",
+    "implementation",
+    "review",
+    "code-quality",
+    "software-design"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "k",
+    "shortDescription": "Plan, implement, and review code with a structured workflow",
+    "longDescription": "A compact coding workflow plugin that bundles planning, implementation, review, and handoff guidance for intentional software development work inside Codex.",
+    "developerName": "Kyle Kestell",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/kkestell/skills",
+    "privacyPolicyURL": "https://github.com/kkestell/skills",
+    "termsOfServiceURL": "https://github.com/kkestell/skills",
+    "defaultPrompt": "Plan a change, execute it against a repo plan, or review code for structural problems",
+    "screenshots": []
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "k",
-  "version": "0.6.0",
-  "description": "A structured workflow for longer-lived coding work: init, start-task, research, brainstorm, plan, work, verify, end-task.",
+  "version": "0.7.0",
+  "description": "A simple workflow for intentional, high quality coding work.",
   "author": {
     "name": "Kyle Kestell",
     "url": "https://github.com/kkestell"

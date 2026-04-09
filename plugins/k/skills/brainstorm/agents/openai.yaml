@@ -1,7 +1,0 @@
-interface:
-  display_name: "Brainstorm"
-  short_description: "Explore fuzzy ideas before planning"
-  default_prompt: "Use $brainstorm to explore this feature idea before writing a concrete plan."
-
-policy:
-  allow_implicit_invocation: false

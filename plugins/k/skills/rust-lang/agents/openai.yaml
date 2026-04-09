@@ -1,4 +1,0 @@
-interface:
-  display_name: "Rust Guidance"
-  short_description: "Load Rust guidance before coding"
-  default_prompt: "Use $rust-lang before reviewing or modifying the Rust files in this change."

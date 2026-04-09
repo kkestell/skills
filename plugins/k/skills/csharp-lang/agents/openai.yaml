@@ -1,4 +1,0 @@
-interface:
-  display_name: "C# Guidance"
-  short_description: "Load C# 14 / .NET 10 guidance before coding"
-  default_prompt: "Use $csharp-lang before reviewing or modifying the C# files in this change."

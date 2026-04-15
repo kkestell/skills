@@ -10,26 +10,9 @@ Use this template as a scaffold, not a cage. Drop sections that do not apply, ex
 
 Brief summary of the brainstorming process: the problem framing, key assumptions validated with the user, and why this approach was chosen over alternatives.
 
-## Approaches considered
+## Summary of approach
 
-### Option 1
-
-- Summary:
-- Pros:
-- Cons:
-- Failure modes:
-
-### Option 2
-
-- Summary:
-- Pros:
-- Cons:
-- Failure modes:
-
-## Recommended approach
-
-- Why this approach:
-- Key tradeoffs:
+A high level summary of the implementation approach, including the major components of the change and how they interact. This should be a concise overview that gives a clear picture of the plan without needing to read the details below.
 
 ## Related code
 
@@ -62,6 +45,15 @@ Summarize findings that matter for this plan.
 - Source:
 - Why it matters:
 
+## Test plan
+
+Define what to test and at what level before listing implementation tasks. Focus on tests that earn their keep: edge cases, error paths, and boundary conditions — not happy-path tests that merely restate the implementation. Tests should target public interfaces so they stay useful through refactors.
+
+- **Key behaviors to verify**: (what the feature should do, expressed as testable assertions against public interfaces)
+- **Test levels**: (unit, integration, e2e — which level covers what, and why that level is the right one)
+- **Edge cases and failure modes**: (boundary conditions, error paths, concurrency concerns, malformed input — this is the most important part)
+- **What NOT to test**: (happy paths that just mirror implementation, framework guarantees, internal details that would break on refactor)
+
 ## Implementation plan
 
 - [ ] Task 1
@@ -82,7 +74,7 @@ Summarize findings that matter for this plan.
 
 ## Gaps and follow-up
 
-Features or functionality this plan depends on but cannot deliver. Stub follow-up docs for these live in `docs/agents/todo/YYYY-MM-DD-NNN-slug.md` if created.
+Features or functionality this plan depends on but cannot deliver. Stub follow-up docs for these live in `!`echo ~/.k/workspaces/${PWD//\//_}`/todo/YYYY-MM-DD-NNN-slug.md` if created.
 
 - Gap:
 - Follow-up:

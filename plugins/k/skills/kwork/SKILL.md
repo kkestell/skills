@@ -1,8 +1,9 @@
 ---
 name: kwork
 description: "Execute a repo plan end to end: implement, validate with independent review passes, and commit at the end."
-argument-hint: "[docs/agents/plans/... plan, specification, or docs/agents/todo/... file path]"
-disable-model-invocation: true
+metadata:
+  argument-hint: "[plan, specification, or todo file path]"
+  disable-model-invocation: "true"
 ---
 
 ## Compatibility
@@ -11,6 +12,7 @@ disable-model-invocation: true
 - In Claude-style environments, `${CLAUDE_SKILL_DIR}` may point at this directory. In Codex-style environments, resolve sibling paths like `assets/completeness-review-prompt.md` directly from this `SKILL.md`.
 - If helper agents are unavailable, disallowed, or unnecessary, do the work and validation locally. Do not make delegation mandatory.
 - Use project guidance docs when they exist, such as `CLAUDE.md`, `AGENTS.md`, `README`, package scripts, or repo-specific contributor docs.
+- **Workspace directory**: `!`echo ~/.k/workspaces/${PWD//\//_}`` — all plan and follow-up files live here. Create subdirectories as needed.
 
 ## Workflow
 
@@ -20,11 +22,12 @@ disable-model-invocation: true
    - Run `git status`. If there are staged changes, unstaged changes, or untracked files, stop and report them to the user.
    - Offer to commit the changes, add them to `.gitignore`, or stash them — whatever makes sense for what you see.
    - Do not proceed until the repo is clean or the user explicitly says to continue with dirty state.
+   - If there are existing lint or test failures, offer to fix them before proceeding. There is no such thing as a "pre-existing" issue. We fix issues as soon as we see them.
 
 ### Orientation
 
 2. Resolve `<input_document> $ARGUMENTS </input_document>`.
-   - Prefer `docs/agents/plans/` for implementation plans and `docs/agents/todo/` for tracked follow-up work.
+   - Prefer `!`echo ~/.k/workspaces/${PWD//\//_}`/plans/` for implementation plans and `!`echo ~/.k/workspaces/${PWD//\//_}`/todo/` for tracked follow-up work.
 3. Read the work doc completely.
 4. If anything is unclear or ambiguous after reading the plan, references, and related code, ask the user now.
    - Better to ask once before starting than to build the wrong thing. Get user approval to proceed.
@@ -40,15 +43,14 @@ disable-model-invocation: true
 
 ### Execution
 
-7. Execute the plan task by task — **code first, fix tests after**.
+7. Execute the plan task by task.
    - Read the related code and nearby patterns before implementing each task.
    - Implement in repo style. Match naming conventions, error handling patterns, and file organization.
+   - Write tests according to the plan's test plan section. Tests can come before or after the implementation — use your judgment for what fits the language, the task, and the change. What matters is that the plan's test plan is fulfilled, not the ordering.
+   - Focus test effort on edge cases, error paths, and boundary conditions against public interfaces. Do not write happy-path-only tests that merely restate the implementation or tests that are tightly coupled to internal details.
    - Comment the code well. Comments should explain the architecture and the "why", not merely describe what the code does.
-   - Write or update tests for each piece of new functionality, but don't stop to chase test failures mid-implementation. The goal is to get all the code written for a chunk first, then circle back to make the tests green.
    - Update Todo state and mark the matching plan checkbox complete (`[ ]` → `[x]`).
    - Keep the implementation aligned with the plan unless the user explicitly redirects or the plan is clearly wrong.
-   - **After all code for a chunk is written**, run the relevant checks and fix any test failures or lint issues before moving to validation.
-   - _Exception for longer, phased plans:_ If the plan has multiple phases that build on each other and the complexity is high enough that deferred test failures would be hard to diagnose, you may test as you go — but state why in your Todo list or message to the user before doing so. The default is still code-first.
 8. If you find yourself spinning your wheels or faced with an unexpected obstacle, stop and ask the user for guidance.
 
 Repeat steps 7–8 until the plan is complete.
@@ -60,9 +62,9 @@ If you start to run out of context, stop and offer a follow-up handoff or fresh-
 After all plan work is complete, validate the full body of work with review passes.
 
 9. Run the full suite.
-    - Run tests, lint, formatter, and type checks as applicable.
-    - Use the commands from the project's guidance docs or existing repo scripts, not ad hoc substitutes.
-    - Fix any failures before proceeding.
+   - Run tests, lint, formatter, and type checks as applicable.
+   - Use the commands from the project's guidance docs or existing repo scripts, not ad hoc substitutes.
+   - Fix any failures before proceeding.
 10. Run two review passes over the completed work.
     - If helper agents are available and delegation is useful, run them in parallel. Otherwise perform these reviews locally.
     - For helper-agent reviews, include all necessary context in the prompt because each review may start with fresh context.
@@ -84,7 +86,7 @@ After all plan work is complete, validate the full body of work with review pass
 
 - **Start clean** — verify the repo state before touching anything.
 - **The plan is your guide** — follow its references, don't reinvent.
-- **Code first, then fix tests** — get the implementation down, then make it green. Except in complex phased work where early feedback is worth the interruption.
-- **Commit once at the end** — all validated work in a single commit after review.
+- **Follow the test plan** — write tests that cover edge cases, error paths, and boundary conditions against public interfaces. Tests can come before or after the implementation; what matters is that the plan's test plan is fulfilled.
+- **Commit once at the end** — all validated work in a single commit after review, unless the plan explicitly calls for multiple commits.
 - **Validate at the end** — independent review passes catch what you miss across the full body of work.
 - **Ship complete features** — don't leave things 80% done.

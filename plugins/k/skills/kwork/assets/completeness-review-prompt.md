@@ -28,17 +28,20 @@ not rubber-stamp it. Be honest. A false "pass" is worse than a nit.
 ## What to look for
 
 ### Omissions
+
 - Are all planned tasks for this chunk actually implemented?
 - Is there anything the plan calls for that is missing, stubbed, or deferred without explanation?
 - Are there TODO, FIXME, or HACK comments that indicate incomplete work?
 
 ### Shortcuts and hacks
+
 - Were any compiler warnings, lint rules, or checks disabled to make things pass?
 - Were any tests skipped, ignored, or marked as expected-failure without justification?
 - Does any code work around the real problem rather than solving it?
 - Were public APIs or contracts bent to accommodate the implementation?
 
 ### Implementation integrity
+
 - Does the code follow the patterns and conventions established in the rest of the codebase?
 - Does the implementation match what the plan describes, or has it drifted?
 - Are there obvious correctness issues — wrong types, missing null checks, off-by-one errors, race conditions?

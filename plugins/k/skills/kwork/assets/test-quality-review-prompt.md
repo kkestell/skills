@@ -28,27 +28,32 @@ real bugs?** Tests that pass are not necessarily good tests. Be skeptical.
 ## What to look for
 
 ### Behavior vs. implementation details
+
 - Do tests verify observable behavior — given these inputs, expect these outputs / state changes / side effects?
 - Or do they test internal wiring that could change without affecting correctness?
 - Would a correct but differently-structured implementation still pass these tests?
 - Are tests coupled to specific method call sequences, internal field names, or private state?
 
 ### Edge cases and error paths
+
 - Are boundary conditions tested — empty inputs, zero values, maximum values, off-by-one boundaries?
 - Are error paths tested — invalid input, failure conditions, exceptional states?
 - Are ordering or concurrency concerns tested where the implementation is sensitive to them?
 
 ### Test independence and reliability
+
 - Does each test stand on its own, or do tests depend on execution order or shared mutable state?
 - Are tests deterministic? Could they flake due to timing, randomness, or external state?
 - Is setup and teardown clean — no leaked state between tests?
 
 ### Coverage gaps
+
 - Is there new functionality with no corresponding test?
 - Are there code paths that no test exercises?
 - Are important branching conditions (if/else, switch cases, guard clauses) covered?
 
 ### False confidence
+
 - Are there tests that would pass even if the implementation were broken?
 - Are assertions checking the right thing, or just that no exception was thrown?
 - Are mocks so extensive that the test no longer verifies real behavior?

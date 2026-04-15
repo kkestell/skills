@@ -2,6 +2,19 @@
 
 A workflow system for structured software development with AI assistance.
 
+## Install
+
+Distributed as a Claude Code plugin via the `kkestell` marketplace. From inside Claude Code:
+
+```text
+/plugin marketplace add kkestell/skills
+/plugin install k@kkestell
+```
+
+The first command registers the marketplace; the second installs the `k` plugin, which provides the `/kplan`, `/kwork`, `/kinit`, `/ktask`, `/kcommit`, and `/khandoff` commands.
+
+To update later, run `/plugin marketplace update kkestell` followed by `/plugin install k@kkestell`.
+
 ## The Essence
 
 These skills are meant to work together: `/kplan` decides what the right change is, and `/kwork` carries it through to a finished result.

@@ -5,6 +5,8 @@ description: Write a handoff document summarizing this session for future agents
 
 Write a handoff document summarizing this session for future agents/sessions.
 
+**Workspace directory:** `!`echo ~/.k/workspaces/${PWD//\//_}`` — all handoff files live here.
+
 ## Steps
 
 1. Determine today's date (use the `currentDate` context if available).

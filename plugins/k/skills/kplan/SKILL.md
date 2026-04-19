@@ -6,16 +6,6 @@ metadata:
   disable-model-invocation: "true"
 ---
 
-## Compatibility
-
-- Treat all paths in this skill as relative to the skill directory unless the host environment provides its own skill-directory variable.
-- In Claude-style environments, `${CLAUDE_SKILL_DIR}` may point at this directory. In Codex-style environments, resolve sibling paths like `assets/plan-template.md` directly from this `SKILL.md`.
-- If the host environment has a dedicated question-asking tool, you may use it. Otherwise ask the user directly in a normal message.
-- If helper agents are unavailable, disallowed, or unnecessary, do the architecture review locally. Do not make delegation mandatory.
-- Use project guidance docs when they exist, such as `CLAUDE.md`, `AGENTS.md`, `README`, or repo-specific contributor docs.
-- This skill plans only. Do not implement code changes here.
-- **Workspace directory**: `!`echo ~/.k/workspaces/${PWD//\//_}`` — all plan and follow-up files live here. Create subdirectories as needed.
-
 ## Workflow
 
 ### Phase 1 — Understand
@@ -70,7 +60,6 @@ metadata:
       - **Pre-mortem** — Imagine this solution failed or caused problems in six months. What went wrong? Surface non-obvious risks — the "seems fine" option that has a subtle coupling problem.
     - Score each surviving candidate against these criteria, roughly in priority order:
       - **Architectural fit** — Does it follow existing patterns, or introduce a new abstraction class? New abstractions have a cost: surface area, documentation, onboarding debt.
-      - **Reversibility** — Type 1 vs. Type 2 decision (Bezos framing). Prefer reversible choices. New database schemas, public API contracts, and persistent data formats have a high cost of being wrong.
       - **Locality** — How viral is the change? A solution that touches one file beats one that touches ten, all else equal. Coordinated updates across distant parts of the codebase are fragile.
       - **Minimal surface area** — Does the solution introduce new configuration knobs, new abstractions, new failure modes? Prefer the option that adds the least new *stuff* to the system's conceptual footprint.
       - **Testability** — Can the new behavior be tested through clean public interfaces? Does the approach require mocking internals, complex setup, or integration-only tests to verify? Prefer designs where the interesting behavior is reachable from unit tests. If a candidate forces test complexity, that's a design cost.
@@ -90,7 +79,7 @@ metadata:
 13. Generate the plan filename: `!`echo ~/.k/workspaces/${PWD//\//_}`/plans/YYYY-MM-DD-NNN-slug.md` where `YYYY-MM-DD` is today's date, `NNN` is the next available zero-padded sequence for that date, and the slug is a short kebab-case summary (3-5 words). Create the directory if it does not exist.
 14. Write the plan from `assets/plan-template.md`.
     - Use the template as a scaffold, not a rigid form. Keep only the sections that apply, and add sections when the work needs more structure.
-    - Every implementation task gets an actionable checkbox. A reader should be able to execute the plan without re-reading the codebase.
+    - Every implementation task is a concrete, actionable bullet. A reader should be able to execute the plan without re-reading the codebase.
     - If refactoring is part of the plan, list refactoring tasks before feature tasks. Explain what each refactor achieves structurally.
     - Include a test plan section before the implementation tasks. Define what to test, at what level (unit, integration, e2e), and what the key assertions are. Focus on edge cases, error paths, and boundary conditions — not happy-path tests that merely restate the implementation. Tests should target public interfaces so they survive refactors. The implementer uses this test plan during implementation, so it must be specific enough to write meaningful tests.
     - Include validation steps: what tests to write, what commands to run, what to verify manually.
@@ -100,8 +89,8 @@ metadata:
 ### Phase 6 — Review the plan architecture
 
 15. Run an architectural review pass on the written plan before handing it off for implementation.
-    - If helper agents are available and delegation is useful, launch a dedicated architecture-review subagent. Otherwise perform the review locally.
-    - For helper-agent reviews, include all necessary context in the prompt because the review may start with fresh context.
+    - Launch a dedicated architecture-review subagent when it adds value; otherwise perform the review locally.
+    - Subagents start with fresh context, so include all necessary context in the review prompt.
     - Read `assets/architecture-review-prompt.md`, then compose the actual review prompt with the concrete plan path, repo guidance docs, and the most relevant files or modules from `Related code`.
     - The reviewer should evaluate whether the plan fits the current architecture cleanly and should look specifically for hierarchy, abstraction, modularization, encapsulation, and SOLID problems before code is written.
     - Instruct the reviewer to focus on architectural drift and structural oversights, not cosmetic style feedback.
@@ -110,5 +99,5 @@ metadata:
     - If the fixes materially change the architecture, sequencing, or scope, run the architectural review again on the updated plan.
     - Repeat until the plan is structurally sound or the remaining concerns are explicit open questions for the user.
 17. After the review loop is complete, print the final plan path and stop.
-18. Suggest starting `/kwork` in a fresh session or with cleared context if the host environment supports that. Planning conversations consume significant context, and a fresh implementation session preserves room for the actual coding work.
+18. Suggest starting `/kwork` in a fresh session or with cleared context. Planning conversations consume significant context, and a fresh implementation session preserves room for the actual coding work.
 19. Never code here.

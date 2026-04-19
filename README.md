@@ -36,7 +36,7 @@ Brainstorms with you, explores the codebase, and produces a concrete implementat
 
 The plan includes:
 - Goal and scope
-- Implementation tasks with checkboxes
+- Implementation tasks
 - Related code references
 - Validation steps
 - Open questions

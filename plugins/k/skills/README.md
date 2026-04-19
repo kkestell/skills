@@ -7,7 +7,8 @@ A workflow system for structured software development with AI assistance.
 These skills are meant to work together: `/kplan` decides what the right change is, and `/kwork` carries it through to a finished result.
 
 - `/kplan` is design-first thinking. Its job is not to rush into implementation, but to clarify the real problem, explore how the change fits the architecture, research unknowns when needed, and write a plan another session can execute cleanly. Use it when the request is fuzzy, the design matters, or you want to avoid coding your way into a mess.
-- `/kwork` is disciplined execution. It takes a concrete plan, starts from a clean repo, implements the work end-to-end, validates it, runs independent review passes, and commits once the whole thing is genuinely done. Use it when you want more than a patch and are aiming to ship a complete, verified slice of work.
+- `/kwork` is disciplined execution. It takes a concrete plan, starts from a clean repo, implements the work end-to-end, validates it, delegates review to `/kreview`, and commits once the whole thing is genuinely done. Use it when you want more than a patch and are aiming to ship a complete, verified slice of work.
+- `/kreview` is independent verification. It runs completeness and test-quality review passes over a body of work, catching omissions, hacks, and weak tests that the implementer would miss. Called automatically by `/kwork`, but can also be invoked standalone.
 
 ## Core Workflow: `/kplan` → `/kwork`
 
@@ -23,7 +24,7 @@ Brainstorms with you, explores the codebase, and produces a concrete implementat
 
 The plan includes:
 - Goal and scope
-- Implementation tasks with checkboxes
+- Implementation tasks
 - Related code references
 - Validation steps
 - Open questions
@@ -42,7 +43,7 @@ Implements the plan end-to-end, validates with parallel subagent review, and com
 1. Pre-flight: Verify clean git state
 2. Orientation: Read plan, verify baseline
 3. Execution: Implement task-by-task, code-first then fix tests
-4. Validate: Run full test suite + parallel subagent reviews (completeness + test quality)
+4. Validate: Run full test suite + `/kreview` for parallel subagent reviews (completeness + test quality)
 5. Commit: Single commit with all validated work
 
 ### Handoff
@@ -57,6 +58,14 @@ Explores a repo and bootstraps `AGENTS.md` so future sessions have a shared orie
 
 ```text
 /kinit .
+```
+
+### `/kreview`
+
+Runs independent completeness and test-quality review passes over a body of work.
+
+```text
+/kreview @path/to/plan.md --files src/foo.ts,src/bar.ts,tests/foo.test.ts --tasks "Add foo module","Add bar integration"
 ```
 
 ### `/ktask`

@@ -5,20 +5,6 @@ metadata:
   argument-hint: "[task description — a bug fix, small feature, refactor, or improvement]"
 ---
 
-## Compatibility
-
-- Treat all paths in this skill as relative to the skill directory unless the host environment provides its own skill-directory variable.
-- In Claude-style environments, `${CLAUDE_SKILL_DIR}` may point at this directory. In Codex-style environments, resolve sibling paths like `assets/task-plan-template.md` directly from this `SKILL.md`.
-- If helper agents are unavailable, disallowed, or unnecessary, do the planning and review locally. Do not make delegation mandatory.
-- If the host environment has a dedicated question-asking tool, you may use it. Otherwise ask the user directly in a normal message.
-- Use project guidance docs when they exist, such as `CLAUDE.md`, `AGENTS.md`, `README`, or repo-specific contributor docs.
-
-## What this skill is for
-
-`ktask` is the fast path. Use it when the work is bounded enough that a full `/kplan` → `/kwork` cycle would be overkill: a bug fix, a small feature, a refactor, a config change, or anything you could reasonably describe in a sentence or two.
-
-If the task turns out to be larger than expected, stop and suggest using `/kplan` instead.
-
 ## Workflow
 
 ### Phase 1 — Understand & Plan
@@ -27,7 +13,7 @@ If the task turns out to be larger than expected, stop and suggest using `/kplan
 2. Decide whether subagent planning is needed.
    - **Skip planning entirely** if the task is trivially obvious (e.g., fixing a typo, updating a single config value, renaming a method).
    - **Plan locally** if the task is small but benefits from a moment of thought (e.g., a focused bug fix with a clear cause, a small refactor).
-   - **Delegate to a subagent** if the task touches multiple files or areas and would benefit from an independent planning pass. If helper agents are unavailable, plan locally.
+   - **Delegate to a subagent** if the task touches multiple files or areas and would benefit from an independent planning pass.
 3. If planning (locally or via subagent), use the lightweight template from `assets/task-plan-template.md`.
    - The plan lives **only in conversation context** — do not write it to `!`echo ~/.k/workspaces/${PWD//\//_}`/plans/` or any other file.
    - If using a subagent, pass the task description and the template, then incorporate the returned plan into your context.
@@ -57,8 +43,8 @@ If the task turns out to be larger than expected, stop and suggest using `/kplan
    - Use the commands from the project's guidance docs or existing repo scripts.
    - Fix any failures.
 9. Do a single review pass over the completed work.
-   - If helper agents are available and delegation is useful, launch a review subagent. Otherwise review locally.
-   - For helper-agent reviews, include all necessary context in the prompt because the review may start with fresh context.
+   - Launch a review subagent when it adds value; otherwise review locally.
+   - Subagents start with fresh context, so include all necessary context in the review prompt.
    - Build the review prompt by reading `assets/task-review-prompt.md`, then filling in the specifics of the task and all changed files.
    - The reviewer should check for correctness, completeness, and whether the code matches the task description — not a full architectural review.
 10. Fix any issues the review found, then re-run quality checks.

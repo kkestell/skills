@@ -6,14 +6,6 @@ metadata:
   disable-model-invocation: "true"
 ---
 
-## Compatibility
-
-- Treat all paths in this skill as relative to the skill directory unless the host environment provides its own skill-directory variable.
-- In Claude-style environments, `${CLAUDE_SKILL_DIR}` may point at this directory. In Codex-style environments, resolve sibling paths like `assets/completeness-review-prompt.md` directly from this `SKILL.md`.
-- If helper agents are unavailable, disallowed, or unnecessary, do the work and validation locally. Do not make delegation mandatory.
-- Use project guidance docs when they exist, such as `CLAUDE.md`, `AGENTS.md`, `README`, package scripts, or repo-specific contributor docs.
-- **Workspace directory**: `!`echo ~/.k/workspaces/${PWD//\//_}`` — all plan and follow-up files live here. Create subdirectories as needed.
-
 ## Workflow
 
 ### Pre-flight
@@ -33,13 +25,13 @@ metadata:
    - Better to ask once before starting than to build the wrong thing. Get user approval to proceed.
    - Skip this step if the plan is clear and the path forward is obvious.
 5. Verify the repo setup and baseline quality commands before major edits.
-   - If helper agents are available and delegation is useful, you may delegate baseline verification.
+   - Delegate baseline verification to a subagent if it will save context.
    - Confirm dependencies are installed, then run tests, lint, formatter, and type checks as applicable.
    - Capture a concise baseline summary: what passed, what failed, and any broken baseline issues.
-   - If the baseline is already broken, tell the user before proceeding.
+   - If the baseline is already broken, fix it before proceeding.
 6. Create a Todo list from the plan's implementation tasks.
    - Include testing tasks alongside implementation tasks.
-   - Keep tasks specific and completable — each one should map to a checkable plan item.
+   - Keep tasks specific and completable — each one should map to a plan item.
 
 ### Execution
 
@@ -49,13 +41,11 @@ metadata:
    - Write tests according to the plan's test plan section. Tests can come before or after the implementation — use your judgment for what fits the language, the task, and the change. What matters is that the plan's test plan is fulfilled, not the ordering.
    - Focus test effort on edge cases, error paths, and boundary conditions against public interfaces. Do not write happy-path-only tests that merely restate the implementation or tests that are tightly coupled to internal details.
    - Comment the code well. Comments should explain the architecture and the "why", not merely describe what the code does.
-   - Update Todo state and mark the matching plan checkbox complete (`[ ]` → `[x]`).
    - Keep the implementation aligned with the plan unless the user explicitly redirects or the plan is clearly wrong.
+   - Never use `sed` or other dangerous hacks when editing files.
 8. If you find yourself spinning your wheels or faced with an unexpected obstacle, stop and ask the user for guidance.
 
 Repeat steps 7–8 until the plan is complete.
-
-If you start to run out of context, stop and offer a follow-up handoff or fresh-session continuation if the host environment supports it.
 
 ### Validate
 
@@ -65,15 +55,13 @@ After all plan work is complete, validate the full body of work with review pass
    - Run tests, lint, formatter, and type checks as applicable.
    - Use the commands from the project's guidance docs or existing repo scripts, not ad hoc substitutes.
    - Fix any failures before proceeding.
-10. Run two review passes over the completed work.
-    - If helper agents are available and delegation is useful, run them in parallel. Otherwise perform these reviews locally.
-    - For helper-agent reviews, include all necessary context in the prompt because each review may start with fresh context.
-    - Build each review prompt by reading the corresponding template, then filling in the specifics of the full plan.
-    - **Completeness review** — Read `assets/completeness-review-prompt.md` for the prompt framework. Fill in the plan path, all tasks completed, and the list of all changed files. The reviewer reads the plan and all changed files, then evaluates whether the work is genuinely complete with no omissions, hacks, disabled warnings, or workarounds. The reviewer should assume that the code builds and the tests pass and should not verify this itself.
-    - **Test quality review** — Read `assets/test-quality-review-prompt.md` for the prompt framework. Fill in the plan path, all tasks completed, the test files, and the implementation files. The reviewer reads the implementation and tests, then evaluates whether the tests verify real behavior, cover edge cases, and would actually catch bugs.
-11. Act on review findings.
-    - If either reviewer reports issues worth fixing: fix them, then re-run the relevant quality checks.
-    - If both reviewers pass, proceed to handoff.
+10. Run review passes over the completed work by delegating to opencode via the review script.
+     - Run `!`cat plugins/k/skills/kreview/scripts/review.sh` $PLAN_PATH --files $CHANGED_FILES --tasks $COMPLETED_TASKS` from the repo root, passing the plan path, all tasks completed, and the list of all changed files (implementation and test).
+     - The script launches opencode with read-only permissions (no edit or bash) and invokes `/kreview`, which runs a completeness review and a test quality review.
+     - This ensures reviews are independent — a separate model instance with no write access evaluates the work.
+11. Act on review findings returned by the review script.
+     - If either review reports issues worth fixing: fix them, then re-run the relevant quality checks.
+     - If both reviews pass, proceed to handoff.
 
 ### Commit & Handoff
 

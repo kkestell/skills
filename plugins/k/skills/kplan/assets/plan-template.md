@@ -56,9 +56,9 @@ Define what to test and at what level before listing implementation tasks. Focus
 
 ## Implementation plan
 
-- [ ] Task 1
-- [ ] Task 2
-- [ ] Task 3
+- Task 1
+- Task 2
+- Task 3
 
 ## Impact assessment
 

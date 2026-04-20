@@ -4,6 +4,8 @@ This is a prompt framework for a test-quality review.
 When launching a helper reviewer or running the pass locally, read this file, then compose the actual prompt
 by filling in the concrete details for the current chunk of work.
 
+The goal is not 100% test coverage! It's the minimum number of high quality tests nessary to cover major functionality, important edge cases, and regressions.
+
 ---
 
 ## Preamble (copy and adapt)
@@ -45,12 +47,6 @@ real bugs?** Tests that pass are not necessarily good tests. Be skeptical.
 - Does each test stand on its own, or do tests depend on execution order or shared mutable state?
 - Are tests deterministic? Could they flake due to timing, randomness, or external state?
 - Is setup and teardown clean — no leaked state between tests?
-
-### Coverage gaps
-
-- Is there new functionality with no corresponding test?
-- Are there code paths that no test exercises?
-- Are important branching conditions (if/else, switch cases, guard clauses) covered?
 
 ### False confidence
 

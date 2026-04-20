@@ -55,11 +55,11 @@ After all plan work is complete, validate the full body of work with review pass
    - Run tests, lint, formatter, and type checks as applicable.
    - Use the commands from the project's guidance docs or existing repo scripts, not ad hoc substitutes.
    - Fix any failures before proceeding.
-10. Run review passes over the completed work by delegating to opencode via the review script.
-     - Run `!`cat plugins/k/skills/kreview/scripts/review.sh` $PLAN_PATH --files $CHANGED_FILES --tasks $COMPLETED_TASKS` from the repo root, passing the plan path, all tasks completed, and the list of all changed files (implementation and test).
-     - The script launches opencode with read-only permissions (no edit or bash) and invokes `/kreview`, which runs a completeness review and a test quality review.
-     - This ensures reviews are independent — a separate model instance with no write access evaluates the work.
-11. Act on review findings returned by the review script.
+10. Run a review pass over the completed work using a read-only subagent (no file edits, no shell commands).
+     - Pass it the plan document, the list of completed tasks, and the list of changed files.
+     - The subagent invokes the `/kreview` skill, which runs a completeness review and a test quality review in sequence.
+     - This ensures the review is independent — a separate model instance with no write access evaluates the work.
+11. Act on review findings returned by the subagents.
      - If either review reports issues worth fixing: fix them, then re-run the relevant quality checks.
      - If both reviews pass, proceed to handoff.
 

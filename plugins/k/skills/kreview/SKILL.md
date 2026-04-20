@@ -26,12 +26,7 @@ metadata:
 
 ### Test Quality Review
 
-3. Run a test quality review over the tests.
-   - Prefer running in a parallel subagent; otherwise perform locally.
-   - Subagents start with fresh context, so include all necessary context in the review prompt.
-   - Build the review prompt by reading `assets/test-quality-review-prompt.md`, then filling in the specifics.
-   - The reviewer reads the implementation and tests, then evaluates whether the tests verify real behavior, cover edge cases, and would actually catch bugs.
-   - Steps 2 and 3 can run in parallel when subagents are available.
+3. Run a test quality review over the tests. Build the review prompt by reading `assets/review-prompt.md`, then filling in the specifics.
 
 ### Act on Findings
 
@@ -44,6 +39,6 @@ metadata:
 
 ## Principles
 
-- **Independent** — reviews must be free from the biases of the implementer. Subagents start fresh.
+- **Independent** — reviews must be free from the biases of the implementer.
 - **Honest** — a false "pass" is worse than a nit. Flag real problems, don't rubber-stamp.
 - **Concise** — only flag things that actually matter: real omissions, real hacks, real correctness problems. Do not pad with style nits or cosmetic suggestions.

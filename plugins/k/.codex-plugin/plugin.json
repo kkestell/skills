@@ -1,0 +1,40 @@
+{
+  "name": "k",
+  "version": "0.11.0",
+  "description": "A simple workflow for intentional, high quality coding work, comparative research, and prose editing.",
+  "author": {
+    "name": "Kyle Kestell",
+    "url": "https://github.com/kkestell"
+  },
+  "homepage": "https://github.com/kkestell/skills",
+  "repository": "https://github.com/kkestell/skills",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "planning",
+    "implementation",
+    "review",
+    "code-quality",
+    "software-design",
+    "research",
+    "writing"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "k",
+    "shortDescription": "Plan, research, implement, and review code, and clean AI slop from prose",
+    "longDescription": "A compact coding workflow plugin that bundles planning, comparative research, implementation, review, and handoff guidance for intentional software development work inside Codex. It also detects and fixes AI \"slop\" in prose.",
+    "developerName": "Kyle Kestell",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/kkestell/skills",
+    "privacyPolicyURL": "https://github.com/kkestell/skills",
+    "termsOfServiceURL": "https://github.com/kkestell/skills",
+    "defaultPrompt": "Plan a change, research a technical topic, execute work against a repo plan, review code for structural problems, or clean AI slop from a document",
+    "screenshots": []
+  }
+}

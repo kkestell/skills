@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "k",
+  "description": "Kyle Kestell's personal Claude Code / Codex skill library.",
+  "owner": {
+    "name": "Kyle Kestell",
+    "email": "kyle@kestell.org"
+  },
+  "plugins": [
+    {
+      "name": "k",
+      "source": "./plugins/k",
+      "description": "A simple workflow for intentional, high quality coding work, comparative research, and prose editing: init, task, research, plan, work, review, simplify, deslop."
+    }
+  ]
+}

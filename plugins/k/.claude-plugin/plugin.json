@@ -1,0 +1,11 @@
+{
+  "name": "k",
+  "version": "0.11.0",
+  "description": "A simple workflow for intentional, high quality coding work, comparative research, and prose editing.",
+  "author": {
+    "name": "Kyle Kestell",
+    "url": "https://github.com/kkestell"
+  },
+  "repository": "https://github.com/kkestell/skills",
+  "license": "MIT"
+}

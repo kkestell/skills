@@ -1,0 +1,21 @@
+{
+  "name": "skills",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Agent skills validation tooling.",
+  "type": "module",
+  "scripts": {
+    "check": "tsx scripts/check.ts",
+    "validate": "tsx scripts/validate.ts",
+    "typecheck": "tsc --project tsconfig.json",
+    "test": "tsx --test tests/skills-ref.test.ts"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}

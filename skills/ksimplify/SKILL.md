@@ -27,10 +27,10 @@ Launch two `general-purpose` agents in one message. Both produce **distilled map
 
 **Cartographer A → `.review/map-structure.md`** (reads the type/data spine; skips all test modules). Sections:
 
-- _Core type graph_: every key type tagged **SERIALIZED** (on-disk format — changing it breaks saved data), **WIRE** (external API shape only), or **INTERNAL**; the serde/codec attributes that pin formats; key conversion functions between families.
-- _Ownership & sharing graph_: every Arc/Mutex/Rc/significant Clone — what is shared, why (quote rationale comments), what crosses await/thread boundaries.
-- _Allocation hotspots_: clone/to_string/format!/collect clusters, classified **per-token / per-turn / per-call / boot-time** (frequency determines leverage).
-- _Cross-cutting patterns_: error-handling style and boundaries, string-building idioms, constructor conventions, single-variant enums kept for forward-compat, and **every load-bearing rationale comment** (these are constraints, not noise).
+- _Core type graph_: every key type tagged **SERIALIZED** (on-disk format — changing it breaks saved data), **WIRE** (external API shape only), or **INTERNAL**; the (de)serialization attributes/annotations that pin formats; key conversion functions between families.
+- _Ownership & sharing graph_: every shared or reference-counted value, shared mutable state, and significant deep copy — what is shared, why (quote rationale comments), what crosses concurrency/thread boundaries.
+- _Allocation hotspots_: deep-copy / string-allocation / intermediate-collection clusters, classified by execution frequency (e.g. per-call / per-request / boot-time — frequency determines leverage).
+- _Cross-cutting patterns_: error-handling style and boundaries, string-building idioms, constructor conventions, single-variant sum types kept for forward-compat, and **every load-bearing rationale comment** (these are constraints, not noise).
 
 **Cartographer B → `.review/map-modules.md`** (reads orchestration code + distills tests):
 
@@ -53,12 +53,12 @@ that could block this, or "")`
 
 Standard lenses (adapt slices from the map; drop/replace lenses that don't fit the language):
 
-1. **ownership** — borrow-vs-own, Arc-vs-clone-data, redundant copies on the hot conversion path, params that could borrow. Weigh per-token vs per-turn vs boot-time.
-2. **typemodel** — parallel type-family duplication, single-variant enums (check persistence first!), newtypes that don't earn their keep, make-illegal-states-unrepresentable. Serialization impact stated explicitly per finding.
-3. **errors** — typed-vs-anyhow boundary coherence, unwrap/expect audit (lock().unwrap() is idiomatic — don't flag), .context() noise, error-message consistency at recovery boundaries.
-4. **idiom** — loops↔combinators (both directions), intermediate collections, string building (format!-in-loop vs write!). Respect explicit loops that carry comments.
-5. **async** — locks across await, independent awaits that could join (check ordering invariants first), channel topology, lifecycle simplifications. Conservative: only high-confidence findings with the ordering reasoning recorded in global_concern.
-6. **boundaries** — god-functions (cohesive sequence vs extractable unit — extraction must pay for itself), the map's duplication list (unify only if it reduces _total_ complexity; cross-crate duplication usually stays).
+1. **ownership** — data copied when it could be borrowed/shared, redundant deep copies on the hot conversion path, params that could avoid copying. Weigh by execution frequency (hot path vs boot-time).
+2. **typemodel** — parallel type-family duplication, single-variant sum types (check persistence first!), wrapper types that don't earn their keep, make-illegal-states-unrepresentable. Serialization impact stated explicitly per finding.
+3. **errors** — error-type boundary coherence, audit of unchecked/panic-style access (idiomatic cases like lock guards — don't flag), redundant error-context wrapping, error-message consistency at recovery boundaries.
+4. **idiom** — loops↔combinators/higher-order functions (both directions), intermediate collections, string building (concat-in-loop vs builder/buffer). Respect explicit loops that carry comments.
+5. **concurrency** — locks held across await/yield/suspension points, independent operations that could run concurrently (check ordering invariants first), channel topology, lifecycle simplifications. Conservative: only high-confidence findings with the ordering reasoning recorded in global_concern. Drop this lens for single-threaded codebases.
+6. **boundaries** — god-functions (cohesive sequence vs extractable unit — extraction must pay for itself), the map's duplication list (unify only if it reduces _total_ complexity; cross-package/cross-module duplication usually stays).
 
 Common prompt preamble for every lens (include verbatim, adapted):
 
@@ -94,4 +94,4 @@ Read only `map.md` + `ledger.jsonl` — never raw source (spot-verify individual
 
 Present findings.md: lead with a batch summary table, flag anything that changes a documented convention (all-or-nothing items), and ask which batches to apply. **Stop.**
 
-On approval: apply batch-by-batch per the project's conventions (for this user's Rust projects: `cargo fmt` → `cargo clippy` zero warnings → `cargo test` green → single-line commit, no attribution). After all batches, run /code-review + /simplify over the full diff and smoke-test against a real provider/runtime if the project has one.
+On approval: apply batch-by-batch per the project's conventions — format → lint (zero warnings) → test (green) → single-line commit, no attribution. Discover the exact commands from AGENTS.md or the project's toolchain. After all batches, run /code-review + /simplify over the full diff and smoke-test against a real runtime if the project has one.

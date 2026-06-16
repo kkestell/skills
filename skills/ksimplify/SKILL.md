@@ -30,7 +30,7 @@ Launch two `general-purpose` agents in one message. Both produce **distilled map
 - _Core type graph_: every key type tagged **SERIALIZED** (on-disk format — changing it breaks saved data), **WIRE** (external API shape only), or **INTERNAL**; the (de)serialization attributes/annotations that pin formats; key conversion functions between families.
 - _Ownership & sharing graph_: every shared or reference-counted value, shared mutable state, and significant deep copy — what is shared, why (quote rationale comments), what crosses concurrency/thread boundaries.
 - _Allocation hotspots_: deep-copy / string-allocation / intermediate-collection clusters, classified by execution frequency (e.g. per-call / per-request / boot-time — frequency determines leverage).
-- _Cross-cutting patterns_: error-handling style and boundaries, string-building idioms, constructor conventions, single-variant sum types kept for forward-compat, and **every load-bearing rationale comment** (these are constraints, not noise).
+- _Cross-cutting patterns_: error-handling style and boundaries, string-building idioms, constructor conventions, single-variant enums/tagged unions kept for forward-compat, and **every load-bearing rationale comment** (these are constraints, not noise).
 
 **Cartographer B → `.review/map-modules.md`** (reads orchestration code + distills tests):
 
@@ -53,9 +53,9 @@ that could block this, or "")`
 
 Standard lenses (adapt slices from the map; drop/replace lenses that don't fit the language):
 
-1. **ownership** — data copied when it could be borrowed/shared, redundant deep copies on the hot conversion path, params that could avoid copying. Weigh by execution frequency (hot path vs boot-time).
-2. **typemodel** — parallel type-family duplication, single-variant sum types (check persistence first!), wrapper types that don't earn their keep, make-illegal-states-unrepresentable. Serialization impact stated explicitly per finding.
-3. **errors** — error-type boundary coherence, audit of unchecked/panic-style access (idiomatic cases like lock guards — don't flag), redundant error-context wrapping, error-message consistency at recovery boundaries.
+1. **ownership** — data copied when it could be shared or passed by reference, redundant deep/defensive copies on the hot conversion path, params that force a copy they don't need. Weigh by execution frequency (hot path vs boot-time).
+2. **typemodel** — parallel type-family duplication, single-variant enums/tagged unions (check persistence first!), wrapper types that don't earn their keep, make-illegal-states-unrepresentable. Serialization impact stated explicitly per finding.
+3. **errors** — error-type boundary coherence, audit of unchecked/forced access (force-unwrap, assert-non-null, panic/throw on values that are provably present — don't flag the idiomatic cases), redundant error-context wrapping, error-message consistency at recovery boundaries.
 4. **idiom** — loops↔combinators/higher-order functions (both directions), intermediate collections, string building (concat-in-loop vs builder/buffer). Respect explicit loops that carry comments.
 5. **concurrency** — locks held across await/yield/suspension points, independent operations that could run concurrently (check ordering invariants first), channel topology, lifecycle simplifications. Conservative: only high-confidence findings with the ordering reasoning recorded in global_concern. Drop this lens for single-threaded codebases.
 6. **boundaries** — god-functions (cohesive sequence vs extractable unit — extraction must pay for itself), the map's duplication list (unify only if it reduces _total_ complexity; cross-package/cross-module duplication usually stays).

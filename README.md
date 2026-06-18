@@ -69,24 +69,24 @@ codex plugin marketplace add .
 ```text
 .claude-plugin/
   marketplace.json                         # marketplace catalog (one plugin: k)
-skills/                                     # canonical skill content
-  kplan/
-    SKILL.md
-    assets/
-  ...
 plugins/
   k/                                        # the single plugin wrapper
     .claude-plugin/plugin.json              # Claude Code manifest
     .codex-plugin/plugin.json               # Codex manifest (interface metadata)
     commands/                               # khandoff
     hooks/                                  # dprint markdown-format PostToolUse hook
-    skills/
+    skills/                                 # canonical skill content
       README.md
-      kplan -> ../../../skills/kplan        # directory symlink into canonical skill
+      kplan/
+        SKILL.md
+        assets/
       ...
+skills/
+  kplan -> ../plugins/k/skills/kplan        # symlink into canonical skill
+  ...
 ```
 
-Skill content lives once under `skills/<name>/`. The `k` plugin exposes every skill by symlinking each canonical skill into `plugins/k/skills/<name>`, so there is no content duplication. Marketplace plugins dereference within-marketplace symlinks at install time, so end users get real files in their plugin cache.
+Skill content lives once under `plugins/k/skills/<name>/`, inside the plugin so the plugin root is self-contained. Repo-root `skills/<name>` symlinks point into those canonical copies, so there is no content duplication and the conventional `skills/` path still works. The real files stay within `plugins/k/` because Codex copies the plugin directory into its install cache and does not follow symlinks that escape it.
 
 ## Local Development
 

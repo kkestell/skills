@@ -8,13 +8,9 @@ This repo holds general-purpose, reusable agent skills, published as a single Cl
 
 ## Structure
 
-Skill content lives once under `skills/<name>/`. The single `k` plugin under `plugins/k/` wraps all of those skills, exposing each one through a directory symlink so there is no content duplication.
+Skill content lives once under `plugins/k/skills/<name>/`, inside the plugin directory so the plugin root is fully self-contained. Repo-root `skills/<name>` symlinks point into those canonical copies, giving tooling and editors the conventional `skills/` path without duplicating content.
 
 ```text
-skills/
-  my-skill/
-    SKILL.md
-    assets/
 plugins/
   k/
     .claude-plugin/plugin.json             # Claude Code manifest
@@ -23,12 +19,17 @@ plugins/
     hooks/                                 # PostToolUse dprint markdown formatter
     skills/
       README.md                            # workflow overview
-      my-skill -> ../../../skills/my-skill # directory symlink into the canonical skill
+      my-skill/                            # canonical skill content
+        SKILL.md
+        assets/
+skills/
+  my-skill -> ../plugins/k/skills/my-skill # symlink into the canonical skill
 ```
 
-- `skills/<name>/SKILL.md` is the canonical content. It is what the validation tooling checks.
-- `plugins/k/skills/<name> -> ../../../skills/<name>` exposes the skill through the [default plugin layout](https://code.claude.com/docs/en/plugins-reference#skills) (`<plugin-root>/skills/<name>/SKILL.md`).
-- The repo-root `.claude-plugin/marketplace.json` catalogs the `k` plugin and is read natively by Claude Code (`/plugin marketplace add ...`) and Codex (`codex plugin marketplace add ...`). Marketplace plugins dereference within-marketplace symlinks at install time, so end users get real files in their plugin cache.
+- `plugins/k/skills/<name>/SKILL.md` is the canonical content, packaged directly under the plugin root (`<plugin-root>/skills/<name>/SKILL.md`, the [default plugin layout](https://code.claude.com/docs/en/plugins-reference#skills)).
+- `skills/<name> -> ../plugins/k/skills/<name>` re-exposes each skill at the repo-root `skills/` path that the validator reads and the docs reference.
+- The real files must live inside `plugins/k/`: Codex copies the plugin directory into its install cache and does not follow symlinks pointing outside that directory, so a symlink that escapes the plugin root is dropped and the skill goes missing in Codex.
+- The repo-root `.claude-plugin/marketplace.json` catalogs the `k` plugin and is read natively by Claude Code (`/plugin marketplace add ...`) and Codex (`codex plugin marketplace add ...`).
 
 ## Naming Rules
 
@@ -38,11 +39,11 @@ plugins/
 
 ## Adding a Skill
 
-1. Create `skills/<name>/SKILL.md` with valid frontmatter (see below).
-2. Symlink it into the plugin:
+1. Create `plugins/k/skills/<name>/SKILL.md` with valid frontmatter (see below).
+2. Re-expose it at the repo root:
 
    ```bash
-   ln -s ../../../skills/<name> plugins/k/skills/<name>
+   ln -s ../plugins/k/skills/<name> skills/<name>
    ```
 
 3. Run `npm run check`.

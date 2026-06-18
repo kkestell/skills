@@ -168,7 +168,7 @@ async function collectShellFiles(): Promise<string[]> {
   const skillsDir = path.join(REPO_ROOT, "skills");
   const skillEntries = await readdir(skillsDir, { withFileTypes: true });
   for (const skillEntry of skillEntries) {
-    if (!skillEntry.isDirectory() || skillEntry.name.startsWith(".")) {
+    if ((!skillEntry.isDirectory() && !skillEntry.isSymbolicLink()) || skillEntry.name.startsWith(".")) {
       continue;
     }
 
@@ -208,7 +208,7 @@ async function runNodeChecks(): Promise<void> {
   const packageJsonPaths: string[] = [];
 
   for (const skillEntry of skillEntries) {
-    if (!skillEntry.isDirectory() || skillEntry.name.startsWith(".")) {
+    if ((!skillEntry.isDirectory() && !skillEntry.isSymbolicLink()) || skillEntry.name.startsWith(".")) {
       continue;
     }
 

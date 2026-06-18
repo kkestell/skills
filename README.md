@@ -6,16 +6,17 @@ The skills are designed to work together — `/kplan` decides what the right cha
 
 ## Skills
 
-| Skill       | What it does                                                                               |
-| ----------- | ------------------------------------------------------------------------------------------ |
-| `kinit`     | Explore a repo and bootstrap an `AGENTS.md` orientation doc.                               |
-| `kplan`     | Brainstorm a change, explore the codebase, and write a concrete implementation plan.       |
-| `kwork`     | Execute a plan end to end: implement, validate with independent review passes, and commit. |
-| `kreview`   | Run independent completeness and code-simplification review passes over a body of work.    |
-| `ksimplify` | Global, multi-agent simplification review of a whole codebase, with a human approval gate. |
-| `kresearch` | Comparative technical research across comparable open-source GitHub projects.              |
-| `ktask`     | Bounded one-off work — plan lightly, implement, validate. No plan file, no commit.         |
-| `kdeslop`   | Detect and fix AI "slop" in prose while preserving meaning and voice.                      |
+| Skill          | What it does                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `kinit`        | Explore a repo and bootstrap an `AGENTS.md` orientation doc.                               |
+| `kplan`        | Brainstorm a change, explore the codebase, and write a concrete implementation plan.       |
+| `kwork`        | Execute a plan end to end: implement, validate with independent review passes, and commit. |
+| `kreview`      | Run independent completeness and code-simplification review passes over a body of work.    |
+| `ksimplify`    | Global, multi-agent simplification review of a whole codebase, with a human approval gate. |
+| `kresearch`    | Comparative technical research across comparable open-source GitHub projects.              |
+| `ktask`        | Bounded one-off work — plan lightly, implement, validate. No plan file, no commit.         |
+| `kdeslop`      | Detect and fix AI "slop" in prose while preserving meaning and voice.                      |
+| `kformat-docs` | Reformat Markdown documents with dprint (never wrap text).                                 |
 
 The plugin also ships the `/khandoff` command (write a session handoff document).
 
@@ -74,7 +75,6 @@ plugins/
     .claude-plugin/plugin.json              # Claude Code manifest
     .codex-plugin/plugin.json               # Codex manifest (interface metadata)
     commands/                               # khandoff
-    hooks/                                  # dprint markdown-format PostToolUse hook
     skills/                                 # canonical skill content
       README.md
       kplan/

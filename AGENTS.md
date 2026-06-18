@@ -16,7 +16,6 @@ plugins/
     .claude-plugin/plugin.json             # Claude Code manifest
     .codex-plugin/plugin.json              # Codex manifest (interface metadata + "skills": "./skills/")
     commands/                              # slash commands (khandoff)
-    hooks/                                 # PostToolUse dprint markdown formatter
     skills/
       README.md                            # workflow overview
       my-skill/                            # canonical skill content

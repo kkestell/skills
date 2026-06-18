@@ -123,7 +123,10 @@ async function validateAll(): Promise<string[]> {
     const errors: string[] = [];
     const skillNameToDir = new Map<string, string>();
     const skillDirs = children
-      .filter((child) => child.isDirectory() && !child.name.startsWith("."))
+      .filter(
+        (child) =>
+          (child.isDirectory() || child.isSymbolicLink()) && !child.name.startsWith("."),
+      )
       .map((child) => child.name)
       .sort((left, right) => left.localeCompare(right));
 

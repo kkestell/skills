@@ -2,7 +2,6 @@
 name: kdeslop
 description: "Detect and fix AI \"slop\" in prose — overused LLM vocabulary, empty significance/legacy claims, vague attributions, hollow rhetorical constructions, formulaic structure, and machine-formatting tells. Fans out one audit subagent per slop category, then rewrites the confirmed slop in place while preserving meaning and the author's voice."
 argument-hint: "[file paths to scan and fix]"
-disable-model-invocation: true
 ---
 
 ## Overview

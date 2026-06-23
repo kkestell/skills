@@ -2,7 +2,6 @@
 name: kwork
 description: "Execute a repo plan end to end: implement, validate with independent review passes, and commit at the end."
 argument-hint: "[plan, specification, or todo file path]"
-disable-model-invocation: true
 ---
 
 ## Workflow

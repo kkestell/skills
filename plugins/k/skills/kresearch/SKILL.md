@@ -2,7 +2,6 @@
 name: kresearch
 description: "Research a technical topic across comparable open-source GitHub projects: identify comps, clarify the question, delegate verified per-repo investigation to subagents, and synthesize the findings. Use when the user wants to learn how similar projects solve a problem, compare implementation approaches across codebases, or gather evidence-backed prior art before a design decision. Writes comps, a plan, per-repo notes, and a summary under `.k/research/`."
 argument-hint: "[topic or question to research]"
-disable-model-invocation: true
 ---
 
 ## Workflow

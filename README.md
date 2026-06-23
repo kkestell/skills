@@ -22,7 +22,12 @@ The plugin also ships the `/khandoff` command (write a session handoff document)
 
 ## Install via Plugin Marketplace (Claude Code & Codex)
 
-The repo-root `.claude-plugin/marketplace.json` manifest is consumed natively by both [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) and the [Codex CLI](https://github.com/openai/codex) — no separate configuration is needed.
+This repository is a native marketplace source for both Claude Code and Codex. They do not read the same marketplace file:
+
+- Claude Code reads `.claude-plugin/marketplace.json`.
+- Codex reads `.agents/plugins/marketplace.json`.
+
+Both marketplace manifests point at the same self-contained plugin bundle: `plugins/k`.
 
 ### Claude Code
 
@@ -34,6 +39,20 @@ Add the marketplace once per machine, then install the plugin:
 ```
 
 Plugin skills are namespaced by the plugin name, so `kplan` is invoked as `/k:kplan`.
+
+For a local checkout, Claude Code expects an explicit local path:
+
+```bash
+claude plugin marketplace add ./
+claude plugin install k@k
+```
+
+Refresh from the marketplace when the repo changes:
+
+```bash
+claude plugin marketplace update k
+claude plugin update k@k
+```
 
 To require the marketplace for a particular project, add it to that project's `.claude/settings.json`:
 
@@ -52,10 +71,16 @@ To require the marketplace for a particular project, add it to that project's `.
 
 ### Codex CLI
 
-The same marketplace works with `codex plugin marketplace`:
+Codex uses its own marketplace manifest in `.agents/plugins/marketplace.json`:
 
 ```bash
 codex plugin marketplace add kkestell/skills
+codex plugin add k@k
+```
+
+Refresh the marketplace snapshot when the repo changes:
+
+```bash
 codex plugin marketplace upgrade k
 ```
 
@@ -63,13 +88,17 @@ Local checkouts work too — point at the repo root:
 
 ```bash
 codex plugin marketplace add .
+codex plugin add k@k
 ```
 
 ## Repository Layout
 
 ```text
 .claude-plugin/
-  marketplace.json                         # marketplace catalog (one plugin: k)
+  marketplace.json                         # Claude Code marketplace catalog (one plugin: k)
+.agents/
+  plugins/
+    marketplace.json                       # Codex marketplace catalog (one plugin: k)
 plugins/
   k/                                        # the single plugin wrapper
     .claude-plugin/plugin.json              # Claude Code manifest
@@ -87,6 +116,8 @@ skills/
 ```
 
 Skill content lives once under `plugins/k/skills/<name>/`, inside the plugin so the plugin root is self-contained. Repo-root `skills/<name>` symlinks point into those canonical copies, so there is no content duplication and the conventional `skills/` path still works. The real files stay within `plugins/k/` because Codex copies the plugin directory into its install cache and does not follow symlinks that escape it.
+
+Claude Code intentionally omits `version` from `plugins/k/.claude-plugin/plugin.json`, so git commits drive marketplace updates. The Codex manifest keeps a semver `version`, because Codex plugin ingestion expects one.
 
 ## Local Development
 
@@ -110,4 +141,10 @@ Validate a single skill:
 
 ```bash
 npm run validate -- skills/<skill-name>
+```
+
+Validate only the marketplace entrypoints:
+
+```bash
+npm run validate:marketplaces
 ```

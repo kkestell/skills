@@ -2,7 +2,6 @@
 name: kreview
 description: "Run independent completeness and code-simplification review passes over a body of work."
 argument-hint: "[plan path] --files [changed files] --tasks [completed tasks]"
-disable-model-invocation: true
 ---
 
 ## Workflow

@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runValidation } from "./validate.js";
+import { runMarketplaceValidation } from "./validate-marketplaces.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SHELLCHECK_VERSION = "0.10.0";
@@ -276,6 +277,11 @@ async function main(args: string[]): Promise<number> {
   const validationExitCode = await runValidation(args);
   if (validationExitCode !== 0) {
     return validationExitCode;
+  }
+
+  const marketplaceValidationExitCode = await runMarketplaceValidation();
+  if (marketplaceValidationExitCode !== 0) {
+    return marketplaceValidationExitCode;
   }
 
   await runShellcheck();

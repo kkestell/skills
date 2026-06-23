@@ -2,7 +2,6 @@
 name: kformat-docs
 description: Reformat Markdown documents with dprint using this skill's shipped config (never wrap text). Use when asked to format, reformat, or tidy Markdown files, or after editing docs to normalize their formatting.
 argument-hint: "[markdown file or directory paths]"
-disable-model-invocation: true
 ---
 
 ## Overview

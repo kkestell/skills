@@ -5,7 +5,7 @@ description: Global, multi-agent simplification review of a whole codebase — m
 
 # Deep simplify — map → lenses → reconcile
 
-A three-phase orchestrated review producing `.k/reviews/<slug>.md` (a dated, numbered findings document — see Phase 0) for human approval. **No edits before the user approves a subset of findings.**
+A three-phase orchestrated review producing `docs/dev/reviews/<slug>.md` (a dated, numbered findings document — see Phase 0) for human approval. **No edits before the user approves a subset of findings.**
 
 ## Core principles (do not skip these)
 
@@ -19,7 +19,7 @@ A three-phase orchestrated review producing `.k/reviews/<slug>.md` (a dated, num
 
 1. Identify the codebase's primary language and load its **review criteria** from `assets/`: `typescript.md`, `rust.md`, or `generic.md` as the fallback when no language-specific file matches. The file supplies the source extensions, test-detection patterns, serialization mechanisms, and the per-language review dimensions (the lenses for Phase 2). (A polyglot repo — e.g. a Rust backend + TS frontend — may draw on more than one file; scope each lens pass to the slice its criteria cover.) Read the chosen file now.
 2. Scope: `find <src dirs> -name '*.<ext>' | xargs wc -l | sort -n` using the criteria file's extensions. Identify production vs test code, the largest files, and the likely type spine / hot paths.
-3. Pick a run slug `<slug>` = `<date>-<NNN>`, where `<date>` is today and `<NNN>` is the next zero-padded sequence number for the day: `slug=$(date +%Y-%m-%d)-$(printf '%03d' $(( $(ls .k/reviews/$(date +%Y-%m-%d)-*.md 2>/dev/null | wc -l) + 1 )))`. Working artifacts (maps, ledgers) go in the **run dir** `.k/reviews/<slug>/`; the final findings document is `.k/reviews/<slug>.md` (referred to below as `<run>/…` and `<run>.md`). `mkdir -p .k/reviews/<slug>`. Exclude `.k/` via `.git/info/exclude` (not the tracked `.gitignore`): `grep -qxF '.k/' .git/info/exclude || echo '.k/' >> .git/info/exclude` — kinit already adds this in repos it set up.
+3. Pick a run slug `<slug>` = `<date>-<NNN>`, where `<date>` is today and `<NNN>` is the next zero-padded sequence number for the day: `slug=$(date +%Y-%m-%d)-$(printf '%03d' $(( $(ls docs/dev/reviews/$(date +%Y-%m-%d)-*.md 2>/dev/null | wc -l) + 1 )))`. Working artifacts (maps, ledgers) go in the **run dir** `docs/dev/reviews/<slug>/`; the final findings document is `docs/dev/reviews/<slug>.md` (referred to below as `<run>/…` and `<run>.md`). `mkdir -p docs/dev/reviews/<slug>`. `docs/dev/` is tracked in git — do not add it to `.gitignore` or `.git/info/exclude`.
 4. If the codebase is large (>~15k production LOC), narrow the review to a subsystem with the user before proceeding — the map must be genuinely complete for reconciliation to work.
 
 ## Phase 1 — Map (two cartographer agents, in parallel)

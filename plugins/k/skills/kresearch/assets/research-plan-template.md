@@ -6,11 +6,11 @@
 - Current repo: <path or repo>
 - Original topic: <user topic>
 - Clarified question: <clean actionable question>
-- Output directory: `.k/research/YYYY-MM-DD-<topic-slug>/`
+- Output directory: `docs/dev/research/YYYY-MM-DD-<topic-slug>/`
 
 ## Comparable Projects
 
-List the comps from `.k/research/comps.json` in research order.
+List the comps from `docs/dev/research/comps.json` in research order.
 
 | Repo       | Language   | Stars | Why it is comparable                     |
 | ---------- | ---------- | ----: | ---------------------------------------- |
@@ -38,7 +38,7 @@ For each comp:
 
 1. Clone the repo into a temp directory.
 2. Inspect files, docs, tests, configuration, and history relevant to the clarified question.
-3. Write notes to `.k/research/YYYY-MM-DD-<topic-slug>/notes-<owner>_<repo>.md`.
+3. Write notes to `docs/dev/research/YYYY-MM-DD-<topic-slug>/notes-<owner>_<repo>.md`.
 4. Spawn a verifier subagent after writing notes. The verifier checks factual support, citations, and missed obvious evidence.
 5. Revise notes if verification finds material issues.
 

@@ -19,7 +19,7 @@ The "not just X — it's Y" antithesis construction, and its cousins ("not merel
 
 ## not-x-but-y
 
-The negative-parallelism reversal "not X, but (rather) Y" — denying the first framing outright and substituting a grander or "corrected" one. Distinct from not-just-but, which *adds* to X rather than negating it.
+The negative-parallelism reversal "not X, but (rather) Y" — denying the first framing outright and substituting a grander or "corrected" one. Distinct from not-just-but, which _adds_ to X rather than negating it.
 
 **Why it's slop:** LLMs reach for this reversal to sound insightful or to "correct" an assumed misconception, usually without adding information.
 
@@ -99,9 +99,9 @@ Teacher-mode preambles that announce an explanation instead of giving it.
 
 Staged sincerity that performs honesty or emotion rather than being it.
 
-**Why it's slop:** Genuine candor is specific and a little uncomfortable; the polished, risk-free version is a verbal flourish that signals authenticity without carrying any. Generic empathy applicable to any situation is indistinguishable from none.
+**Why it's slop:** Genuine candor is specific and a little uncomfortable; the polished, risk-free version is a verbal flourish that signals authenticity without carrying any. Generic empathy applicable to any situation is indistinguishable from none. The "honest caveat/answer/take" framing is a strong Claude-specific tell, as is the staged mea culpa ("The honest take: I was wrong").
 
-**Common forms:** I'll be honest, let's be real/honest, to be honest/real/frank/fair (with you/here), I'm not gonna lie, I understand this/that/how/your..., your feelings are valid, I'm sorry to hear.
+**Common forms:** I'll be honest, let's be real/honest, to be honest/real/frank/fair (with you/here), I'm not gonna lie, the honest answer/take/caveat/assessment is, one honest caveat, the honest answer starts with, I understand this/that/how/your..., your feelings are valid, I'm sorry to hear.
 
 - Avoid: "I'll be honest, this is a tough problem, and I understand how frustrating it can be."
 - Prefer: "This is a tough problem because the deadlock only appears under load above 5k RPS."

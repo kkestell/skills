@@ -12,7 +12,7 @@ The rule files live in this skill's `assets/` directory:
 
 | Category                 | Rule file                | What it covers                                                                                                                                                       |
 | ------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Vocabulary & register    | `assets/vocabulary.md`   | AI vocabulary clusters, elevated register, filler adverbs, metaphor crutches                                                                                         |
+| Vocabulary & register    | `assets/vocabulary.md`   | AI vocabulary clusters, Claude-era engineering jargon, honesty-signaling qualifiers, elevated register, filler adverbs, metaphor crutches                            |
 | Significance & puffery   | `assets/significance.md` | Asserted importance/legacy, inflated copulas, empty participle clauses, PR language, coined concept labels                                                           |
 | Rhetorical constructions | `assets/rhetoric.md`     | "not just X," "not X but Y," formulaic openers, false conclusions, false suspense, pedagogical framing, performative candor, self-answered questions                 |
 | Sourcing & honesty       | `assets/sourcing.md`     | Vague attribution, exaggerated breadth, cutoff disclaimers, unfilled placeholders, chatbot residue, hedge stacking                                                   |

@@ -1,6 +1,6 @@
 ---
 name: kresearch
-description: "Research a technical topic across comparable open-source GitHub projects: identify comps, clarify the question, delegate verified per-repo investigation to subagents, and synthesize the findings. Use when the user wants to learn how similar projects solve a problem, compare implementation approaches across codebases, or gather evidence-backed prior art before a design decision. Writes comps, a plan, per-repo notes, and a summary under `.k/research/`."
+description: "Research a technical topic across comparable open-source GitHub projects: identify comps, clarify the question, delegate verified per-repo investigation to subagents, and synthesize the findings. Use when the user wants to learn how similar projects solve a problem, compare implementation approaches across codebases, or gather evidence-backed prior art before a design decision. Writes comps, a plan, per-repo notes, and a summary under `docs/dev/research/`."
 argument-hint: "[topic or question to research]"
 ---
 
@@ -11,7 +11,7 @@ argument-hint: "[topic or question to research]"
 1. Read `<research_topic> $ARGUMENTS </research_topic>`. If it is empty, ask what topic or question to research and stop.
 2. Work from the current repository root. Use today's date from the runtime context.
 3. Clarify the topic (Phase 1) before naming anything, then create a short kebab-case topic slug from the clarified topic. Use only lowercase letters, numbers, and hyphens.
-4. Use `.k/research/YYYY-MM-DD-<topic-slug>/` for this run. If that directory already exists, treat the run as a continuation unless the user asks for a fresh one.
+4. Use `docs/dev/research/YYYY-MM-DD-<topic-slug>/` for this run. If that directory already exists, treat the run as a continuation unless the user asks for a fresh one. `docs/dev/` is tracked in git — do not add it to `.gitignore` or `.git/info/exclude`.
 
 ### Phase 1 - Clarify Research Topic
 
@@ -21,7 +21,7 @@ argument-hint: "[topic or question to research]"
 
 ### Phase 2 - Identify Comparable Projects
 
-8. Look for `.k/research/YYYY-MM-DD-<topic-slug>/comps.json`.
+8. Look for `docs/dev/research/YYYY-MM-DD-<topic-slug>/comps.json`.
 9. If it exists, read it first. Use the listed repos unless they are clearly stale, inaccessible, or irrelevant to the current repository.
 10. If it does not exist, delegate the search to a subagent. If subagent tools are not visible, use tool discovery if available. If subagents are still unavailable, stop and ask the user whether to proceed locally. Pass the clarified research question to the subagent and instruct it to:
 
@@ -31,7 +31,7 @@ argument-hint: "[topic or question to research]"
 - If `gh` is unavailable, use the GitHub REST API directly with `curl`. Use `GITHUB_TOKEN` when present to avoid low rate limits.
 - Exclude the current repo, archived repos, forks unless the fork is the meaningful upstream, docs-only repos, toy demos, and repos that do not solve a comparable problem.
 - Select five comps, sorted by popularity and broad impact, while keeping relevance as the first filter.
-- Gather the metadata below for each comp and return the comps as valid, pretty-printed JSON (or write it directly to `.k/research/YYYY-MM-DD-<topic-slug>/comps.json` if its filesystem shares the parent workspace).
+- Gather the metadata below for each comp and return the comps as valid, pretty-printed JSON (or write it directly to `docs/dev/research/YYYY-MM-DD-<topic-slug>/comps.json` if its filesystem shares the parent workspace).
 
 11. For each comp, gather as much of this metadata as practical:
 
@@ -52,22 +52,22 @@ argument-hint: "[topic or question to research]"
 ]
 ```
 
-Use `null` for fields that cannot be obtained after reasonable effort. Write valid, pretty-printed JSON to `.k/research/YYYY-MM-DD-<topic-slug>/comps.json`. If the subagent returned the comps instead of writing the file, write it yourself at that path.
+Use `null` for fields that cannot be obtained after reasonable effort. Write valid, pretty-printed JSON to `docs/dev/research/YYYY-MM-DD-<topic-slug>/comps.json`. If the subagent returned the comps instead of writing the file, write it yourself at that path.
 
 ### Phase 3 - Write Research Plan
 
 12. Read [research-plan-template.md](assets/research-plan-template.md).
-13. Write `.k/research/YYYY-MM-DD-<topic-slug>/plan.md`.
+13. Write `docs/dev/research/YYYY-MM-DD-<topic-slug>/plan.md`.
 14. Include:
 
 - Original user topic.
 - Clarified research question.
-- Comparable projects from `.k/research/YYYY-MM-DD-<topic-slug>/comps.json`.
+- Comparable projects from `docs/dev/research/YYYY-MM-DD-<topic-slug>/comps.json`.
 - Scope and non-goals.
 - Research dimensions each subagent should inspect.
 - Concrete instructions for cloning repos to temp directories.
 - A notes template that every subagent must follow.
-- The expected notes path for each comp: `.k/research/YYYY-MM-DD-<topic-slug>/notes-<owner>_<repo>.md`, where `<owner>_<repo>` is the GitHub owner and repo name sanitized for a filename.
+- The expected notes path for each comp: `docs/dev/research/YYYY-MM-DD-<topic-slug>/notes-<owner>_<repo>.md`, where `<owner>_<repo>` is the GitHub owner and repo name sanitized for a filename.
 
 ### Phase 4 - Do the Research
 
@@ -78,7 +78,7 @@ Use `null` for fields that cannot be obtained after reasonable effort. Write val
 
 - Clone its repo into a temp directory. Prefer shallow clones, but fetch history if the research question needs it.
 - Inspect the implementation relevant to the clarified question.
-- Write notes to `.k/research/YYYY-MM-DD-<topic-slug>/notes-<owner>_<repo>.md` using the plan's notes template.
+- Write notes to `docs/dev/research/YYYY-MM-DD-<topic-slug>/notes-<owner>_<repo>.md` using the plan's notes template.
 - If the subagent filesystem is isolated from the parent workspace, return the final notes content and verification result so the parent agent can write the notes file at the exact expected path.
 - Spawn a verifier subagent after writing the notes. The verifier reads the notes and cloned repo, checks evidence and citations, and reports factual gaps or unsupported claims.
 - Revise the notes if the verifier finds material issues, then record verification status in the notes.
@@ -88,7 +88,7 @@ Use `null` for fields that cannot be obtained after reasonable effort. Write val
 ### Phase 5 - Synthesize
 
 20. Read all `notes-*.md` files for the run.
-21. Write `.k/research/YYYY-MM-DD-<topic-slug>/summary.md`.
+21. Write `docs/dev/research/YYYY-MM-DD-<topic-slug>/summary.md`.
 22. The summary should include:
 
 - The clarified research question and short answer.
@@ -98,7 +98,7 @@ Use `null` for fields that cannot be obtained after reasonable effort. Write val
 - Risks, caveats, and gaps in the research.
 - Follow-up questions or deeper research that would materially improve confidence.
 
-23. Report the paths to `comps.json`, `plan.md`, all notes files, and `summary.md` (all under `.k/research/YYYY-MM-DD-<topic-slug>/`).
+23. Report the paths to `comps.json`, `plan.md`, all notes files, and `summary.md` (all under `docs/dev/research/YYYY-MM-DD-<topic-slug>/`).
 
 ## Principles
 

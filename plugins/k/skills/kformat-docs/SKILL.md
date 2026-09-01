@@ -1,12 +1,12 @@
 ---
 name: kformat-docs
-description: Reformat Markdown documents with dprint using this skill's shipped config (never wrap text). Use when asked to format, reformat, or tidy Markdown files, or after editing docs to normalize their formatting.
+description: Reformat Markdown documents with dprint using this skill's shipped config (hard-wrap prose at 80 columns). Use when asked to format, reformat, or tidy Markdown files, or after editing docs to normalize their formatting.
 argument-hint: "[markdown file or directory paths]"
 ---
 
 ## Overview
 
-This skill reformats Markdown with [dprint](https://dprint.dev) using the config shipped alongside it at `assets/dprint.json`. The config uses the dprint Markdown plugin with `textWrap: "never"`, so prose is normalized without ever hard-wrapping lines.
+This skill reformats Markdown with [dprint](https://dprint.dev) using the config shipped alongside it at `assets/dprint.json`. The config uses the dprint Markdown plugin with `textWrap: "always"` and `lineWidth: 80`, so prose is normalized and hard-wrapped at 80 columns.
 
 ## Workflow
 

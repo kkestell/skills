@@ -14,7 +14,7 @@ argument-hint: "[task description — a bug fix, small feature, refactor, or imp
    - **Plan locally** if the task is small but benefits from a moment of thought (e.g., a focused bug fix with a clear cause, a small refactor).
    - **Delegate to a subagent** if the task touches multiple files or areas and would benefit from an independent planning pass.
 3. If planning (locally or via subagent), use the lightweight template from `assets/task-plan-template.md`.
-   - The plan lives **only in conversation context** — do not write it to `!`echo ~/.k/workspaces/${PWD//\//_}`/plans/` or any other file.
+   - The plan lives **only in conversation context** — do not write it to `docs/dev/plans/` or any other file.
    - If using a subagent, pass the task description and the template, then incorporate the returned plan into your context.
    - If the plan reveals the task is larger than a quick one-off, stop and suggest `/kplan` instead.
 4. If anything is unclear, ask the user one focused question. Do not spin up a long brainstorming loop — that's what `/kplan` is for.

@@ -17,7 +17,7 @@ argument-hint: "[plan, specification, or todo file path]"
 ### Orientation
 
 2. Resolve `<input_document> $ARGUMENTS </input_document>`.
-   - Prefer `!`echo ~/.k/workspaces/${PWD//\//_}`/plans/` for implementation plans and `!`echo ~/.k/workspaces/${PWD//\//_}`/todo/` for tracked follow-up work.
+   - Prefer `docs/dev/plans/` for implementation plans and `docs/dev/todo/` for tracked follow-up work.
 3. Read the work doc completely.
 4. If anything is unclear or ambiguous after reading the plan, references, and related code, ask the user now.
    - Better to ask once before starting than to build the wrong thing. Get user approval to proceed.

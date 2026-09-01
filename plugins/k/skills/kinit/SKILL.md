@@ -30,9 +30,7 @@ argument-hint: "[path to repo root, or blank for current directory]"
 
 7. Write `CLAUDE.md` at the repo root containing only the line `@AGENTS.md`, so Claude Code picks up the same guidance. If `CLAUDE.md` already exists and contains anything other than that line, leave it untouched and tell the user.
 
-8. Exclude the `.k/` scratch directory (used by other `k` skills) via `.git/info/exclude` — the local, untracked exclude file, not the tracked `.gitignore`: `grep -qxF '.k/' .git/info/exclude || echo '.k/' >> .git/info/exclude`.
-
-9. Present the generated `AGENTS.md` to the user and ask if anything needs adjustment before they commit it.
+8. Present the generated `AGENTS.md` to the user and ask if anything needs adjustment before they commit it.
 
 ## Principles
 

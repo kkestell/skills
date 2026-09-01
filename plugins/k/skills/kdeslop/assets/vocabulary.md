@@ -2,7 +2,7 @@
 
 Word-level tells: terms large language models reach for far more often than human writers do, and the dressed-up synonym used where a plain word is clearer. One on its own is fine — a cluster across a few paragraphs is the signal. The underlying problem is almost always a fancier word standing in for a plainer, clearer one.
 
-Audit for the *problem*, not the word. When a flagged word is genuinely the right one, leave it.
+Audit for the _problem_, not the word. When a flagged word is genuinely the right one, leave it.
 
 ---
 
@@ -21,7 +21,7 @@ High density of "AI vocabulary" — the rarer, more distinctive words LLMs over-
 
 ## ai-vocabulary-extra
 
-A second tier of AI vocabulary — words LLMs over-produce that are *also* common, ordinary English, so each hit is lower-confidence. A high density across a passage is the signal, not one match. Expect false positives and audit lightly.
+A second tier of AI vocabulary — words LLMs over-produce that are _also_ common, ordinary English, so each hit is lower-confidence. A high density across a passage is the signal, not one match. Expect false positives and audit lightly.
 
 **Why it's slop:** These spiked in frequency once LLM chatbots became widespread. Any one is unremarkable, but a cluster gives prose the same machine voice as the rarer words.
 
@@ -29,6 +29,32 @@ A second tier of AI vocabulary — words LLMs over-produce that are *also* commo
 
 - Avoid: "Additionally, the robust pipeline enhances throughput, fostering an enduring, seamless landscape."
 - Prefer: "The pipeline batches writes, so throughput roughly doubled."
+
+---
+
+## claude-isms
+
+Engineering idioms and metaphors that newer coding-focused models (Claude especially) over-produce — real terms of art pushed into heavy rotation, so this is the highest-false-positive cluster in the skill. The signal is density and reach: the same metaphor recurring across a document, or the jargon applied outside its home domain ("a load-bearing paragraph"). Never flag a single, apt use.
+
+**Why it's slop:** These words are legitimate jargon that a model's training loop overrepresents, so they show up at an unnatural rate and in contexts where a plain word fits better. Overuse, not the word itself, is the tell — judge repetition and context.
+
+**Common forms:** load-bearing, belt-and-suspenders / belt and braces, smoking gun, blast radius, surface (as a verb for "show" / "report"), substrate, ledger, seam, scaffolding, gate / gated on (for a plain condition), the shape of (a problem/change), landed (for merged or shipped), wire up / wiring, spike, synthesize, production-ready, battle-tested.
+
+- Avoid: "This check is load-bearing: it surfaces config errors early and gates the whole pipeline, so the belt-and-suspenders validation is production-ready."
+- Prefer: "This check runs first, so a bad config fails the pipeline before any jobs start. The second validation in `load()` is redundant but cheap."
+
+---
+
+## honesty-signaling
+
+"Honest," "honestly," "genuine," and "genuinely" used as recurring qualifiers — "the honest take," "an honest assessment," "genuinely impressive."
+
+**Why it's slop:** Claude's training vocabulary leans hard on honesty language, so these qualifiers recur at a rate no human writer matches. They also assert candor instead of demonstrating it: a claim isn't more true for being labeled honest, and "genuinely" adds emphasis without evidence. Cut the qualifier or replace it with the specific reason the claim holds. (Full staged-sincerity constructions — "I'll be honest," "the honest answer is" — are covered under performative-candor in the rhetoric rules.)
+
+**Common forms:** honest(ly), genuine(ly), an honest assessment/look/answer, a genuine result/improvement, genuinely impressive/useful/hard.
+
+- Avoid: "Honestly, the migration was genuinely worth it — an honest assessment shows real gains."
+- Prefer: "The migration was worth it: it cut the hosting bill by 40%."
 
 ---
 

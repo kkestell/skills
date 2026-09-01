@@ -1,6 +1,6 @@
 ---
 name: kplan
-description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `~/.k/workspaces/...`. Use this any time the user wants to plan new work or requests a significant change to existing behavior.
+description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `docs/dev/plans/`. Use this any time the user wants to plan new work or requests a significant change to existing behavior.
 argument-hint: "[feature idea, bug report, or improvement to explore]"
 ---
 
@@ -74,7 +74,7 @@ argument-hint: "[feature idea, bug report, or improvement to explore]"
 
 ### Phase 5 — Write the plan
 
-13. Generate the plan filename: `!`echo ~/.k/workspaces/${PWD//\//_}`/plans/YYYY-MM-DD-NNN-slug.md` where `YYYY-MM-DD` is today's date, `NNN` is the next available zero-padded sequence for that date, and the slug is a short kebab-case summary (3-5 words). Create the directory if it does not exist.
+13. Generate the plan filename: `docs/dev/plans/YYYY-MM-DD-NNN-slug.md` where `YYYY-MM-DD` is today's date, `NNN` is the next available zero-padded sequence for that date, and the slug is a short kebab-case summary (3-5 words). Create the directory if it does not exist. `docs/dev/` is tracked in git — do not add it to `.gitignore` or `.git/info/exclude`.
 14. Write the plan from `assets/plan-template.md`.
     - Use the template as a scaffold, not a rigid form. Keep only the sections that apply, and add sections when the work needs more structure.
     - Every implementation task is a concrete, actionable bullet. A reader should be able to execute the plan without re-reading the codebase.

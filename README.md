@@ -30,41 +30,46 @@ Skills under `wip/` are in progress and deliberately not installed:
 | `khandoff`  | Write a session handoff document for a future agent or session.    |
 | `kresearch` | Research a technical topic across comparable open-source projects. |
 
-## Install
+## Sync
 
-Install every skill globally for Claude Code and Codex with Vercel's skills
-installer:
-
-```bash
-npx skills add kkestell/skills --skill '*' --agent claude-code codex --global --yes
-```
-
-Install only selected skills by naming them:
+From inside a checkout, `profiles.py` installs every canonical skill under
+`skills/` into the personal Claude Code and Codex profiles (`~/.claude` and
+`~/.codex`). It also removes globally installed skills this checkout no longer
+defines:
 
 ```bash
-npx skills add kkestell/skills --skill kplan kwork kreview --agent claude-code codex --global --yes
+./profiles.py sync-skills personal
 ```
 
-Install from a local checkout while developing:
+On a work machine, sync both the personal profiles and the Star Tribune profiles
+(`~/.claude-strib` and `~/.codex-strib`):
 
 ```bash
-npx skills add /absolute/path/to/skills --skill '*' --agent claude-code codex --global --yes
+./profiles.py sync-skills work
 ```
 
-From inside a checkout, `make skills-home` installs every skill from that
-checkout into the personal Claude Code and Codex profiles (`~/.claude` and
-`~/.codex`), and removes any globally installed skill the checkout no longer
-defines. On the work machine, `make skills-work` does the same for the Star
-Tribune profiles (`~/.claude-strib` and `~/.codex-strib`) as well.
-
-Pull updates for globally installed skills with:
-
-```bash
-npx skills update --global
-```
+Pull the latest repository changes and run the appropriate sync command again to
+update installed skills.
 
 The skills are installed directly, without a Claude or Codex plugin namespace.
 Use `kwork`, for example, instead of `k:kwork`.
+
+## Inspect profiles
+
+The other `profiles.py` commands are read-only. They inspect the configured
+Claude Code, Codex, and GitHub Copilot profiles:
+
+| Command                 | What it reports                                             |
+| ----------------------- | ----------------------------------------------------------- |
+| `./profiles.py hooks`   | Configured hooks and the action each hook runs.             |
+| `./profiles.py plugins` | Known marketplaces and installed or configured plugins.     |
+| `./profiles.py skills`  | Skills available directly, globally, or through plugins.    |
+| `./profiles.py mcp`     | Configured MCP server names.                                |
+| `./profiles.py diff`    | Differences between each provider's personal/work profiles. |
+
+In `diff` output, `-` marks entries found only in the personal profile and `+`
+marks entries found only in the work profile. Providers with a single profile
+are skipped.
 
 ## Repository layout
 

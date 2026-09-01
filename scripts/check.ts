@@ -7,7 +7,7 @@ import { runValidation } from "./validate.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-// Installable skills live in skills/; wip/ holds in-progress skills the Makefile
+// Installable skills live in skills/; wip/ holds in-progress skills profiles.py
 // does not install. Both are checked here.
 const SKILL_ROOTS = [path.join(REPO_ROOT, "skills"), path.join(REPO_ROOT, "wip")];
 

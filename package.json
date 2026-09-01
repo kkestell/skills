@@ -8,7 +8,7 @@
     "check": "tsx scripts/check.ts",
     "validate": "tsx scripts/validate.ts",
     "typecheck": "tsc --project tsconfig.json",
-    "test": "tsx --test tests/skills-ref.test.ts"
+    "test": "tsx --test tests/skills-ref.test.ts && python3 -m unittest discover -s tests -p 'test_*.py'"
   },
   "dependencies": {
     "yaml": "^2.8.1"

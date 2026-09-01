@@ -24,7 +24,7 @@ skills/
 
 Only add supporting directories that the skill actually uses.
 
-Unfinished skills live under `wip/` with the same layout. The Makefile installs
+Unfinished skills live under `wip/` with the same layout. `profiles.py` installs
 only `skills/`, so nothing in `wip/` reaches an agent profile; validation covers
 both. Promote a skill by moving its directory into `skills/`.
 

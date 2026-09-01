@@ -7,7 +7,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 const SKILLS_DIR = path.join(REPO_ROOT, "skills");
 const WIP_DIR = path.join(REPO_ROOT, "wip");
 
-// Installable skills live in skills/. wip/ holds in-progress skills the Makefile
+// Installable skills live in skills/. wip/ holds in-progress skills profiles.py
 // does not install; they are still validated so they do not rot.
 const SKILL_ROOTS = [SKILLS_DIR, WIP_DIR];
 

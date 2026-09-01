@@ -74,7 +74,7 @@ Define what to test and at what level before listing implementation tasks. Focus
 
 ## Gaps and follow-up
 
-Features or functionality this plan depends on but cannot deliver. Stub follow-up docs for these live in `docs/dev/todo/YYYY-MM-DD-NNN-slug.md` if created.
+Features or functionality this plan depends on but cannot deliver. Stub follow-up docs for these live in `eng/todo/YYYY-MM-DD-NNN-slug.md` if created.
 
 - Gap:
 - Follow-up:

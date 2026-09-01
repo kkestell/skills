@@ -10,8 +10,8 @@ argument-hint: "[plan, specification, or todo file path]"
 
 1. Resolve `<input_document> $ARGUMENTS </input_document>` before checking the
    worktree.
-   - Prefer `docs/dev/plans/` for implementation plans and `docs/dev/todo/` for
-     tracked follow-up work.
+   - Prefer `eng/plans/` for implementation plans and `eng/todo/` for tracked
+     follow-up work.
 2. Check the git worktree with `git status` and classify every reported path.
    - Changes to the resolved input document are expected task input, not
      unrelated dirty state. This includes an untracked plan, specification, or

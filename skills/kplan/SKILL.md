@@ -1,6 +1,6 @@
 ---
 name: kplan
-description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `docs/dev/plans/`. Use this any time the user wants to plan new work or requests a significant change to existing behavior.
+description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `eng/plans/`. Use this any time the user wants to plan new work or requests a significant change to existing behavior.
 argument-hint: "[feature idea, bug report, or improvement to explore]"
 ---
 
@@ -128,10 +128,10 @@ argument-hint: "[feature idea, bug report, or improvement to explore]"
 
 ### Phase 5 — Write the plan
 
-13. Generate the plan filename: `docs/dev/plans/YYYY-MM-DD-NNN-slug.md` where
+13. Generate the plan filename: `eng/plans/YYYY-MM-DD-NNN-slug.md` where
     `YYYY-MM-DD` is today's date, `NNN` is the next available zero-padded
     sequence for that date, and the slug is a short kebab-case summary (3-5
-    words). Create the directory if it does not exist. `docs/dev/` is tracked in
+    words). Create the directory if it does not exist. `eng/` is tracked in
     git — do not add it to `.gitignore` or `.git/info/exclude`.
 14. Write the plan from `assets/plan-template.md`.
     - Use the template as a scaffold, not a rigid form. Keep only the sections

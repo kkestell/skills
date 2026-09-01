@@ -11,19 +11,24 @@ is, and `kwork` carries it through to a finished, reviewed result. See
 
 | Skill          | What it does                                                                               |
 | -------------- | ------------------------------------------------------------------------------------------ |
-| `khandoff`     | Write a session handoff document for a future agent or session.                            |
 | `kinit`        | Explore a repo and bootstrap an `AGENTS.md` orientation doc.                               |
 | `kplan`        | Brainstorm a change, explore the codebase, and write a concrete implementation plan.       |
 | `kwork`        | Execute a plan end to end: implement, validate with independent review passes, and commit. |
 | `kreview`      | Run independent completeness and code-simplification review passes over a body of work.    |
-| `ksimplify`    | Review a whole codebase for global simplification opportunities.                           |
-| `kresearch`    | Research a technical topic across comparable open-source projects.                         |
 | `ktask`        | Execute a bounded one-off task without a persisted plan or commit.                         |
 | `krust`        | Apply the Rust API design guidelines when designing or reviewing public APIs.              |
 | `kdeslop`      | Detect and fix AI "slop" in prose while preserving meaning and voice.                      |
 | `kformat-docs` | Format Markdown with dprint and hard-wrap prose at 80 columns.                             |
 | `kclaude`      | Delegate a task to Claude Code headlessly and report back its result.                      |
 | `kwiki`        | Read, search, and edit pages on the private Wiki.js site.                                  |
+| `kjira`        | Create, update, and sprint-manage Jira issues in the DANG project (Star Tribune).          |
+
+Skills under `wip/` are in progress and deliberately not installed:
+
+| Skill       | What it will do                                                    |
+| ----------- | ------------------------------------------------------------------ |
+| `khandoff`  | Write a session handoff document for a future agent or session.    |
+| `kresearch` | Research a technical topic across comparable open-source projects. |
 
 ## Install
 
@@ -46,8 +51,11 @@ Install from a local checkout while developing:
 npx skills add /absolute/path/to/skills --skill '*' --agent claude-code codex --global --yes
 ```
 
-From inside a checkout, `make skills` installs every skill from that checkout
-and removes any globally installed skill the checkout no longer defines.
+From inside a checkout, `make skills-home` installs every skill from that
+checkout into the personal Claude Code and Codex profiles (`~/.claude` and
+`~/.codex`), and removes any globally installed skill the checkout no longer
+defines. On the work machine, `make skills-work` does the same for the Star
+Tribune profiles (`~/.claude-strib` and `~/.codex-strib`) as well.
 
 Pull updates for globally installed skills with:
 

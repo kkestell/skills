@@ -20,7 +20,7 @@ argument-hint: "[task description — a bug fix, small feature, refactor, or imp
 3. If planning (locally or via subagent), use the lightweight template from
    `assets/task-plan-template.md`.
    - The plan lives **only in conversation context** — do not write it to
-     `docs/dev/plans/` or any other file.
+     `eng/plans/` or any other file.
    - If using a subagent, pass the task description and the template, then
      incorporate the returned plan into your context.
    - If the plan reveals the task is larger than a quick one-off, stop and

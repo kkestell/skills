@@ -5,6 +5,12 @@ import { validate as validateSkillDir } from "./lib/skills-ref.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKILLS_DIR = path.join(REPO_ROOT, "skills");
+const WIP_DIR = path.join(REPO_ROOT, "wip");
+
+// Installable skills live in skills/. wip/ holds in-progress skills the Makefile
+// does not install; they are still validated so they do not rot.
+const SKILL_ROOTS = [SKILLS_DIR, WIP_DIR];
+
 const SKILL_BODY_MAX_LINES = 500;
 const NAME_PATTERN = /^name:\s*(.+?)\s*$/;
 
@@ -70,25 +76,35 @@ function resolveTarget(raw: string): string {
   return path.isAbsolute(raw) ? raw : path.join(REPO_ROOT, raw);
 }
 
-function findSkillRoot(target: string): string | null {
+// The roots to validate when `target` names a tree rather than a single skill,
+// or null when it names neither.
+function findSkillRoots(target: string): string[] | null {
   const resolvedTarget = path.resolve(target);
 
-  if (resolvedTarget === REPO_ROOT || resolvedTarget === SKILLS_DIR) {
-    return SKILLS_DIR;
+  if (resolvedTarget === REPO_ROOT) {
+    return SKILL_ROOTS;
   }
 
-  let candidate = resolvedTarget;
-  while (candidate.startsWith(`${SKILLS_DIR}${path.sep}`)) {
-    if (path.dirname(candidate) === SKILLS_DIR) {
-      return candidate;
-    }
+  return SKILL_ROOTS.includes(resolvedTarget) ? [resolvedTarget] : null;
+}
 
-    const parent = path.dirname(candidate);
-    if (parent === candidate) {
-      break;
-    }
+function findSkillDir(target: string): string | null {
+  const resolvedTarget = path.resolve(target);
 
-    candidate = parent;
+  for (const root of SKILL_ROOTS) {
+    let candidate = resolvedTarget;
+    while (candidate.startsWith(`${root}${path.sep}`)) {
+      if (path.dirname(candidate) === root) {
+        return candidate;
+      }
+
+      const parent = path.dirname(candidate);
+      if (parent === candidate) {
+        break;
+      }
+
+      candidate = parent;
+    }
   }
 
   return null;
@@ -104,7 +120,7 @@ async function validateSkill(skillDir: string): Promise<string[]> {
     return [`skill directory '${relativePath}' is missing SKILL.md`];
   }
 
-  console.log(`Validating skill: ${path.basename(skillDir)}`);
+  console.log(`Validating skill: ${relativePath}`);
   const errors = await validateSkillDir(skillDir);
   const bodyLines = await skillBodyLineCount(skillMdPath);
 
@@ -117,55 +133,79 @@ async function validateSkill(skillDir: string): Promise<string[]> {
   return errors;
 }
 
-async function validateAll(): Promise<string[]> {
+// Every skill directory directly under `root`, sorted. Null when `root` itself
+// is missing, which only wip/ is allowed to be.
+async function listSkillDirs(root: string): Promise<string[] | null> {
+  let children;
   try {
-    const children = await readdir(SKILLS_DIR, { withFileTypes: true });
-    const errors: string[] = [];
-    const skillNameToDir = new Map<string, string>();
-    const skillDirs = children
-      .filter(
-        (child) =>
-          (child.isDirectory() || child.isSymbolicLink()) && !child.name.startsWith("."),
-      )
-      .map((child) => child.name)
-      .sort((left, right) => left.localeCompare(right));
-
-    if (skillDirs.length === 0) {
-      console.log("No skills found. Nothing to validate.");
-      return errors;
-    }
-
-    for (const skillName of skillDirs) {
-      const skillDir = path.join(SKILLS_DIR, skillName);
-      errors.push(...(await validateSkill(skillDir)));
-
-      const skillMdPath = path.join(skillDir, "SKILL.md");
-      let extractedSkillName: string | null = null;
-      try {
-        extractedSkillName = await extractSkillName(skillMdPath);
-      } catch {
-        extractedSkillName = null;
-      }
-
-      if (extractedSkillName === null) {
-        continue;
-      }
-
-      const relativePath = path.relative(REPO_ROOT, skillDir).split(path.sep).join("/");
-      const previousPath = skillNameToDir.get(extractedSkillName);
-      if (previousPath !== undefined) {
-        errors.push(
-          `duplicate skill name '${extractedSkillName}' found in ${previousPath} and ${relativePath}`,
-        );
-      } else {
-        skillNameToDir.set(extractedSkillName, relativePath);
-      }
-    }
-
-    return errors;
+    children = await readdir(root, { withFileTypes: true });
   } catch {
-    return ["skills/ directory not found"];
+    return null;
   }
+
+  return children
+    .filter(
+      (child) => (child.isDirectory() || child.isSymbolicLink()) && !child.name.startsWith("."),
+    )
+    .map((child) => path.join(root, child.name))
+    .sort((left, right) => left.localeCompare(right));
+}
+
+async function validateAll(roots: string[]): Promise<string[]> {
+  const errors: string[] = [];
+  const skillDirs: string[] = [];
+
+  for (const root of roots) {
+    const rootSkillDirs = await listSkillDirs(root);
+
+    if (rootSkillDirs === null) {
+      // wip/ is optional; skills/ is not.
+      if (root === SKILLS_DIR) {
+        return ["skills/ directory not found"];
+      }
+
+      continue;
+    }
+
+    skillDirs.push(...rootSkillDirs);
+  }
+
+  if (skillDirs.length === 0) {
+    console.log("No skills found. Nothing to validate.");
+    return errors;
+  }
+
+  // Names must be unique across every root: a skill left behind in skills/ while
+  // a copy moves to wip/ would still be installed.
+  const skillNameToDir = new Map<string, string>();
+
+  for (const skillDir of skillDirs) {
+    errors.push(...(await validateSkill(skillDir)));
+
+    const skillMdPath = path.join(skillDir, "SKILL.md");
+    let extractedSkillName: string | null = null;
+    try {
+      extractedSkillName = await extractSkillName(skillMdPath);
+    } catch {
+      extractedSkillName = null;
+    }
+
+    if (extractedSkillName === null) {
+      continue;
+    }
+
+    const relativePath = path.relative(REPO_ROOT, skillDir).split(path.sep).join("/");
+    const previousPath = skillNameToDir.get(extractedSkillName);
+    if (previousPath !== undefined) {
+      errors.push(
+        `duplicate skill name '${extractedSkillName}' found in ${previousPath} and ${relativePath}`,
+      );
+    } else {
+      skillNameToDir.set(extractedSkillName, relativePath);
+    }
+  }
+
+  return errors;
 }
 
 export async function runValidation(args: string[]): Promise<number> {
@@ -173,16 +213,22 @@ export async function runValidation(args: string[]): Promise<number> {
 
   if (args.length > 0) {
     const target = resolveTarget(args[0]);
-    const skillRoot = findSkillRoot(target);
+    const roots = findSkillRoots(target);
 
-    if (skillRoot === null) {
-      console.error(`error: could not find a skill at or above ${target}`);
-      return 1;
+    if (roots !== null) {
+      errors = await validateAll(roots);
+    } else {
+      const skillDir = findSkillDir(target);
+
+      if (skillDir === null) {
+        console.error(`error: could not find a skill at or above ${target}`);
+        return 1;
+      }
+
+      errors = await validateSkill(skillDir);
     }
-
-    errors = skillRoot === SKILLS_DIR ? await validateAll() : await validateSkill(skillRoot);
   } else {
-    errors = await validateAll();
+    errors = await validateAll(SKILL_ROOTS);
   }
 
   for (const error of errors) {

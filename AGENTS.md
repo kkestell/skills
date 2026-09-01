@@ -24,6 +24,10 @@ skills/
 
 Only add supporting directories that the skill actually uses.
 
+Unfinished skills live under `wip/` with the same layout. The Makefile installs
+only `skills/`, so nothing in `wip/` reaches an agent profile; validation covers
+both. Promote a skill by moving its directory into `skills/`.
+
 ## Naming rules
 
 - Use kebab-case for directory names.
@@ -32,7 +36,8 @@ Only add supporting directories that the skill actually uses.
 
 ## Adding a skill
 
-1. Create `skills/<name>/SKILL.md` and any required supporting resources.
+1. Create `skills/<name>/SKILL.md` and any required supporting resources, or
+   `wip/<name>/SKILL.md` if it is not ready to install.
 2. Run `npm run check`.
 
 ### `SKILL.md` frontmatter
@@ -72,9 +77,10 @@ Do not add plugin or marketplace validation to the repository.
 
 ## Validation
 
-Before committing, confirm every `skills/<name>/SKILL.md` has valid frontmatter,
-skill names are unique, folder names match skill names, and examples and assets
-do not expose secrets.
+Before committing, confirm every `skills/<name>/SKILL.md` and
+`wip/<name>/SKILL.md` has valid frontmatter, skill names are unique across both
+directories, folder names match skill names, and examples and assets do not
+expose secrets.
 
 Run the full check suite:
 

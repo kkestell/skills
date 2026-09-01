@@ -6,6 +6,11 @@ import { fileURLToPath } from "node:url";
 import { runValidation } from "./validate.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+// Installable skills live in skills/; wip/ holds in-progress skills the Makefile
+// does not install. Both are checked here.
+const SKILL_ROOTS = [path.join(REPO_ROOT, "skills"), path.join(REPO_ROOT, "wip")];
+
 const SHELLCHECK_VERSION = "0.10.0";
 const ACTIONLINT_VERSION = "1.7.7";
 
@@ -150,6 +155,30 @@ async function downloadActionlint(): Promise<string> {
   return path.join(currentToolsDir, "actionlint");
 }
 
+async function collectSkillDirs(): Promise<string[]> {
+  const skillDirs: string[] = [];
+
+  for (const root of SKILL_ROOTS) {
+    let entries;
+    try {
+      entries = await readdir(root, { withFileTypes: true });
+    } catch {
+      // wip/ is optional.
+      continue;
+    }
+
+    for (const entry of entries) {
+      if ((!entry.isDirectory() && !entry.isSymbolicLink()) || entry.name.startsWith(".")) {
+        continue;
+      }
+
+      skillDirs.push(path.join(root, entry.name));
+    }
+  }
+
+  return skillDirs.sort();
+}
+
 async function collectShellFiles(): Promise<string[]> {
   const shellFiles: string[] = [];
   const rootScriptsDir = path.join(REPO_ROOT, "scripts");
@@ -165,14 +194,8 @@ async function collectShellFiles(): Promise<string[]> {
     // Ignore missing scripts/; validation below will skip if nothing is found.
   }
 
-  const skillsDir = path.join(REPO_ROOT, "skills");
-  const skillEntries = await readdir(skillsDir, { withFileTypes: true });
-  for (const skillEntry of skillEntries) {
-    if ((!skillEntry.isDirectory() && !skillEntry.isSymbolicLink()) || skillEntry.name.startsWith(".")) {
-      continue;
-    }
-
-    const skillScriptsDir = path.join(skillsDir, skillEntry.name, "scripts");
+  for (const skillDir of await collectSkillDirs()) {
+    const skillScriptsDir = path.join(skillDir, "scripts");
     try {
       const scriptEntries = await readdir(skillScriptsDir, { withFileTypes: true });
       for (const entry of scriptEntries) {
@@ -203,16 +226,9 @@ async function runShellcheck(): Promise<void> {
 }
 
 async function runNodeChecks(): Promise<void> {
-  const skillsDir = path.join(REPO_ROOT, "skills");
-  const skillEntries = await readdir(skillsDir, { withFileTypes: true });
   const packageJsonPaths: string[] = [];
 
-  for (const skillEntry of skillEntries) {
-    if ((!skillEntry.isDirectory() && !skillEntry.isSymbolicLink()) || skillEntry.name.startsWith(".")) {
-      continue;
-    }
-
-    const skillDir = path.join(skillsDir, skillEntry.name);
+  for (const skillDir of await collectSkillDirs()) {
     if (await fileExists(path.join(skillDir, "package.json"))) {
       packageJsonPaths.push(path.join(skillDir, "package.json"));
     }

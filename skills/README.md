@@ -70,21 +70,7 @@ commits.
    (completeness + code simplification)
 5. Commit: Single commit with all validated work
 
-### Handoff
-
-If context runs low during `/kwork`, the agent can run `/khandoff` to capture
-the current state in a fresh-session-friendly handoff document.
-
 ## Supporting Skills
-
-### `/kresearch`
-
-Researches a topic across comparable GitHub projects and writes a plan, verified
-notes, and synthesis under `docs/dev/research/`.
-
-```text
-/kresearch how do comparable coding agents handle permission escalation
-```
 
 ### `/kinit`
 
@@ -123,29 +109,14 @@ confirmed slop while preserving meaning and voice.
 /kdeslop @docs/overview.md
 ```
 
-### `/ksimplify`
-
-Global, multi-agent simplification review of a whole codebase — map phase,
-parallel lens passes into a shared ledger, then reconciliation into ranked
-findings with a human approval gate before any edit. Use when decisions must be
-global rather than per-file, behavior must not change, and findings should be
-presented for approval rather than auto-applied.
-
-```text
-/ksimplify
-```
-
 ## Plan Storage
 
-Generated docs live under `docs/dev/` at the repository root:
+Generated docs live under `eng/` at the repository root:
 
-- `plans/` for implementation plans
-- `todo/` for follow-up docs
-- `handoff/` for session handoffs
-- `research/` for `/kresearch` runs
-- `reviews/` for `/ksimplify` findings
+- `eng/plans/` for implementation plans
+- `eng/todo/` for follow-up docs
 
-`docs/dev/` is tracked in git and committed alongside the code it describes.
+`eng/` is tracked in git and committed alongside the code it describes.
 
 Plan files use the naming convention:
 
@@ -157,9 +128,7 @@ YYYY-MM-DD-NNN-slug.md
 └───────────────── Date the plan was created
 ```
 
-## Commands
+## In Progress
 
-### `/khandoff`
-
-Writes a handoff note into `docs/dev/handoff/` so another session can continue
-cleanly.
+`/khandoff` and `/kresearch` are still being built and are not installed. See
+[`../wip/README.md`](../wip/README.md).

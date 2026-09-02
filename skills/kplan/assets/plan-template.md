@@ -2,6 +2,8 @@
 
 Use this template as a scaffold, not a cage. Drop sections that do not apply, expand the ones that matter, and add sections when the work needs more structure.
 
+A plan is decided. It has no open questions, no TBDs, and no choices left to the implementer. Settle everything with the user before writing it.
+
 ## Goal
 
 ## Desired outcome
@@ -78,9 +80,3 @@ Features or functionality this plan depends on but cannot deliver. Stub follow-u
 
 - Gap:
 - Follow-up:
-
-## Open questions
-
-Questions that need user input before implementation can proceed. When the user answers a question, fold the decision into the relevant section of the plan and delete the question. This section should shrink over time and be removed entirely once all questions are resolved.
-
-- Question:

@@ -8,8 +8,18 @@ argument-hint: "[feature idea, bug report, or improvement to explore]"
 
 ### Phase 1 — Understand
 
-1. Read `<feature_description> $ARGUMENTS </feature_description>`; if it is
-   empty, ask what they want to plan and stop.
+1. Resolve `<feature_description> $ARGUMENTS </feature_description>`.
+   - If it is present, use it as the proposed work.
+   - If it is empty, inspect the repository's planning sources and current
+     state to infer the next task. Start with project guidance that owns work
+     ordering or a backlog, then consult existing plans, repository history,
+     and the implementation only as needed. Choose the strongest single
+     candidate rather than asking the user to supply what the repository can
+     reveal.
+   - State the inferred task and the evidence that makes it next, ask the user
+     to confirm that it should be planned, and stop until they answer. If the
+     repository does not support a credible inference, ask what they want to
+     plan instead.
 2. Decide whether brainstorming is needed.
    - If the request already has concrete scope, clear acceptance criteria, and
      constrained behavior, skip to Phase 2.
@@ -125,6 +135,10 @@ argument-hint: "[feature idea, bug report, or improvement to explore]"
       about the existing system, because those assumptions are where
       implementation plans go wrong.
     - Ask the user which approach they prefer. Refine until aligned.
+    - Settle every open decision before moving on. A plan is a decided thing:
+      no open questions, no "TBD", no alternatives left for the implementer,
+      no choices deferred to implementation time. Ask about everything the repo
+      does not settle and wait for the answers.
 
 ### Phase 5 — Write the plan
 
@@ -149,12 +163,13 @@ argument-hint: "[feature idea, bug report, or improvement to explore]"
       to write meaningful tests.
     - Include validation steps: what tests to write, what commands to run, what
       to verify manually.
-    - Include open questions for anything still unresolved. When the user later
-      answers an open question, fold the decision into the relevant plan
-      sections (goal, implementation tasks, structural considerations, etc.) and
-      delete the question. Never rename "Open questions" to "Resolved questions"
-      or leave answered questions in place — a plan should read as a coherent
-      document, not a Q&A transcript.
+    - The plan states decisions, not options. Every choice the user made is
+      written as the decision it is, with its reason. Do not preserve the
+      alternatives, the questions that produced the decision, or a record of how
+      the conversation went — a plan reads as a coherent document, not a Q&A
+      transcript.
+    - If a new question surfaces while writing, stop, ask the user, fold the
+      answer into the relevant sections, and continue.
     - `Related code` must be concrete: repo-relative paths plus one-line reasons
       each file matters. Vague references like "the auth module" are not useful.
 
@@ -181,8 +196,10 @@ argument-hint: "[feature idea, bug report, or improvement to explore]"
       transcript of the review.
     - If the fixes materially change the architecture, sequencing, or scope, run
       the architectural review again on the updated plan.
-    - Repeat until the plan is structurally sound or the remaining concerns are
-      explicit open questions for the user.
+    - If the review raises a concern you cannot settle yourself, ask the user,
+      then fold their answer into the plan. Do not leave it in the plan as an
+      open question.
+    - Repeat until the plan is structurally sound.
 17. After the review loop is complete, print the final plan path and stop.
 18. Suggest starting the `kwork` skill in a fresh session or with cleared
     context. Planning conversations consume significant context, and a fresh

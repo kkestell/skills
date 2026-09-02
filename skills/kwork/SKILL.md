@@ -12,6 +12,16 @@ argument-hint: "[plan, specification, or todo file path]"
    worktree.
    - Prefer `eng/plans/` for implementation plans and `eng/todo/` for tracked
      follow-up work.
+   - If no input is supplied, inspect the preferred plan directory and the
+     repository state to find a plan whose work has not been implemented. Use
+     project-defined ordering when it exists; otherwise prefer the oldest plan
+     that is clearly still outstanding. Read enough of each likely plan and the
+     related code or history to distinguish an outstanding plan from one that
+     was already completed.
+   - State the selected plan path and the evidence that it remains
+     unimplemented, ask the user to confirm that it should be executed, and
+     stop until they answer. If no outstanding plan can be identified, say so
+     and ask which document to execute.
 2. Check the git worktree with `git status` and classify every reported path.
    - Changes to the resolved input document are expected task input, not
      unrelated dirty state. This includes an untracked plan, specification, or

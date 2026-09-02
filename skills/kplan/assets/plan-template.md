@@ -4,6 +4,16 @@ Use this template as a scaffold, not a cage. Drop sections that do not apply, ex
 
 A plan is decided. It has no open questions, no TBDs, and no choices left to the implementer. Settle everything with the user before writing it.
 
+A plan is also one session's work. If the change is too large for a single implementation session, split it into a sequence of plans and write one of these documents per plan, each self-contained.
+
+## Sequence
+
+Omit this section for standalone plans.
+
+- **Position**: which plan this is in the series (e.g. 2 of 3) and the file names of the others
+- **Starting state**: what the earlier plans have already landed, stated concretely enough that the implementer does not need to read them
+- **Deferred**: what this plan deliberately leaves to later plans, so its scope is unambiguous
+
 ## Goal
 
 ## Desired outcome
@@ -69,6 +79,8 @@ Define what to test and at what level before listing implementation tasks. Focus
 - Dependency or API impact:
 
 ## Validation
+
+Everything here must be runnable when this plan alone is done, with the repository building and the tests passing.
 
 - Tests:
 - Lint/format/typecheck:

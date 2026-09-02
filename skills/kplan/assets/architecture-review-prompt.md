@@ -16,7 +16,7 @@ Be skeptical. Catch architecture drift before code is written.
 
 ## Context (fill in)
 
-- **Plan path**: (repo-relative path to the plan file)
+- **Plan path**: (repo-relative path to the plan file, or every plan path in the series, in execution order)
 - **Project guidance docs**: (paths to repo-specific guidance such as `CLAUDE.md`, `AGENTS.md`, `README`, or other contributor docs)
 - **Related code to inspect**: (repo-relative paths for the most relevant files, modules, or directories)
 - **Primary change areas**: (short bullets describing the layers, modules, or responsibilities the plan will touch)
@@ -64,6 +64,14 @@ Be skeptical. Catch architecture drift before code is written.
 - Is the testing strategy section concrete enough that an implementer could write meaningful tests before the production code?
 - Are there behaviors the plan introduces that would be difficult or impossible to test as designed?
 
+### Sequencing (only when reviewing a series of plans)
+
+- Does each plan leave the repository in a working state — building, tests passing, committable on its own?
+- Does any plan depend on work scheduled in a later plan?
+- Does a boundary split work that belongs together, so one refactor is left half done across two commits?
+- Is each plan self-contained enough to implement without reading the others?
+- Would fewer, larger plans, or a narrower overall scope, serve the change better?
+
 ### Refactoring and change resilience
 
 - If refactoring is needed, is it scheduled before feature work in a way that reduces risk?
@@ -82,4 +90,4 @@ Write a brief, structured report:
    - Why it matters (what structural debt, coupling, or future breakage it risks)
    - Suggested change to the plan
 
-Be concise. Focus on hierarchy, abstraction, modularity, encapsulation, testability, coupling, and missing refactors. Do not pad with style nits or implementation-level suggestions unless they materially affect the architecture.
+Be concise. Focus on hierarchy, abstraction, modularity, encapsulation, testability, coupling, sequencing, and missing refactors. Do not pad with style nits or implementation-level suggestions unless they materially affect the architecture.

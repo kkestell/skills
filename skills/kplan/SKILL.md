@@ -1,6 +1,6 @@
 ---
 name: kplan
-description: Brainstorm a code change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `eng/plans/`. Use this when the user wants to plan new code work or requests a significant change to existing behavior. Do not use it to write or update documentation — a roadmap, spec, design note, or README is edited directly, even when it describes future work.
+description: Brainstorm a code change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `eng/plans/`, splitting work too large for one implementation session into a sequence of plans. Use this when the user wants to plan new code work or requests a significant change to existing behavior. Do not use it to write or update documentation — a roadmap, spec, design note, or README is edited directly, even when it describes future work.
 argument-hint: "[feature idea, bug report, or improvement to explore]"
 ---
 
@@ -143,15 +143,50 @@ describes work that has not been done yet.
       no open questions, no "TBD", no alternatives left for the implementer,
       no choices deferred to implementation time. Ask about everything the repo
       does not settle and wait for the answers.
+13. Size the chosen approach against a single implementation session.
+    - Sketch the implementation tasks first. Sizing an approach you have not
+      decomposed is guesswork.
+    - The unit of work is one `kwork` session: one agent implementing, testing,
+      reviewing, and committing within the context it starts with. Ask whether
+      that session can finish the whole change and still have room for the
+      review passes at the end.
+    - Signals the work is too large: it spans several subsystems that each have
+      to be understood in depth; it requires holding more of the codebase in
+      view than one session can; it introduces a new abstraction and then
+      migrates existing callers onto it; it has a long mechanical tail after the
+      interesting part (many call sites, many fixtures, a wide rename); or the
+      task list runs past roughly a dozen substantial items.
+    - Signals it fits: one subsystem, a bounded set of files, and tasks that
+      mostly share the same context.
+    - Announce the verdict and the reasoning. If the work fits, continue to
+      Phase 5 and write one plan.
+14. Split work that does not fit into a sequence of plans.
+    - Cut where the repository is left coherent. Each plan must end with the
+      build green, the tests passing, and a commit that stands on its own. Never
+      cut mid-refactor or leave callers half migrated.
+    - Cut along structural seams, not by task count. A preparatory refactor, the
+      new module, and the migration of callers onto it are three plans; the same
+      feature sliced arbitrarily in half is not.
+    - Order the sequence so each plan depends only on plans before it. If two
+      plans need each other, the cut is in the wrong place — move it.
+    - Prefer the fewest plans that satisfy those rules. Two or three is common.
+      A long chain usually means the approach is too ambitious and the scope
+      should be narrowed with the user instead.
+    - Present the proposed split: each plan, what it delivers, and why the
+      boundaries fall where they do. Get the user's agreement before writing,
+      and move the cuts if they want them elsewhere.
 
-### Phase 5 — Write the plan
+### Phase 5 — Write the plans
 
-13. Generate the plan filename: `eng/plans/YYYY-MM-DD-NNN-slug.md` where
+15. Generate the plan filename: `eng/plans/YYYY-MM-DD-NNN-slug.md` where
     `YYYY-MM-DD` is today's date, `NNN` is the next available zero-padded
     sequence for that date, and the slug is a short kebab-case summary (3-5
     words). Create the directory if it does not exist. `eng/` is tracked in
     git — do not add it to `.gitignore` or `.git/info/exclude`.
-14. Write the plan from `assets/plan-template.md`.
+    - For a split, allocate consecutive `NNN` values in execution order so the
+      series reads in order on disk and `kwork` picks the plans up in turn.
+      Give each plan a slug describing its own work, not the shared feature.
+16. Write the plan from `assets/plan-template.md`.
     - Use the template as a scaffold, not a rigid form. Keep only the sections
       that apply, and add sections when the work needs more structure.
     - Every implementation task is a concrete, actionable bullet. A reader
@@ -176,10 +211,18 @@ describes work that has not been done yet.
       answer into the relevant sections, and continue.
     - `Related code` must be concrete: repo-relative paths plus one-line reasons
       each file matters. Vague references like "the auth module" are not useful.
+17. Write every plan in a series now, and make each one stand alone.
+    - Fill in each plan's `Sequence` section: its position in the series, the
+      state the earlier plans leave behind, and what it defers to later ones.
+    - Scope the rest of each plan to its own work. Its test plan covers the
+      behavior it adds, and its validation must be runnable when that plan alone
+      is done.
+    - The implementer of the third plan reads the third plan, not the series.
+      Restate the context it needs instead of pointing back at earlier plans.
 
 ### Phase 6 — Review the plan architecture
 
-15. Run an architectural review pass on the written plan before handing it off
+18. Run an architectural review pass on each written plan before handing it off
     for implementation.
     - Launch a dedicated architecture-review subagent when it adds value;
       otherwise perform the review locally.
@@ -194,18 +237,26 @@ describes work that has not been done yet.
       is written.
     - Instruct the reviewer to focus on architectural drift and structural
       oversights, not cosmetic style feedback.
-16. Act on the review findings.
+    - For a series, give one reviewer the whole set so it can judge the cut
+      points too: whether each plan leaves the repository working, whether any
+      plan depends on a later one, and whether a boundary splits work that
+      belongs together.
+19. Act on the review findings.
     - If the review reports issues worth fixing, update the plan to address
       them. Fold the fixes into the relevant sections instead of appending a
       transcript of the review.
     - If the fixes materially change the architecture, sequencing, or scope, run
       the architectural review again on the updated plan.
+    - If the review shows a cut point is wrong, move the boundary and rewrite
+      the affected plans. Do not patch around a bad seam.
     - If the review raises a concern you cannot settle yourself, ask the user,
       then fold their answer into the plan. Do not leave it in the plan as an
       open question.
     - Repeat until the plan is structurally sound.
-17. After the review loop is complete, print the final plan path and stop.
-18. Suggest starting the `kwork` skill in a fresh session or with cleared
-    context. Planning conversations consume significant context, and a fresh
-    implementation session preserves room for the actual coding work.
-19. Never code here.
+20. After the review loop is complete, print the final plan paths in execution
+    order and stop.
+21. Suggest starting the `kwork` skill in a fresh session or with cleared
+    context, one session per plan. Planning conversations consume significant
+    context, and a fresh implementation session preserves room for the actual
+    coding work.
+22. Never code here.

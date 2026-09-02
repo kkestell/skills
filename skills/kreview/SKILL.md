@@ -1,10 +1,13 @@
 ---
 name: kreview
-description: "Run independent completeness and code-simplification review passes over a body of work."
+description: "Run independent completeness and code-simplification review passes over implemented code. Use when a plan has been implemented and the changed files need checking for omissions, hacks, and unearned complexity. Do not use it to review prose — a plan, spec, roadmap, or other document is read and critiqued directly."
 argument-hint: "[plan path] --files [changed files] --tasks [completed tasks]"
 ---
 
 ## Workflow
+
+This skill reviews implemented code against the plan it came from. Prose — a
+plan, spec, roadmap, or other document — is read and critiqued directly.
 
 ### Input
 

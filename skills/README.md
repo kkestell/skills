@@ -109,8 +109,8 @@ responsible text, then commits, pushes, and reinstalls with `profiles.py`.
 
 ### `/kdeslop`
 
-Detects and fixes AI "slop" in prose. Fans out one audit subagent per slop
-category — overused LLM vocabulary, empty significance claims, hollow rhetorical
+Detects and fixes AI "slop" in prose. Audits the text one slop category at a
+time — overused LLM vocabulary, empty significance claims, hollow rhetorical
 constructions, formulaic structure, machine-formatting tells — then rewrites the
 confirmed slop while preserving meaning and voice.
 

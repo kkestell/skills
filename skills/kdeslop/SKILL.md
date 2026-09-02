@@ -1,59 +1,53 @@
 ---
 name: kdeslop
-description: "Detect and fix AI \"slop\" in prose — overused LLM vocabulary, empty significance/legacy claims, vague attributions, hollow rhetorical constructions, formulaic structure, and machine-formatting tells. Fans out one audit subagent per slop category, then rewrites the confirmed slop in place while preserving meaning and the author's voice."
+description: "Detect and fix AI \"slop\" in prose — overused LLM vocabulary, empty significance/legacy claims, vague attributions, hollow rhetorical constructions, formulaic structure, and machine-formatting tells. Audits the text category by category, then rewrites the confirmed slop in place while preserving meaning and the author's voice."
 argument-hint: "[file paths to scan and fix]"
 ---
 
 ## Overview
 
-Slop comes in families, and each family is its own kind of reading. This skill splits the audit across six subagents — one per category — each carrying only the rules for its family. They report; you decide and fix.
+Slop comes in families, and each family is its own kind of reading. `assets/slop-rules.md` holds all six families — vocabulary and register, inflated significance, hollow rhetoric, sourcing and hedging, formulaic structure, formatting and typography — with the patterns in each, why each reads as machine-generated, and avoid/prefer examples.
 
-The rule files live in this skill's `assets/` directory:
-
-| Category                 | Rule file                | What it covers                                                                                                                                                       |
-| ------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Vocabulary & register    | `assets/vocabulary.md`   | AI vocabulary clusters, Claude-era engineering jargon, honesty-signaling qualifiers, elevated register, filler adverbs, metaphor crutches                            |
-| Significance & puffery   | `assets/significance.md` | Asserted importance/legacy, inflated copulas, empty participle clauses, PR language, coined concept labels                                                           |
-| Rhetorical constructions | `assets/rhetoric.md`     | "not just X," "not X but Y," formulaic openers, false conclusions, false suspense, pedagogical framing, performative candor, self-answered questions                 |
-| Sourcing & honesty       | `assets/sourcing.md`     | Vague attribution, exaggerated breadth, cutoff disclaimers, unfilled placeholders, chatbot residue, hedge stacking                                                   |
-| Structure & rhythm       | `assets/cadence.md`      | Challenges-and-future template, connector pile-ups, rule of three, elegant variation, staccato bursts, repeated openers, magic-number lists                          |
-| Formatting & typography  | `assets/formatting.md`   | Title-case headings, scattered bold, inline-header lists, em-dash overuse, decorative Unicode, curly quotes, tiny tables, heading-level skips, rules before headings |
+Do this work yourself. Do not delegate the audit or the rewriting to subagents: judging whether a sentence has the underlying problem takes the whole document in view, and the fixes need the same reader who found them.
 
 ## Workflow
 
 ### 1. Resolve the targets
 
-Resolve the target files from `<input_document> $ARGUMENTS </input_document>`. Accept one or more file or directory paths. **If no paths are given, ask the user which files to audit and stop.** Note this `SKILL.md`'s directory — the `assets/` files are siblings of it.
+Resolve the target files from `<input_document> $ARGUMENTS </input_document>`. Accept one or more file or directory paths. **If no paths are given, ask the user which files to audit and stop.** Note this `SKILL.md`'s directory — `assets/slop-rules.md` is a sibling of it.
 
-### 2. Fan out one audit subagent per category
+### 2. Read the rules and the targets
 
-Launch all six subagents **in parallel** (one Agent call per category, in a single message). They are read-only auditors — they do **not** edit anything. Give each subagent this prompt, filled in:
+Read `assets/slop-rules.md` in full, then read each target file end to end. Both readings are required before you flag anything: the rules define the underlying problems, and several of them can only be judged against the whole document.
 
-> You are auditing prose for one category of AI "slop." Read the rule file `<skill-dir>/assets/<file>.md` in full — it defines each pattern, why it reads as slop, and avoid/prefer examples. Then read each of these target files end to end: `<target paths>`.
->
-> Audit every target against your category's rules as a **lens, not a checklist**. The example phrases in the rule file are leads, not the set of things to flag. Judge each candidate on whether the writing actually has the underlying problem — asserting importance instead of showing it, saying nothing in many words, hedged vagueness — not merely whether it contains a listed word. A legitimate use of a flagged word is not slop. Several rules have no single-phrase signal (rule of three, elegant variation, magic-number lists, staccato runs, heading outline) — catch those by reading and counting.
->
-> Report your findings as a list. For each, give: `file:line`, the rule id it falls under, a one-line quote of the problem text, why it's slop here, and a concrete suggested rewrite (or "cut"). If a fix would need a fact you don't have, say so instead of inventing one. Do not edit any files. If you find nothing in your category, say so.
+### 3. Audit category by category
 
-Map each subagent to its file: vocabulary → `vocabulary.md`, significance → `significance.md`, rhetoric → `rhetoric.md`, sourcing → `sourcing.md`, cadence → `cadence.md`, formatting → `formatting.md`.
+Work through the targets once per category — vocabulary, significance, rhetoric, sourcing, cadence, formatting — rather than trying to hold all six lenses at once. One pass per family keeps each reading focused and stops one loud category from crowding out the others.
 
-### 3. Confirm and fix
+Treat the rules as a **lens, not a checklist**. The example phrases are leads, not the set of things to flag. Judge each candidate on whether the writing actually has the underlying problem — asserting importance instead of showing it, saying nothing in many words, hedged vagueness — not merely whether it contains a listed word. A legitimate use of a flagged word is not slop.
 
-Collect the six reports. For each finding, **confirm it against the actual sentence and surrounding context** before acting — the subagents are high-recall and will surface false positives. Then rewrite the confirmed slop in place:
+Several rules have no single-phrase signal: rule-of-three, elegant-variation, magic-number-lists, staccato-and-fragments, repetitive-sentence-openers, question-then-answer, hedge-stacking, unusual-tables, skipping-heading-levels. Catch those by reading and counting. Grep is useful for the character-level tells (em dashes, arrows, curly quotes, `•`) but nothing else.
+
+Note each finding as you go: `file:line`, the rule id, the problem text, and the fix you intend.
+
+### 4. Fix
+
+Rewrite the confirmed slop in place. Re-read the actual sentence and its surrounding context before each edit — a candidate that looked like slop in the pass often turns out to be the right wording in situ.
 
 - Fix the **underlying problem**, not the surface signal. Replace puffery with the specific fact it was standing in for, or cut it — removing a trigger word while leaving the empty claim intact just hides the slop.
 - Preserve the author's meaning, factual content, and voice. When a flagged word is the right word, leave it.
 - Prefer the plain version: concrete over grandiose, specific over generic, shorter over padded.
 - When a fix would change meaning or needs a fact you don't have, leave it and flag it for the user instead of inventing content.
 
-### 4. Report
+### 5. Report
 
 Summarize what you changed, grouped by file: line, the category/rule it fell under, and a brief before → after (or what was cut and why). List anything you left for the user to decide, and why.
 
 ## Principles
 
-- **Read, don't match** — the rule files are a lens for judging whether prose has the underlying problem, never a find-and-replace word list.
-- **Comprehensive over mechanical** — audit the whole text against every category; the subagents cover the families so nothing is judged in isolation.
+- **Do it yourself** — no subagents; the audit and the rewrite are one reading.
+- **Read, don't match** — the rules are a lens for judging whether prose has the underlying problem, never a find-and-replace word list.
+- **One category at a time** — a focused pass per family so nothing is judged in isolation and nothing gets skipped.
 - **Fix the problem, not the symptom** — remove the underlying puffery or vagueness, not just the trigger word.
 - **Preserve meaning and voice** — edits keep the author's intent and facts intact; a legitimate use of a flagged word stays.
 - **Don't invent** — if a fix needs a fact you don't have, flag it rather than fabricate.

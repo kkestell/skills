@@ -1,10 +1,14 @@
 ---
 name: kplan
-description: Brainstorm a feature or change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `eng/plans/`. Use this any time the user wants to plan new work or requests a significant change to existing behavior.
+description: Brainstorm a code change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `eng/plans/`. Use this when the user wants to plan new code work or requests a significant change to existing behavior. Do not use it to write or update documentation — a roadmap, spec, design note, or README is edited directly, even when it describes future work.
 argument-hint: "[feature idea, bug report, or improvement to explore]"
 ---
 
 ## Workflow
+
+This skill plans code changes and produces a plan file. Documentation — a
+roadmap, spec, design note, or README — is edited directly, even when it
+describes work that has not been done yet.
 
 ### Phase 1 — Understand
 

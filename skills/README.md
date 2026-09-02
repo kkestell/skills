@@ -24,9 +24,6 @@ is, and `/kwork` carries it through to a finished result.
   code-simplification review passes over a body of work, catching omissions,
   hacks, and unnecessary complexity that the implementer would miss. Called
   automatically by `/kwork`, but can also be invoked standalone.
-- `/kresearch` is comparative technical research. It finds comparable GitHub
-  projects, clarifies a research question, delegates per-repo investigation to
-  verified subagents, and synthesizes findings under `docs/dev/research/`.
 
 ## Core Workflow: `/kplan` → `/kwork`
 
@@ -39,7 +36,7 @@ implementation plan.
 /kplan add OAuth2 support for GitHub
 ```
 
-**Output:** Creates `docs/dev/plans/YYYY-MM-DD-NNN-slug.md` in the repository.
+**Output:** Creates `eng/plans/YYYY-MM-DD-NNN-slug.md` in the repository.
 
 The plan includes:
 
@@ -58,7 +55,7 @@ Implements the plan end-to-end, validates with parallel subagent review, and
 commits.
 
 ```text
-/kwork @docs/dev/plans/2026-04-07-001-oauth-github.md
+/kwork @eng/plans/2026-04-07-001-oauth-github.md
 ```
 
 **Workflow:**
@@ -87,7 +84,7 @@ Runs independent completeness and code-simplification review passes over a body
 of work.
 
 ```text
-/kreview @path/to/plan.md --files src/foo.ts,src/bar.ts,tests/foo.test.ts --tasks "Add foo module","Add bar integration"
+/kreview @eng/plans/2026-04-07-001-oauth-github.md --files src/auth/github.ts,src/auth/tokens.ts,tests/auth/github.test.ts --tasks "Add GitHub OAuth2 provider","Add token refresh"
 ```
 
 ### `/ktask`
@@ -96,6 +93,16 @@ Handles bounded one-off work without creating a persisted implementation plan.
 
 ```text
 /ktask rename the old env flag to the new config key
+```
+
+### `/khandoff`
+
+Writes a handoff note summarizing the session — what was accomplished, what was
+decided, and what a fresh agent needs to know — so the next session can pick the
+work up without re-discovering it. Useful when context runs low mid-`/kwork`.
+
+```text
+/khandoff
 ```
 
 ### `/kskillissue`
@@ -124,6 +131,7 @@ Generated docs live under `eng/` at the repository root:
 
 - `eng/plans/` for implementation plans
 - `eng/todo/` for follow-up docs
+- `eng/handoff/` for session handoff notes
 
 `eng/` is tracked in git and committed alongside the code it describes.
 
@@ -136,8 +144,3 @@ YYYY-MM-DD-NNN-slug.md
 │          └────── Zero-padded sequence number for that date
 └───────────────── Date the plan was created
 ```
-
-## In Progress
-
-`/khandoff` and `/kresearch` are still being built and are not installed. See
-[`../wip/README.md`](../wip/README.md).

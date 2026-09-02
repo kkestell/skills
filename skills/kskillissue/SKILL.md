@@ -66,8 +66,8 @@ argument-hint: "[what the agent did wrong — and which skill, if you know]"
     been known from the start. No warnings built around what the agent did, no
     rationale that exists only to justify the incident, no dated notes.
 14. Keep the repo's conventions: allowed frontmatter fields only, `SKILL.md`
-    body under 500 lines, Markdown hard-wrapped at 80 columns (the
-    `kformat-docs` skill does this).
+    body under 500 lines, Markdown hard-wrapped at 80 columns (the `kmarkdown`
+    skill does this).
 15. Do not grow the scope. A prose bug does not need a new skill, a new asset
     file, or a restructure. If the diagnosis genuinely calls for more than a
     contained edit, describe it and get approval before making it.
@@ -96,9 +96,10 @@ argument-hint: "[what the agent did wrong — and which skill, if you know]"
 
 ### Phase 7 — Reinstall
 
-23. Run `./profiles.py sync-skills personal` from the repo root. Pass `work`
-    only when the user says this is the work machine; do not infer the target
-    from whether a `-strib` profile directory exists.
+23. Run `./profiles.py sync-skills --claude --codex` from the repo root. Pass a
+    different set of harness flags only when the user names one; never infer
+    harnesses from which configuration directories happen to exist on the
+    machine.
 24. Confirm the install landed — re-run the `diff -ru` from step 8 and see it
     come back clean.
 

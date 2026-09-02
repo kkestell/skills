@@ -1,5 +1,5 @@
 ---
-name: kformat-docs
+name: kmarkdown
 description: Reformat Markdown documents with dprint using this skill's shipped config (hard-wrap prose at 80 columns). Use when asked to format, reformat, or tidy Markdown files, or after editing docs to normalize their formatting.
 argument-hint: "[markdown file or directory paths]"
 ---

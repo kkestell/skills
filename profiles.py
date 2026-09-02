@@ -2,7 +2,6 @@
 
 import argparse
 import json
-import os
 import shlex
 import subprocess
 import tomllib
@@ -11,27 +10,33 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent
 SKILLS_CLI = ("npx", "-y", "skills@latest")
-PROFILE_DIRECTORIES = {
-    "personal": (".claude", ".codex"),
-    "work": (".claude-strib", ".codex-strib"),
-}
-SYNC_TARGETS = {
-    "personal": ("personal",),
-    # Work machines keep both the personal and Star Tribune profiles current.
-    "work": ("personal", "work"),
-}
+CANONICAL_SKILLS = ".agents/skills"
 
-profiles = {
-    "claude": [f"~/{directories[0]}" for directories in PROFILE_DIRECTORIES.values()],
-    "codex": [f"~/{directories[1]}" for directories in PROFILE_DIRECTORIES.values()],
-    "copilot": ["~/.copilot"],
+# The harnesses this script understands: the directory under the home directory
+# where each keeps its configuration, and the name the skills CLI installs it
+# by. A --<name> flag selects the harness on every command.
+HARNESSES = {
+    "claude": {"directory": ".claude", "agent": "claude-code"},
+    "codex": {"directory": ".codex", "agent": "codex"},
+    "copilot": {"directory": ".copilot", "agent": "github-copilot"},
 }
 
 
-def hook_configs(provider, directory):
-    if provider == "claude":
+def harness_directory(harness, home_directory=None):
+    home_directory = home_directory or Path.home()
+    return home_directory / HARNESSES[harness]["directory"]
+
+
+def selected_harnesses(args):
+    """Harnesses named by --<name> flags, or every harness when none are given."""
+    chosen = [harness for harness in HARNESSES if getattr(args, harness)]
+    return chosen or list(HARNESSES)
+
+
+def hook_configs(harness, directory):
+    if harness == "claude":
         paths = [directory / "settings.json"]
-    elif provider == "codex":
+    elif harness == "codex":
         paths = [directory / "hooks.json", directory / "config.toml"]
     else:
         paths = [directory / "settings.json", *(directory / "hooks").glob("*.json")]
@@ -84,11 +89,11 @@ def skill_files(root):
             continue
 
 
-def plugin_inventory(provider, directory):
+def plugin_inventory(harness, directory):
     settings = read_json(directory / "settings.json")
     enabled = settings.get("enabledPlugins", {})
 
-    if provider == "claude":
+    if harness == "claude":
         known = read_json(directory / "plugins/known_marketplaces.json")
         installed = read_json(directory / "plugins/installed_plugins.json").get("plugins", {})
         marketplaces = set(known) | set(settings.get("extraKnownMarketplaces", {}))
@@ -97,7 +102,7 @@ def plugin_inventory(provider, directory):
             plugin_id: [Path(item["installPath"]) for item in items if item.get("installPath")]
             for plugin_id, items in installed.items()
         }
-    elif provider == "codex":
+    elif harness == "codex":
         config = read_toml(directory / "config.toml")
         marketplaces = {"openai-curated", *config.get("marketplaces", {})}
         configured = config.get("plugins", {})
@@ -128,12 +133,12 @@ def plugin_inventory(provider, directory):
     return sorted(marketplaces), sorted(plugins)
 
 
-def skill_inventory(provider, directory):
+def skill_inventory(harness, directory):
     roots = [(directory / "skills", "", "")]
-    if provider in {"codex", "copilot"}:
-        roots.append((Path.home() / ".agents/skills", "", ""))
+    if harness in {"codex", "copilot"}:
+        roots.append((directory.parent / CANONICAL_SKILLS, "", ""))
 
-    for plugin_id, is_enabled, plugin_roots in plugin_inventory(provider, directory)[1]:
+    for plugin_id, is_enabled, plugin_roots in plugin_inventory(harness, directory)[1]:
         suffix = " (disabled)" if not is_enabled else ""
         roots.extend((root, f"{plugin_id}:", suffix) for root in plugin_roots)
 
@@ -147,16 +152,10 @@ def skill_inventory(provider, directory):
     return sorted(skills)
 
 
-def mcp_inventory(provider, directory):
-    if provider == "claude":
-        default_directory = Path.home() / ".claude"
-        config_path = (
-            directory.parent / ".claude.json"
-            if directory == default_directory
-            else directory / ".claude.json"
-        )
-        servers = read_json(config_path).get("mcpServers", {})
-    elif provider == "codex":
+def mcp_inventory(harness, directory):
+    if harness == "claude":
+        servers = read_json(directory.parent / ".claude.json").get("mcpServers", {})
+    elif harness == "codex":
         servers = read_toml(directory / "config.toml").get("mcp_servers", {})
     else:
         servers = read_json(directory / "mcp-config.json").get("mcpServers", {})
@@ -187,115 +186,85 @@ def hook_lines(hooks):
                 yield f"{event}[{matcher}] {action}"
 
 
-def profile_inventory(provider, directory):
-    hooks = []
-    for _source, configured_hooks in hook_configs(provider, directory):
-        hooks.extend(hook_lines(configured_hooks))
-
-    marketplaces, plugins = plugin_inventory(provider, directory)
-    return {
-        "hooks": set(hooks),
-        "marketplaces": set(marketplaces),
-        "plugins": {
-            f"{name}{' (disabled)' if not enabled else ''}"
-            for name, enabled, _roots in plugins
-        },
-        "skills": set(skill_inventory(provider, directory)),
-        "MCP servers": set(mcp_inventory(provider, directory)),
-    }
+def print_lines(harness, directory, lines):
+    if not lines:
+        print(f"{harness} {directory}: none")
+        return
+    print(f"{harness} {directory}")
+    for line in lines:
+        print(f"  {line}")
 
 
-def print_hooks(_args):
-    for provider, directories in profiles.items():
-        for configured_path in directories:
-            directory = Path(configured_path).expanduser()
-            lines = []
-            try:
-                for _source, hooks in hook_configs(provider, directory):
-                    lines.extend(hook_lines(hooks))
-            except (OSError, ValueError, TypeError) as error:
-                lines = [f"error: {error}"]
-
-            if not lines:
-                print(f"{provider} {configured_path}: none")
-                continue
-            print(f"{provider} {configured_path}")
-            for line in lines:
-                print(f"  {line}")
+def report(args, describe):
+    """Print one report per selected harness, collected by describe()."""
+    for harness in selected_harnesses(args):
+        directory = harness_directory(harness)
+        try:
+            lines = describe(harness, directory)
+        except (OSError, ValueError, TypeError) as error:
+            lines = [f"error: {error}"]
+        print_lines(harness, directory, lines)
 
 
-def print_plugins(_args):
-    for provider, directories in profiles.items():
-        for configured_path in directories:
-            try:
-                marketplaces, plugins = plugin_inventory(provider, Path(configured_path).expanduser())
-                lines = [f"marketplace {name}" for name in marketplaces]
-                lines += [f"plugin {name}{' (disabled)' if not enabled else ''}" for name, enabled, _ in plugins]
-            except (OSError, ValueError, TypeError) as error:
-                lines = [f"error: {error}"]
-            print_lines(provider, configured_path, lines)
+def print_hooks(args):
+    def describe(harness, directory):
+        lines = []
+        for _source, hooks in hook_configs(harness, directory):
+            lines.extend(hook_lines(hooks))
+        return lines
+
+    report(args, describe)
 
 
-def print_skills(_args):
-    for provider, directories in profiles.items():
-        for configured_path in directories:
-            try:
-                skills = skill_inventory(provider, Path(configured_path).expanduser())
-                lines = [f"skill {name}" for name in skills]
-            except (OSError, ValueError, TypeError) as error:
-                lines = [f"error: {error}"]
-            print_lines(provider, configured_path, lines)
+def print_plugins(args):
+    def describe(harness, directory):
+        marketplaces, plugins = plugin_inventory(harness, directory)
+        lines = [f"marketplace {name}" for name in marketplaces]
+        lines += [f"plugin {name}{'' if enabled else ' (disabled)'}" for name, enabled, _ in plugins]
+        return lines
+
+    report(args, describe)
 
 
-def run_skills_cli(arguments, claude_directory, codex_directory, runner):
-    environment = os.environ.copy()
-    environment["CLAUDE_CONFIG_DIR"] = str(claude_directory)
-    environment["CODEX_HOME"] = str(codex_directory)
-    runner([*SKILLS_CLI, *arguments], check=True, env=environment)
+def print_skills(args):
+    report(args, lambda harness, directory: [f"skill {name}" for name in skill_inventory(harness, directory)])
+
+
+def print_mcp(args):
+    report(args, lambda harness, directory: [f"server {name}" for name in mcp_inventory(harness, directory)])
 
 
 def sync_repository_skills(
-    target,
+    harnesses,
     repository_root=None,
     home_directory=None,
     runner=subprocess.run,
 ):
-    if target not in SYNC_TARGETS:
-        raise ValueError(f"unknown sync target: {target}")
-
+    """Install every skill in this checkout into the given harnesses, then prune."""
     repository_root = repository_root or REPOSITORY_ROOT
     home_directory = home_directory or Path.home()
     skills_directory = repository_root / "skills"
-    canonical_directory = home_directory / ".agents/skills"
+    canonical_directory = home_directory / CANONICAL_SKILLS
 
     if not skills_directory.is_dir():
         raise FileNotFoundError(f"skills directory not found: {skills_directory}")
 
-    selected_profiles = [PROFILE_DIRECTORIES[name] for name in SYNC_TARGETS[target]]
-    resolved_profiles = [
-        (home_directory / claude_name, home_directory / codex_name)
-        for claude_name, codex_name in selected_profiles
-    ]
-
-    add_arguments = [
-        "add",
-        str(skills_directory),
-        "--skill",
-        "*",
-        "--agent",
-        "claude-code",
-        "codex",
-        "--global",
-        "--yes",
-    ]
-    for claude_directory, codex_directory in resolved_profiles:
-        print(f"Installing skills into {claude_directory} and {codex_directory}")
-        run_skills_cli(
-            add_arguments,
-            claude_directory,
-            codex_directory,
-            runner,
-        )
+    agents = [HARNESSES[harness]["agent"] for harness in harnesses]
+    print(f"Installing skills into {', '.join(agents)}")
+    runner(
+        [
+            *SKILLS_CLI,
+            "add",
+            str(skills_directory),
+            "--skill",
+            "*",
+            "--agent",
+            *agents,
+            "--global",
+            "--yes",
+        ],
+        check=True,
+    )
 
     installed_skills = (
         sorted(
@@ -311,113 +280,50 @@ def sync_repository_skills(
             continue
 
         print(f"Removing skill no longer in this repo: {name}")
-        for claude_directory, codex_directory in resolved_profiles:
-            run_skills_cli(
-                ["remove", "--skill", name, "--global", "--yes"],
-                claude_directory,
-                codex_directory,
-                runner,
-            )
+        runner([*SKILLS_CLI, "remove", "--skill", name, "--global", "--yes"], check=True)
 
 
 def sync_skills(args):
-    sync_repository_skills(args.target)
+    harnesses = [harness for harness in HARNESSES if getattr(args, harness)]
+    if not harnesses:
+        flags = ", ".join(f"--{harness}" for harness in HARNESSES)
+        raise ValueError(f"name at least one harness to install into: {flags}")
+    sync_repository_skills(harnesses)
 
 
-def print_mcp(_args):
-    for provider, directories in profiles.items():
-        for configured_path in directories:
-            try:
-                servers = mcp_inventory(provider, Path(configured_path).expanduser())
-                lines = [f"server {name}" for name in servers]
-            except (OSError, ValueError, TypeError) as error:
-                lines = [f"error: {error}"]
-            print_lines(provider, configured_path, lines)
-
-
-def print_diff(_args):
-    compared = False
-    for provider, directories in profiles.items():
-        if len(directories) < 2:
-            continue
-
-        baseline_path = directories[0]
-        try:
-            baseline = profile_inventory(provider, Path(baseline_path).expanduser())
-        except (OSError, ValueError, TypeError) as error:
-            baseline = None
-            baseline_error = error
-
-        for configured_path in directories[1:]:
-            compared = True
-            heading = f"{provider} {baseline_path} -> {configured_path}"
-            if baseline is None:
-                print(f"{heading}\n  error reading {baseline_path}: {baseline_error}")
-                continue
-
-            try:
-                inventory = profile_inventory(provider, Path(configured_path).expanduser())
-            except (OSError, ValueError, TypeError) as error:
-                print(f"{heading}\n  error reading {configured_path}: {error}")
-                continue
-
-            differences = []
-            for category in baseline:
-                removed = sorted(baseline[category] - inventory[category])
-                added = sorted(inventory[category] - baseline[category])
-                if removed or added:
-                    differences.append((category, removed, added))
-
-            if not differences:
-                print(f"{heading}: identical")
-                continue
-
-            print(heading)
-            for category, removed, added in differences:
-                print(f"  {category}")
-                for item in removed:
-                    print(f"    - {item}")
-                for item in added:
-                    print(f"    + {item}")
-
-    if not compared:
-        print("no providers have multiple profiles to compare")
-
-
-def print_lines(provider, configured_path, lines):
-    if not lines:
-        print(f"{provider} {configured_path}: none")
-        return
-    print(f"{provider} {configured_path}")
-    for line in lines:
-        print(f"  {line}")
+def add_harness_flags(parser):
+    for harness in HARNESSES:
+        parser.add_argument(
+            f"--{harness}",
+            action="store_true",
+            help=f"include {harness} (~/{HARNESSES[harness]['directory']})",
+        )
+    return parser
 
 
 def main():
     parser = argparse.ArgumentParser()
     commands = parser.add_subparsers(required=True)
-    hooks = commands.add_parser("hooks", help="list configured hooks")
-    hooks.set_defaults(func=print_hooks)
-    plugins = commands.add_parser("plugins", help="list marketplaces and plugins")
-    plugins.set_defaults(func=print_plugins)
-    skills = commands.add_parser("skills", help="list installed skills")
-    skills.set_defaults(func=print_skills)
-    sync = commands.add_parser(
-        "sync-skills",
-        help="sync repository skills into personal or work profiles",
-    )
-    sync.add_argument(
-        "target",
-        choices=SYNC_TARGETS,
-        help="personal syncs the default profiles; work syncs default and Star Tribune profiles",
-    )
-    sync.set_defaults(func=sync_skills)
-    mcp = commands.add_parser("mcp", help="list configured MCP servers")
-    mcp.set_defaults(func=print_mcp)
-    diff = commands.add_parser("diff", help="compare profiles for each provider")
-    diff.set_defaults(func=print_diff)
+
+    inspect_commands = {
+        "hooks": ("list configured hooks", print_hooks),
+        "plugins": ("list marketplaces and plugins", print_plugins),
+        "skills": ("list installed skills", print_skills),
+        "mcp": ("list configured MCP servers", print_mcp),
+    }
+    for name, (help_text, function) in inspect_commands.items():
+        command = commands.add_parser(name, help=f"{help_text} (default: every harness)")
+        add_harness_flags(command).set_defaults(func=function)
+
+    sync = commands.add_parser("sync-skills", help="install this repository's skills into the named harnesses")
+    add_harness_flags(sync).set_defaults(func=sync_skills)
+
     args = parser.parse_args()
-    args.func(args)
+
+    try:
+        args.func(args)
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"error: {error}")
 
 
 if __name__ == "__main__":

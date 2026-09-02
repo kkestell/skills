@@ -22,6 +22,7 @@ is, and `kwork` carries it through to a finished, reviewed result. See
 | `kclaude`      | Delegate a task to Claude Code headlessly and report back its result.                      |
 | `kwiki`        | Read, search, and edit pages on the private Wiki.js site.                                  |
 | `kjira`        | Create, update, and sprint-manage Jira issues in the DANG project (Star Tribune).          |
+| `kskillissue`  | Diagnose a misbehaving skill, fix it in this repo, commit, push, and reinstall.             |
 
 Skills under `wip/` are in progress and deliberately not installed:
 

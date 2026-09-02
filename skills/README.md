@@ -98,6 +98,15 @@ Handles bounded one-off work without creating a persisted implementation plan.
 /ktask rename the old env flag to the new config key
 ```
 
+### `/kskillissue`
+
+Diagnoses a skill in this repository that steered an agent wrong, fixes the
+responsible text, then commits, pushes, and reinstalls with `profiles.py`.
+
+```text
+/kskillissue kwork committed before running the review passes
+```
+
 ### `/kdeslop`
 
 Detects and fixes AI "slop" in prose. Fans out one audit subagent per slop

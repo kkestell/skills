@@ -18,10 +18,11 @@ argument-hint: "[plan, specification, or todo file path]"
      that is clearly still outstanding. Read enough of each likely plan and the
      related code or history to distinguish an outstanding plan from one that
      was already completed.
-   - State the selected plan path and the evidence that it remains
-     unimplemented, ask the user to confirm that it should be executed, and
-     stop until they answer. If no outstanding plan can be identified, say so
-     and ask which document to execute.
+   - When one plan is the unambiguous next choice, state the selected path and
+     evidence that it remains unimplemented, then continue without asking for
+     confirmation. If the selection remains ambiguous, state the candidates and
+     ask the user which document to execute. If no outstanding plan can be
+     identified, say so and ask which document to execute.
 2. Check the git worktree with `git status` and classify every reported path.
    - Changes to the resolved input document are expected task input, not
      unrelated dirty state. This includes an untracked plan, specification, or
@@ -81,8 +82,8 @@ passes.
    - Use the commands from the project's guidance docs or existing repo scripts,
      not ad hoc substitutes.
    - Fix any failures before proceeding.
-9. Run a review pass over the completed work using a read-only subagent (no
-   file edits, no shell commands).
+9. Run a review pass over the completed work using a read-only subagent (no file
+   edits, no shell commands).
    - Pass it the plan document, the list of completed tasks, and the list of
      changed files.
    - The subagent invokes the `kreview` skill, which runs a completeness review

@@ -1,6 +1,6 @@
 ---
 name: kplan
-description: Brainstorm a code change with the user, explore the repo to understand how it fits, then produce a concrete implementation plan. Creates a plan in `eng/plans/`, splitting work too large for one implementation session into a sequence of plans. Use this when the user wants to plan new code work or requests a significant change to existing behavior. Do not use it to write or update documentation — a roadmap, spec, design note, or README is edited directly, even when it describes future work.
+description: Explore how a code change fits the repository, clarify unresolved decisions with the user when needed, then produce a concrete implementation plan. Creates a plan in `eng/plans/`, splitting work too large for one implementation session into a sequence of plans. Use this when the user wants to plan new code work or requests a significant change to existing behavior. Do not use it to write or update documentation — a roadmap, spec, design note, or README is edited directly, even when it describes future work.
 argument-hint: "[feature idea, bug report, or improvement to explore]"
 ---
 
@@ -14,21 +14,26 @@ describes work that has not been done yet.
 
 1. Resolve `<feature_description> $ARGUMENTS </feature_description>`.
    - If it is present, use it as the proposed work.
-   - If it is empty, inspect the repository's planning sources and current
-     state to infer the next task. Start with project guidance that owns work
-     ordering or a backlog, then consult existing plans, repository history,
-     and the implementation only as needed. Choose the strongest single
-     candidate rather than asking the user to supply what the repository can
-     reveal.
+   - If it is empty, inspect the repository's planning sources and current state
+     to infer the next task. Start with project guidance that owns work ordering
+     or a backlog, then consult existing plans, repository history, and the
+     implementation only as needed. Choose the strongest single candidate rather
+     than asking the user to supply what the repository can reveal.
    - State the inferred task and the evidence that makes it next, ask the user
      to confirm that it should be planned, and stop until they answer. If the
      repository does not support a credible inference, ask what they want to
      plan instead.
 2. Decide whether brainstorming is needed.
-   - If the request already has concrete scope, clear acceptance criteria, and
-     constrained behavior, skip to Phase 2.
-   - If the idea is fuzzy, broad, or has multiple possible interpretations, or
-     if the user requests it, brainstorm first.
+   - First read any repository sources the user identified as owning the scope,
+     requirements, or acceptance criteria. Treat those sources as part of the
+     request rather than asking the user to restate or reprioritize them.
+   - If the request and those sources provide concrete scope, clear acceptance
+     criteria, and constrained behavior, skip to Phase 2.
+   - Breadth alone does not require brainstorming. Handle large scope by sizing
+     and splitting the work in Phase 4.
+   - If material product or implementation decisions remain unresolved after
+     reading the identified sources, or if the user requests it, brainstorm
+     first.
 3. Brainstorm through collaborative dialogue.
    - Reframe the problem as a "How might we..." question.
    - Start with "why" questions and go a few levels deep. The stated request is
@@ -139,9 +144,9 @@ describes work that has not been done yet.
       about the existing system, because those assumptions are where
       implementation plans go wrong.
     - Ask the user which approach they prefer. Refine until aligned.
-    - Settle every open decision before moving on. A plan is a decided thing:
-      no open questions, no "TBD", no alternatives left for the implementer,
-      no choices deferred to implementation time. Ask about everything the repo
+    - Settle every open decision before moving on. A plan is a decided thing: no
+      open questions, no "TBD", no alternatives left for the implementer, no
+      choices deferred to implementation time. Ask about everything the repo
       does not settle and wait for the answers.
 13. Size the chosen approach against a single implementation session.
     - Sketch the implementation tasks first. Sizing an approach you have not
@@ -181,11 +186,11 @@ describes work that has not been done yet.
 15. Generate the plan filename: `eng/plans/YYYY-MM-DD-NNN-slug.md` where
     `YYYY-MM-DD` is today's date, `NNN` is the next available zero-padded
     sequence for that date, and the slug is a short kebab-case summary (3-5
-    words). Create the directory if it does not exist. `eng/` is tracked in
-    git — do not add it to `.gitignore` or `.git/info/exclude`.
+    words). Create the directory if it does not exist. `eng/` is tracked in git
+    — do not add it to `.gitignore` or `.git/info/exclude`.
     - For a split, allocate consecutive `NNN` values in execution order so the
-      series reads in order on disk and `kwork` picks the plans up in turn.
-      Give each plan a slug describing its own work, not the shared feature.
+      series reads in order on disk and `kwork` picks the plans up in turn. Give
+      each plan a slug describing its own work, not the shared feature.
 16. Write the plan from `assets/plan-template.md`.
     - Use the template as a scaffold, not a rigid form. Keep only the sections
       that apply, and add sections when the work needs more structure.

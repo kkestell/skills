@@ -1,15 +1,15 @@
 # K
 
-Skills for intentional, high-quality coding work and prose editing.
+Skills for coding work and prose editing.
 
-The skills are designed to work together: `kplan` decides what the right change
-is, and `kwork` carries it through to a finished, reviewed result. See
+The core workflow pairs `kplan`, which writes an implementation plan, with
+`kwork`, which implements, validates, reviews, and commits it. See
 [skills/README.md](./skills/README.md) for the full workflow.
 
 ## Core workflow
 
-The skills that carry a change from an unfamiliar repo to a reviewed commit,
-across as many sessions as it takes.
+Use these skills to explore an unfamiliar repo, plan and implement a change,
+review and commit it, and preserve context between sessions.
 
 | Skill      | What it does                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------ |

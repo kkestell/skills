@@ -7,9 +7,14 @@ directly installed skill as `$skill-name`.
 
 ## The Essence
 
-These skills are meant to work together: `/kplan` decides what the right change
-is, and `/kwork` carries it through to a finished result.
+These skills are meant to work together: `/kspec` defines behavior, `/kroadmap`
+orders the work, `/kplan` designs a bounded change, and `/kwork` carries it
+through to a finished result.
 
+- `/kspec` creates and updates the product specification by resolving behavior
+  with the user one decision at a time.
+- `/kroadmap` creates and updates user-directed milestones, scope, order, and
+  completion gates.
 - `/kplan` is design-first thinking. Its job is not to rush into implementation,
   but to clarify the real problem, explore how the change fits the architecture,
   research unknowns when needed, and write a plan another session can execute
@@ -25,12 +30,31 @@ is, and `/kwork` carries it through to a finished result.
   hacks, and unnecessary complexity that the implementer would miss. Called
   automatically by `/kwork`, but can also be invoked standalone.
 
-## Core Workflow: `/kplan` → `/kwork`
+## Core Workflow: `/kspec` → `/kroadmap` → `/kplan` → `/kwork`
 
-### 1. `/kplan`
+### 1. `/kspec`
 
-Brainstorms with you, explores the codebase, and produces a concrete
-implementation plan.
+Creates or updates `docs/spec.md` through an interactive product-specification
+process. It is used for changes, not ordinary reading.
+
+```text
+/kspec define how authentication failures are reported
+```
+
+### 2. `/kroadmap`
+
+Creates or updates `eng/roadmap.md` from user-directed priorities and the
+specification. It is used for changes, not ordinary reading.
+
+```text
+/kroadmap make GitHub authentication the current milestone
+```
+
+### 3. `/kplan`
+
+Reads the required specification and roadmap, explores the codebase, and
+produces a concrete implementation plan. If either source document is missing or
+unsettled, it stops and routes the change through its owning skill.
 
 ```text
 /kplan add OAuth2 support for GitHub
@@ -49,7 +73,7 @@ The plan includes:
 **Tip:** Start `/kwork` in a fresh session when possible to preserve context for
 implementation.
 
-### 2. `/kwork`
+### 4. `/kwork`
 
 Implements the plan end-to-end, validates with parallel subagent review, and
 commits.
@@ -71,8 +95,9 @@ commits.
 
 ### `/kinit`
 
-Explores a repo and bootstraps `AGENTS.md` so future sessions have a shared
-orientation doc.
+Explores a repository and bootstraps `AGENTS.md` with project orientation,
+document ownership, and skill-routing rules. It does not invent or create the
+project's specification, architecture, or roadmap.
 
 ```text
 /kinit .

@@ -10,35 +10,47 @@ This skill produces an implementation plan. It never implements the plan.
 
 ### Establish the work
 
-1. Resolve `<feature_description> $ARGUMENTS </feature_description>`.
+1. Require both `docs/spec.md` and `eng/roadmap.md` before doing any planning.
+   - If either is missing, list the missing path and stop.
+   - Tell the user to run `kspec` for a missing specification, then `kroadmap`
+     for a missing roadmap. Do not create placeholders or infer either document
+     from the requested implementation work.
+2. Resolve `<feature_description> $ARGUMENTS </feature_description>`.
    - When it is present, use it as the proposed work.
-   - When it is empty, infer the next slice from the repository source that owns
-     work ordering. Inspect plans, history, and code only when needed to
-     distinguish the next unimplemented slice.
+   - When it is empty, take the next slice from `eng/roadmap.md`. Inspect plans,
+     history, and code only when needed to distinguish the next unimplemented
+     slice.
    - Continue without confirmation when the user has already authorized planning
      the next repository-defined slice. Ask one focused question only when the
      next work remains ambiguous.
-2. Read the authoritative requirement sources first.
-   - When the specification, roadmap, or another named source already defines
-     the behavior, scope, and acceptance gates, treat it as sufficient.
+3. Read `docs/spec.md` and `eng/roadmap.md` before exploring implementation.
+   - The specification owns behavior. The roadmap owns scope, order, and
+     completion gates.
+   - Read `eng/architecture.md` when it exists and the work touches structural
+     decisions. Its absence is not a blocker.
    - Reference those sources from the plan. Do not restate their contents.
-3. Resolve only decisions that can change the implementation.
-   - Ask the user one question at a time when product or language behavior is
-     genuinely unsettled.
-   - Update the document that owns the decision before the plan depends on it.
+4. Confirm that the source documents settle the proposed work.
+   - If required product behavior is missing or ambiguous, stop and identify the
+     decision the user must resolve with `kspec`. Do not modify the
+     specification from this skill.
+   - If the work is absent from or conflicts with the roadmap, stop and identify
+     the scope or ordering decision the user must resolve with `kroadmap`. Do
+     not modify the roadmap from this skill.
+   - Resolve only implementation decisions that the specification, roadmap, and
+     established codebase patterns leave open.
    - Compare alternatives only when the repository leaves a real choice. Follow
      an established local pattern directly when it already settles the design.
 
 ### Explore and size
 
-4. Inspect the smallest useful part of the repository.
+5. Inspect the smallest useful part of the repository.
    - Find the attachment points, adjacent patterns, affected public boundaries,
      and tests.
    - Use targeted searches and file ranges. Do not dump whole directories or
      reread guidance already present in the session.
    - Check architectural fit directly. Do not produce a separate PHAME,
      pre-mortem, scoring, or steelman report.
-5. Size the work for one `kwork` session.
+6. Size the work for one `kwork` session.
    - Split only when one session cannot implement, test, validate, and commit
      the change comfortably.
    - Cut at coherent boundaries. Each plan must leave the repository working and
@@ -47,9 +59,9 @@ This skill produces an implementation plan. It never implements the plan.
 
 ### Write
 
-6. Name each plan `eng/plans/YYYY-MM-DD-NNN-slug.md`, using the next sequence
+7. Name each plan `eng/plans/YYYY-MM-DD-NNN-slug.md`, using the next sequence
    for the day.
-7. Write from `assets/plan-template.md`.
+8. Write from `assets/plan-template.md`.
    - Plans are slim by default. Prefer 300–800 words, and use fewer when the
      specification and roadmap already settle the work.
    - Keep only information the implementer needs to execute this slice:
@@ -63,6 +75,6 @@ This skill produces an implementation plan. It never implements the plan.
      make a materially wrong choice.
    - For a series, make each plan independently executable without repeating the
      shared specification or roadmap.
-8. Print the final plan paths in execution order and stop.
+9. Print the final plan paths in execution order and stop.
    - Do not review the plan locally or with a subagent.
    - Suggest one fresh `kwork` session per plan.

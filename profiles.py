@@ -11,6 +11,7 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parent
 SKILLS_CLI = ("npx", "-y", "skills@latest")
 CANONICAL_SKILLS = ".agents/skills"
+SKILL_GROUPS = ("core", "ext", "wip")
 
 # The harnesses this script understands: the directory under the home directory
 # where each keeps its configuration, and the name the skills CLI installs it
@@ -31,6 +32,22 @@ def selected_harnesses(args):
     """Harnesses named by --<name> flags, or every harness when none are given."""
     chosen = [harness for harness in HARNESSES if getattr(args, harness)]
     return chosen or list(HARNESSES)
+
+
+def selected_skill_groups(values):
+    """Normalize comma- or space-separated skill groups in argument order."""
+    selected = []
+    for value in values:
+        for group in value.split(","):
+            group = group.strip()
+            if not group:
+                raise ValueError("skill groups cannot be empty")
+            if group not in SKILL_GROUPS:
+                choices = ", ".join(SKILL_GROUPS)
+                raise ValueError(f"unknown skill group '{group}'; choose from: {choices}")
+            if group not in selected:
+                selected.append(group)
+    return selected
 
 
 def hook_configs(harness, directory):
@@ -236,11 +253,12 @@ def print_mcp(args):
 
 def sync_repository_skills(
     harnesses,
+    groups,
     repository_root=None,
     home_directory=None,
     runner=subprocess.run,
 ):
-    """Install every skill in this checkout into the given harnesses, then prune."""
+    """Make the chosen harnesses contain exactly the selected skill groups."""
     repository_root = repository_root or REPOSITORY_ROOT
     home_directory = home_directory or Path.home()
     skills_directory = repository_root / "skills"
@@ -249,22 +267,37 @@ def sync_repository_skills(
     if not skills_directory.is_dir():
         raise FileNotFoundError(f"skills directory not found: {skills_directory}")
 
+    group_directories = []
+    for group in groups:
+        group_directory = skills_directory / group
+        if not group_directory.is_dir():
+            raise FileNotFoundError(f"skill group directory not found: {group_directory}")
+        group_directories.append((group, group_directory))
+
     agents = [HARNESSES[harness]["agent"] for harness in harnesses]
-    print(f"Installing skills into {', '.join(agents)}")
-    runner(
-        [
-            *SKILLS_CLI,
-            "add",
-            str(skills_directory),
-            "--skill",
-            "*",
-            "--agent",
-            *agents,
-            "--global",
-            "--yes",
-        ],
-        check=True,
-    )
+    for group, group_directory in group_directories:
+        print(f"Installing {group} skills into {', '.join(agents)}")
+        runner(
+            [
+                *SKILLS_CLI,
+                "add",
+                str(group_directory),
+                "--skill",
+                "*",
+                "--agent",
+                *agents,
+                "--global",
+                "--yes",
+            ],
+            check=True,
+        )
+
+    selected_skills = {
+        path.name
+        for _group, group_directory in group_directories
+        for path in group_directory.iterdir()
+        if path.is_dir() and (path / "SKILL.md").is_file()
+    }
 
     installed_skills = (
         sorted(
@@ -276,11 +309,23 @@ def sync_repository_skills(
         else []
     )
     for name in installed_skills:
-        if (skills_directory / name).is_dir():
+        if name in selected_skills:
             continue
 
-        print(f"Removing skill no longer in this repo: {name}")
-        runner([*SKILLS_CLI, "remove", "--skill", name, "--global", "--yes"], check=True)
+        print(f"Removing skill outside the selected groups: {name}")
+        runner(
+            [
+                *SKILLS_CLI,
+                "remove",
+                "--skill",
+                name,
+                "--agent",
+                *agents,
+                "--global",
+                "--yes",
+            ],
+            check=True,
+        )
 
 
 def sync_skills(args):
@@ -288,7 +333,7 @@ def sync_skills(args):
     if not harnesses:
         flags = ", ".join(f"--{harness}" for harness in HARNESSES)
         raise ValueError(f"name at least one harness to install into: {flags}")
-    sync_repository_skills(harnesses)
+    sync_repository_skills(harnesses, selected_skill_groups(args.groups))
 
 
 def add_harness_flags(parser):
@@ -315,7 +360,13 @@ def main():
         command = commands.add_parser(name, help=f"{help_text} (default: every harness)")
         add_harness_flags(command).set_defaults(func=function)
 
-    sync = commands.add_parser("sync-skills", help="install this repository's skills into the named harnesses")
+    sync = commands.add_parser("sync-skills", help="install selected skill groups into the named harnesses")
+    sync.add_argument(
+        "groups",
+        nargs="+",
+        metavar="GROUP",
+        help="skill groups to install, separated by commas or spaces: core, ext, wip",
+    )
     add_harness_flags(sync).set_defaults(func=sync_skills)
 
     args = parser.parse_args()

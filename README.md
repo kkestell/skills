@@ -2,9 +2,8 @@
 
 Skills for coding work and prose editing.
 
-The core workflow pairs `kplan`, which writes an implementation plan, with
-`kwork`, which implements, validates, reviews, and commits it. See
-[skills/README.md](./skills/README.md) for the full workflow.
+The core workflow moves from `kspec` and `kroadmap` through `kplan` and `kwork`.
+See [skills/README.md](./skills/README.md) for the full workflow.
 
 ## Core workflow
 
@@ -13,12 +12,13 @@ review and commit it, and preserve context between sessions.
 
 | Skill      | What it does                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------ |
-| `kinit`    | Explore a repo and bootstrap an `AGENTS.md` orientation doc.                               |
-| `kplan`    | Brainstorm a change, explore the codebase, and write a concrete implementation plan.       |
+| `kinit`    | Bootstrap `AGENTS.md` with project orientation and workflow routing.                       |
+| `kspec`    | Create or update the authoritative product specification with the user.                    |
+| `kroadmap` | Create or update user-directed milestones, ordering, and completion gates.                 |
+| `kplan`    | Turn the specification and roadmap into a concrete implementation plan.                    |
 | `kwork`    | Execute a plan end to end: implement, validate with independent review passes, and commit. |
 | `ktask`    | Execute a bounded one-off task without a persisted plan or commit.                         |
 | `kreview`  | Run independent completeness and code-simplification review passes over a body of work.    |
-| `khandoff` | Write a handoff note summarizing a session so the next one can continue cleanly.           |
 
 ## Everything else
 
@@ -31,22 +31,24 @@ maintaining this repo.
 | `kmarkdown`   | Format Markdown with dprint and hard-wrap prose at 80 columns.                  |
 | `krust`       | Apply the Rust API design guidelines when designing or reviewing public APIs.   |
 | `kclaude`     | Delegate a task to Claude Code headlessly and report back its result.           |
+| `kcodex`      | Delegate a task to Codex headlessly and report back its result.                 |
+| `khandoff`    | Write a handoff note so the next session can continue cleanly.                  |
 | `kskillissue` | Diagnose a misbehaving skill, fix it in this repo, commit, push, and reinstall. |
 
 ## Sync
 
-From inside a checkout, `sync-skills` installs every skill under `skills/` into
-the harnesses you name. It also removes globally installed skills this checkout
-no longer defines:
+From inside a checkout, `sync-skills` installs the skill groups you name into
+the selected harnesses. Groups may be comma- or space-separated. Skills outside
+the selection are removed from those harnesses:
 
 ```bash
-./profiles.py sync-skills --claude --codex
+./profiles.py sync-skills core,ext --claude --codex
 ```
 
-The harness flags are `--claude`, `--codex`, and `--copilot`; each one points at
-that harness's configuration directory under your home directory (`~/.claude`,
-`~/.codex`, `~/.copilot`). `sync-skills` installs nothing until at least one is
-given, so a bare run is an error rather than a surprise.
+The groups are `core`, `ext`, and `wip`. The harness flags are `--claude`,
+`--codex`, and `--copilot`; each one points at that harness's configuration
+directory under your home directory (`~/.claude`, `~/.codex`, `~/.copilot`).
+Both a group and at least one harness are required.
 
 Pull the latest repository changes and run the same command again to update
 installed skills.
@@ -68,16 +70,22 @@ unless you narrow them with the same flags:
 
 ```text
 skills/
-  kplan/
-    SKILL.md
-    assets/
-  kwork/
-    SKILL.md
-  ...
+  core/
+    kplan/
+      SKILL.md
+      assets/
+    kwork/
+      SKILL.md
+  ext/
+    kmarkdown/
+      SKILL.md
+  wip/
+    kresearch/
+      SKILL.md
 ```
 
-Each directory under `skills/` is a standalone skill. There are no plugin
-manifests or marketplace catalogs.
+Each group contains standalone skill directories. There are no plugin manifests
+or marketplace catalogs.
 
 ## Development
 
@@ -91,7 +99,7 @@ npm run check
 Validate one skill:
 
 ```bash
-npm run validate -- skills/<skill-name>
+npm run validate -- skills/<group>/<skill-name>
 ```
 
 See [AGENTS.md](./AGENTS.md) for authoring conventions.

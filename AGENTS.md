@@ -11,22 +11,26 @@ namespaces.
 
 ## Structure
 
-Each canonical skill lives directly under `skills/`:
+Skills are organized by group under `skills/`:
 
 ```text
 skills/
-  my-skill/
-    SKILL.md
-    assets/
-    references/
-    scripts/
+  core/
+    my-skill/
+      SKILL.md
+      assets/
+      references/
+      scripts/
+  ext/
+  wip/
 ```
 
 Only add supporting directories that the skill actually uses.
 
-Unfinished skills live under `wip/` with the same layout. `profiles.py` installs
-only `skills/`, so nothing in `wip/` reaches an agent profile; validation covers
-both. Promote a skill by moving its directory into `skills/`.
+Core skills form the standard workflow and must not refer to skills in `ext/`.
+Standalone skills live in `ext/`, and unfinished skills live in `wip/`.
+`profiles.py` installs only the groups explicitly selected; validation covers
+all three. Promote a skill by moving its directory between groups.
 
 ## Naming rules
 
@@ -36,8 +40,8 @@ both. Promote a skill by moving its directory into `skills/`.
 
 ## Adding a skill
 
-1. Create `skills/<name>/SKILL.md` and any required supporting resources, or
-   `wip/<name>/SKILL.md` if it is not ready to install.
+1. Create `skills/<group>/<name>/SKILL.md` and any required supporting
+   resources.
 2. Run `npm run check`.
 
 ### `SKILL.md` frontmatter
@@ -66,21 +70,20 @@ Allowed fields are `name`, `description`, `metadata`, `license`,
 
 ## Distribution
 
-The repository itself is the install source. Install all skills into Claude Code
-and Codex with:
+The repository itself is the install source. Install the core and extension
+groups into Claude Code and Codex with:
 
 ```bash
-npx skills add kkestell/skills --skill '*' --agent claude-code codex --global --yes
+./profiles.py sync-skills core,ext --claude --codex
 ```
 
 Do not add plugin or marketplace validation to the repository.
 
 ## Validation
 
-Before committing, confirm every `skills/<name>/SKILL.md` and
-`wip/<name>/SKILL.md` has valid frontmatter, skill names are unique across both
-directories, folder names match skill names, and examples and assets do not
-expose secrets.
+Before committing, confirm every `skills/<group>/<name>/SKILL.md` has valid
+frontmatter, skill names are unique across all groups, folder names match skill
+names, and examples and assets do not expose secrets.
 
 Run the full check suite:
 

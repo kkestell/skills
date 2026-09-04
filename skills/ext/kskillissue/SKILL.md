@@ -29,16 +29,17 @@ argument-hint: "[what the agent did wrong — and which skill, if you know]"
    development directories before asking the user.
 6. Edit the repo copy only. Installed skills live in `~/.agents/skills/<name>`,
    symlinked from `~/.claude/skills/<name>`; every sync overwrites them.
-7. Confirm the suspect skill is in this repo, under `skills/` or `wip/`. If the
-   behavior came from a built-in agent skill, a plugin skill, `AGENTS.md`, or
-   the user's `CLAUDE.md`, say where it actually comes from and stop.
+7. Confirm the suspect skill is in this repo under
+   `skills/<group>/<name>`. If the behavior came from a built-in agent skill, a
+   plugin skill, `AGENTS.md`, or the user's `CLAUDE.md`, say where it actually
+   comes from and stop.
 
 ### Phase 3 — Diagnose
 
 8. Compare the installed copy against the source:
 
    ```bash
-   diff -ru ~/.agents/skills/<name> skills/<name>
+   diff -ru ~/.agents/skills/<name> skills/<group>/<name>
    ```
 
    A difference means the install is stale, and the fix may be nothing but a
@@ -65,9 +66,8 @@ argument-hint: "[what the agent did wrong — and which skill, if you know]"
 13. Write the fix as clean, declarative instruction, as if the right way had
     been known from the start. No warnings built around what the agent did, no
     rationale that exists only to justify the incident, no dated notes.
-14. Keep the repo's conventions: allowed frontmatter fields only, `SKILL.md`
-    body under 500 lines, Markdown hard-wrapped at 80 columns (the `kmarkdown`
-    skill does this).
+14. Keep the repo's conventions: allowed frontmatter fields only and `SKILL.md`
+    body under 500 lines.
 15. Do not grow the scope. A prose bug does not need a new skill, a new asset
     file, or a restructure. If the diagnosis genuinely calls for more than a
     contained edit, describe it and get approval before making it.
@@ -75,7 +75,7 @@ argument-hint: "[what the agent did wrong — and which skill, if you know]"
 ### Phase 5 — Verify
 
 16. Run `npm run check` from the repo root, or validate the one skill with
-    `npm run validate -- skills/<name>`. Run `npm install` first if
+    `npm run validate -- skills/<group>/<name>`. Run `npm install` first if
     `node_modules/` is missing. Fix what fails.
 17. Re-read the edited skill from the top the way a fresh agent would, and
     confirm the reported scenario now lands correctly.
@@ -96,10 +96,10 @@ argument-hint: "[what the agent did wrong — and which skill, if you know]"
 
 ### Phase 7 — Reinstall
 
-23. Run `./profiles.py sync-skills --claude --codex` from the repo root. Pass a
-    different set of harness flags only when the user names one; never infer
-    harnesses from which configuration directories happen to exist on the
-    machine.
+23. Run `./profiles.py sync-skills core,ext --claude --codex` from the repo
+    root. Pass a different set of harness flags only when the user names one;
+    never infer harnesses from which configuration directories happen to exist
+    on the machine.
 24. Confirm the install landed — re-run the `diff -ru` from step 8 and see it
     come back clean.
 

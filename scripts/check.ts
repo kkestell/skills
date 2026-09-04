@@ -7,9 +7,11 @@ import { runValidation } from "./validate.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-// Installable skills live in skills/; wip/ holds in-progress skills profiles.py
-// does not install. Both are checked here.
-const SKILL_ROOTS = [path.join(REPO_ROOT, "skills"), path.join(REPO_ROOT, "wip")];
+// Each group is independently installable, but every group receives the same
+// repository checks so work-in-progress skills do not rot.
+const SKILL_ROOTS = ["core", "ext", "wip"].map((group) =>
+  path.join(REPO_ROOT, "skills", group),
+);
 
 const SHELLCHECK_VERSION = "0.10.0";
 const ACTIONLINT_VERSION = "1.7.7";
@@ -163,7 +165,7 @@ async function collectSkillDirs(): Promise<string[]> {
     try {
       entries = await readdir(root, { withFileTypes: true });
     } catch {
-      // wip/ is optional.
+      // A missing group is reported by skill validation.
       continue;
     }
 

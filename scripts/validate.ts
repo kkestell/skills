@@ -5,11 +5,7 @@ import { validate as validateSkillDir } from "./lib/skills-ref.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKILLS_DIR = path.join(REPO_ROOT, "skills");
-const WIP_DIR = path.join(REPO_ROOT, "wip");
-
-// Installable skills live in skills/. wip/ holds in-progress skills profiles.py
-// does not install; they are still validated so they do not rot.
-const SKILL_ROOTS = [SKILLS_DIR, WIP_DIR];
+const SKILL_ROOTS = ["core", "ext", "wip"].map((group) => path.join(SKILLS_DIR, group));
 
 const SKILL_BODY_MAX_LINES = 500;
 const NAME_PATTERN = /^name:\s*(.+?)\s*$/;
@@ -85,6 +81,10 @@ function findSkillRoots(target: string): string[] | null {
     return SKILL_ROOTS;
   }
 
+  if (resolvedTarget === SKILLS_DIR) {
+    return SKILL_ROOTS;
+  }
+
   return SKILL_ROOTS.includes(resolvedTarget) ? [resolvedTarget] : null;
 }
 
@@ -134,7 +134,7 @@ async function validateSkill(skillDir: string): Promise<string[]> {
 }
 
 // Every skill directory directly under `root`, sorted. Null when `root` itself
-// is missing, which only wip/ is allowed to be.
+// is missing.
 async function listSkillDirs(root: string): Promise<string[] | null> {
   let children;
   try {
@@ -159,12 +159,7 @@ async function validateAll(roots: string[]): Promise<string[]> {
     const rootSkillDirs = await listSkillDirs(root);
 
     if (rootSkillDirs === null) {
-      // wip/ is optional; skills/ is not.
-      if (root === SKILLS_DIR) {
-        return ["skills/ directory not found"];
-      }
-
-      continue;
+      return [`skill group directory not found: ${path.relative(REPO_ROOT, root)}`];
     }
 
     skillDirs.push(...rootSkillDirs);
@@ -175,8 +170,7 @@ async function validateAll(roots: string[]): Promise<string[]> {
     return errors;
   }
 
-  // Names must be unique across every root: a skill left behind in skills/ while
-  // a copy moves to wip/ would still be installed.
+  // Names must be unique across every group so a selection is unambiguous.
   const skillNameToDir = new Map<string, string>();
 
   for (const skillDir of skillDirs) {

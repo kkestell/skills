@@ -1,5 +1,6 @@
 import argparse
 import io
+import re
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -38,9 +39,32 @@ class HarnessSelectionTests(unittest.TestCase):
 
     def test_sync_requires_at_least_one_harness(self):
         args = self.parse([])
+        args.groups = ["core"]
 
         with self.assertRaisesRegex(ValueError, "--claude, --codex, --copilot"):
             profiles.sync_skills(args)
+
+
+class SkillGroupSelectionTests(unittest.TestCase):
+    def test_groups_may_be_comma_or_space_separated(self):
+        self.assertEqual(
+            profiles.selected_skill_groups(["core,ext", "wip"]),
+            ["core", "ext", "wip"],
+        )
+
+    def test_duplicate_groups_are_ignored(self):
+        self.assertEqual(
+            profiles.selected_skill_groups(["core,ext", "core"]),
+            ["core", "ext"],
+        )
+
+    def test_unknown_group_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "unknown skill group 'other'.*core, ext, wip"):
+            profiles.selected_skill_groups(["core,other"])
+
+    def test_empty_group_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "skill groups cannot be empty"):
+            profiles.selected_skill_groups(["core,"])
 
 
 class SyncSkillsTests(unittest.TestCase):
@@ -52,9 +76,10 @@ class SyncSkillsTests(unittest.TestCase):
 
         self.repository_root = Path(self.repository.name)
         self.home_directory = Path(self.home.name)
-        (self.repository_root / "skills/current-skill").mkdir(parents=True)
+        (self.repository_root / "skills/core/current-skill").mkdir(parents=True)
+        (self.repository_root / "skills/core/current-skill/SKILL.md").touch()
 
-    def run_sync(self, harnesses):
+    def run_sync(self, harnesses, groups=("core",)):
         calls = []
 
         def runner(command, *, check):
@@ -63,6 +88,7 @@ class SyncSkillsTests(unittest.TestCase):
         with redirect_stdout(io.StringIO()):
             profiles.sync_repository_skills(
                 harnesses,
+                groups,
                 repository_root=self.repository_root,
                 home_directory=self.home_directory,
                 runner=runner,
@@ -80,7 +106,7 @@ class SyncSkillsTests(unittest.TestCase):
             [
                 *profiles.SKILLS_CLI,
                 "add",
-                str(self.repository_root / "skills"),
+                str(self.repository_root / "skills/core"),
                 "--skill",
                 "*",
                 "--agent",
@@ -91,6 +117,32 @@ class SyncSkillsTests(unittest.TestCase):
             ],
         )
         self.assertTrue(check)
+
+    def test_only_selected_groups_are_installed(self):
+        ext_skill = self.repository_root / "skills/ext/extra-skill"
+        ext_skill.mkdir(parents=True)
+        (ext_skill / "SKILL.md").touch()
+
+        calls = self.run_sync(["codex"], ["core"])
+
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][0][4], str(self.repository_root / "skills/core"))
+
+    def test_each_selected_group_is_installed(self):
+        ext_skill = self.repository_root / "skills/ext/extra-skill"
+        ext_skill.mkdir(parents=True)
+        (ext_skill / "SKILL.md").touch()
+
+        calls = self.run_sync(["codex"], ["core", "ext"])
+
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(
+            [call[0][4] for call in calls],
+            [
+                str(self.repository_root / "skills/core"),
+                str(self.repository_root / "skills/ext"),
+            ],
+        )
 
     def test_skills_missing_from_this_repo_are_removed(self):
         (self.home_directory / "sub/current-skill").mkdir(parents=True)
@@ -104,16 +156,71 @@ class SyncSkillsTests(unittest.TestCase):
         self.assertEqual(len(calls), 2)
         self.assertEqual(
             calls[1][0],
-            [*profiles.SKILLS_CLI, "remove", "--skill", "removed-skill", "--global", "--yes"],
+            [
+                *profiles.SKILLS_CLI,
+                "remove",
+                "--skill",
+                "removed-skill",
+                "--agent",
+                "github-copilot",
+                "--global",
+                "--yes",
+            ],
         )
 
+    def test_skills_from_unselected_groups_are_removed(self):
+        ext_skill = self.repository_root / "skills/ext/extra-skill"
+        ext_skill.mkdir(parents=True)
+        (ext_skill / "SKILL.md").touch()
+        canonical = self.home_directory / profiles.CANONICAL_SKILLS
+        (canonical / "extra-skill").mkdir(parents=True)
+
+        calls = self.run_sync(["codex"], ["core"])
+
+        self.assertEqual(len(calls), 2)
+        self.assertIn("extra-skill", calls[1][0])
+
+    def test_missing_selected_group_is_reported(self):
+        with self.assertRaisesRegex(FileNotFoundError, "skill group directory not found"):
+            self.run_sync(["claude"], ["ext"])
+
     def test_missing_skills_directory_is_reported(self):
-        for path in (self.repository_root / "skills").iterdir():
-            path.rmdir()
+        skill_directory = self.repository_root / "skills/core/current-skill"
+        (skill_directory / "SKILL.md").unlink()
+        skill_directory.rmdir()
+        (self.repository_root / "skills/core").rmdir()
         (self.repository_root / "skills").rmdir()
 
         with self.assertRaisesRegex(FileNotFoundError, "skills directory not found"):
             self.run_sync(["claude"])
+
+
+class CoreSkillDependencyTests(unittest.TestCase):
+    @staticmethod
+    def mentions_skill(contents, name):
+        pattern = rf"(?<![\w-]){re.escape(name)}(?![\w-])"
+        return re.search(pattern, contents) is not None
+
+    def test_skill_reference_boundaries_do_not_match_larger_words(self):
+        self.assertTrue(self.mentions_skill("Use kmarkdown here", "kmarkdown"))
+        self.assertFalse(self.mentions_skill("notkmarkdown", "kmarkdown"))
+        self.assertFalse(self.mentions_skill("kmarkdownish", "kmarkdown"))
+
+    def test_core_skills_do_not_reference_ext_skills(self):
+        core_directory = profiles.REPOSITORY_ROOT / "skills/core"
+        ext_directory = profiles.REPOSITORY_ROOT / "skills/ext"
+        ext_skill_names = [path.name for path in ext_directory.iterdir() if path.is_dir()]
+
+        references = []
+        for path in core_directory.rglob("*"):
+            if not path.is_file():
+                continue
+            contents = path.read_text(errors="ignore")
+            for name in ext_skill_names:
+                if self.mentions_skill(contents, name):
+                    references.append(f"{path.relative_to(profiles.REPOSITORY_ROOT)} -> {name}")
+
+        self.assertEqual(references, [])
 
 
 class InventoryTests(unittest.TestCase):

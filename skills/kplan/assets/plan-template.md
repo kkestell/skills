@@ -1,94 +1,36 @@
 # <Plan Title>
 
-Use this template as a scaffold, not a cage. Drop sections that do not apply, expand the ones that matter, and add sections when the work needs more structure.
+Delete every section that does not earn its place. When the specification and
+roadmap settle the work, a complete plan may be a source link and a few task and
+test bullets.
 
-A plan is decided. It has no open questions, no TBDs, and no choices left to the implementer. Settle everything with the user before writing it.
+## Sources
 
-A plan is also one session's work. If the change is too large for a single implementation session, split it into a sequence of plans and write one of these documents per plan, each self-contained.
-
-## Sequence
-
-Omit this section for standalone plans.
-
-- **Position**: which plan this is in the series (e.g. 2 of 3) and the file names of the others
-- **Starting state**: what the earlier plans have already landed, stated concretely enough that the implementer does not need to read them
-- **Deferred**: what this plan deliberately leaves to later plans, so its scope is unambiguous
+- `path#section` — authoritative requirement or existing pattern
 
 ## Goal
 
-## Desired outcome
+One or two sentences describing the result of this slice.
 
-## How we got here
+## Implementation
 
-Brief summary of the brainstorming process: the problem framing, key assumptions validated with the user, and why this approach was chosen over alternatives.
+- `path/to/file` — concrete change
 
-## Summary of approach
+## Tests
 
-A high level summary of the implementation approach, including the major components of the change and how they interact. This should be a concise overview that gives a clear picture of the plan without needing to read the details below.
+- Behavior or boundary that this slice must prove
 
-## Related code
+## Decisions
 
-- `path/to/file` — Why this file or pattern matters
+Include only implementation decisions that are not already owned by a linked
+source. Omit this section when there are none.
 
-## Current state
+## Sequence
 
-- Relevant existing behavior:
-- Existing patterns to follow:
-- Constraints from the current implementation:
+For a multi-plan series only: state the plan's position, required starting
+state, and what a later plan owns. Omit for a standalone plan.
 
-## Structural considerations
+## Extra validation
 
-How the change fits the existing architecture. Note any PHAME concerns (hierarchy, abstraction, modularization, encapsulation) and how the plan addresses them.
-
-## Refactoring
-
-Refactoring needed before or during the feature work, and what each refactor achieves structurally. Omit if none needed.
-
-## Research
-
-Summarize findings that matter for this plan.
-
-### Repo findings
-
-- Finding:
-
-### External research
-
-- Source:
-- Why it matters:
-
-## Test plan
-
-Define what to test and at what level before listing implementation tasks. Focus on tests that earn their keep: edge cases, error paths, and boundary conditions — not happy-path tests that merely restate the implementation. Tests should target public interfaces so they stay useful through refactors.
-
-- **Key behaviors to verify**: (what the feature should do, expressed as testable assertions against public interfaces)
-- **Test levels**: (unit, integration, e2e — which level covers what, and why that level is the right one)
-- **Edge cases and failure modes**: (boundary conditions, error paths, concurrency concerns, malformed input — this is the most important part)
-- **What NOT to test**: (happy paths that just mirror implementation, framework guarantees, internal details that would break on refactor)
-
-## Implementation plan
-
-- Task 1
-- Task 2
-- Task 3
-
-## Impact assessment
-
-- Code paths affected:
-- Data or schema impact:
-- Dependency or API impact:
-
-## Validation
-
-Everything here must be runnable when this plan alone is done, with the repository building and the tests passing.
-
-- Tests:
-- Lint/format/typecheck:
-- Manual verification:
-
-## Gaps and follow-up
-
-Features or functionality this plan depends on but cannot deliver. Stub follow-up docs for these live in `eng/todo/YYYY-MM-DD-NNN-slug.md` if created.
-
-- Gap:
-- Follow-up:
+Include only checks beyond the repository's standard required gates. Omit when
+there are none.

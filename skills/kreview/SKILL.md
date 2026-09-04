@@ -1,48 +1,62 @@
 ---
 name: kreview
-description: "Run independent completeness and code-simplification review passes over implemented code. Use when a plan has been implemented and the changed files need checking for omissions, hacks, and unearned complexity. Do not use it to review prose — a plan, spec, roadmap, or other document is read and critiqued directly."
-argument-hint: "[plan path] --files [changed files] --tasks [completed tasks]"
+description: "Review a completed milestone for omissions, correctness problems, and unnecessary complexity. Use once after all milestone slices are implemented, not after each plan. Do not use it to review prose alone."
+argument-hint: "[milestone description] [--base <commit-or-ref>]"
 ---
 
 ## Workflow
 
-This skill reviews implemented code against the plan it came from. Prose — a
-plan, spec, roadmap, or other document — is read and critiqued directly.
+Run this skill once from a fresh session after every planned slice in a
+milestone has been implemented and validated. Perform the review directly; do
+not spawn additional review agents.
 
-### Input
+### Establish scope
 
-1. Resolve the review inputs from `<input_document> $ARGUMENTS </input_document>`:
-   - **Plan path**: repo-relative path to the implementation plan.
-   - **Tasks completed**: bullet list of what was implemented.
-   - **Files changed**: repo-relative paths of all implementation and test files added or modified.
-   - If any of these are missing, ask the user to provide them before proceeding.
+1. Resolve the milestone and comparison range from
+   `<input_document> $ARGUMENTS </input_document>`.
+   - Prefer an explicit base ref when supplied.
+   - Otherwise use the roadmap, milestone plans, and repository history to find
+     the commit immediately before the milestone began.
+   - Ask one focused question only when the range remains ambiguous.
+2. Read the milestone's authoritative specification and roadmap sections, then
+   the plans for its slices.
+3. Inspect the cumulative diff and changed-file list before opening files.
+   - Read changed code and nearby context needed to judge the diff.
+   - Do not dump every changed file end to end when the diff and focused context
+     are sufficient.
 
-### Completeness Review
+### Completeness and correctness
 
-2. Run a completeness review over the full body of work.
-   - Prefer running in a parallel subagent; otherwise perform locally.
-   - Subagents start with fresh context, so include all necessary context in the review prompt.
-   - Build the review prompt by reading `assets/review-prompt.md`, then filling in the specifics of the full plan.
-   - The reviewer reads the plan and all changed files, then evaluates whether the work is genuinely complete with no omissions, hacks, disabled warnings, or workarounds. The reviewer should assume that the code builds and the tests pass and should not verify this itself.
+4. Check the complete milestone against its specification, roadmap gates, and
+   plans.
+   - Find omitted behavior, partial slices, disabled checks, workarounds, and
+     contract drift.
+   - Check interactions between slices that a per-plan review would miss.
+   - Check likely correctness errors at public and semantic boundaries.
 
-### Code Simplification Review
+### Simplification
 
-3. Run a code simplification review over the changed code.
-   - Use the same `assets/review-prompt.md` prompt template.
-   - Focus on whether the implementation can be simpler while still satisfying the completed tasks and project requirements.
-   - Apply the spirit of `kphilosophy`: remove unearned complexity, avoid premature abstraction, prefer direct readable code, and keep only components that justify their cost.
+5. Review the cumulative implementation for unnecessary complexity.
+   - Look for abstractions without current clients, duplicated machinery,
+     speculative flexibility, hidden state, and code that can be made direct.
+   - Preserve required behavior and established repository boundaries.
 
-### Act on Findings
+### Report
 
-4. Evaluate review results.
-   - If either reviewer reports issues worth fixing: report them to the caller so they can be fixed.
-   - If both reviewers pass, report success.
-5. Return a structured summary:
-   - Verdict from each review (PASS or ISSUES FOUND).
-   - Combined list of issues (if any), with file paths, line numbers, and suggested fixes.
+6. Return one concise report:
+   - comparison range and milestone reviewed;
+   - `PASS` or `ISSUES FOUND`;
+   - actionable issues only, each with path, line, consequence, and suggested
+     fix;
+   - separate completeness/correctness and simplification headings when both
+     have findings.
+7. Do not edit files or rerun the project's validation suite. The caller fixes
+   findings and reruns affected gates.
 
 ## Principles
 
-- **Independent** — reviews must be free from the biases of the implementer.
-- **Honest** — a false "pass" is worse than a nit. Flag real problems, don't rubber-stamp.
-- **Concise** — only flag things that actually matter: real omissions, real hacks, real correctness problems. Do not pad with style nits or cosmetic suggestions.
+- **Milestone-wide** — review the integrated result once, after all slices.
+- **Independent** — start fresh and judge the final diff rather than the
+  implementer's transcript.
+- **Diff-first** — load only the context needed to assess changed behavior.
+- **Actionable** — omit reassurance, style nits, and cosmetic suggestions.

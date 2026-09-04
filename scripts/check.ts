@@ -183,30 +183,28 @@ async function collectSkillDirs(): Promise<string[]> {
 
 async function collectShellFiles(): Promise<string[]> {
   const shellFiles: string[] = [];
-  const rootScriptsDir = path.join(REPO_ROOT, "scripts");
+  const skillScriptDirs = (await collectSkillDirs()).map((skillDir) =>
+    path.join(skillDir, "scripts"),
+  );
 
-  try {
-    const rootScriptEntries = await readdir(rootScriptsDir, { withFileTypes: true });
-    for (const entry of rootScriptEntries) {
-      if (entry.isFile() && entry.name.endsWith(".sh")) {
-        shellFiles.push(path.join(rootScriptsDir, entry.name));
-      }
-    }
-  } catch {
-    // Ignore missing scripts/; validation below will skip if nothing is found.
-  }
-
-  for (const skillDir of await collectSkillDirs()) {
-    const skillScriptsDir = path.join(skillDir, "scripts");
+  for (const dir of [
+    path.join(REPO_ROOT, "scripts"),
+    path.join(REPO_ROOT, "hooks"),
+    ...skillScriptDirs,
+  ]) {
+    let entries;
     try {
-      const scriptEntries = await readdir(skillScriptsDir, { withFileTypes: true });
-      for (const entry of scriptEntries) {
-        if (entry.isFile() && entry.name.endsWith(".sh")) {
-          shellFiles.push(path.join(skillScriptsDir, entry.name));
-        }
-      }
+      entries = await readdir(dir, { withFileTypes: true });
     } catch {
-      // Ignore skills without scripts/.
+      // A directory without scripts is not an error; runShellcheck reports
+      // only when nothing at all was found.
+      continue;
+    }
+
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.endsWith(".sh")) {
+        shellFiles.push(path.join(dir, entry.name));
+      }
     }
   }
 

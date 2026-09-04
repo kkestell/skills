@@ -195,6 +195,144 @@ class SyncSkillsTests(unittest.TestCase):
             self.run_sync(["claude"])
 
 
+class InstallHooksTests(unittest.TestCase):
+    def setUp(self):
+        self.repository = tempfile.TemporaryDirectory()
+        self.home = tempfile.TemporaryDirectory()
+        self.addCleanup(self.repository.cleanup)
+        self.addCleanup(self.home.cleanup)
+
+        self.repository_root = Path(self.repository.name)
+        self.home_directory = Path(self.home.name)
+        source = self.repository_root / profiles.HOOKS_DIRECTORY / profiles.NOTIFY_SCRIPT
+        source.parent.mkdir(parents=True)
+        source.write_text("#!/bin/sh\nexit 0\n")
+
+    def install(self, harness="claude"):
+        directory = profiles.harness_directory(harness, self.home_directory)
+        lines = profiles.install_notification_hook(
+            harness,
+            directory,
+            repository_root=self.repository_root,
+        )
+        return lines, profiles.read_json(profiles.hooks_path(harness, directory))
+
+    def test_hooks_are_registered_on_every_notification_event(self):
+        lines, config = self.install()
+
+        self.assertEqual(sorted(config["hooks"]), sorted(profiles.NOTIFY_EVENTS))
+        self.assertTrue(any(line.startswith("wrote ") for line in lines))
+
+    def test_the_script_is_copied_next_to_the_harness_configuration(self):
+        self.install()
+        script = (
+            profiles.harness_directory("claude", self.home_directory)
+            / profiles.HOOKS_DIRECTORY
+            / profiles.NOTIFY_SCRIPT
+        )
+
+        self.assertEqual(script.read_text(), "#!/bin/sh\nexit 0\n")
+        self.assertTrue(script.stat().st_mode & 0o111)
+
+    def test_claude_and_codex_use_their_own_configuration_files(self):
+        self.install("claude")
+        self.install("codex")
+
+        self.assertTrue((self.home_directory / ".claude/settings.json").is_file())
+        self.assertTrue((self.home_directory / ".codex/hooks.json").is_file())
+
+    def test_existing_hooks_are_left_untouched(self):
+        directory = profiles.harness_directory("claude", self.home_directory)
+        existing = {
+            "hooks": {
+                "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "echo mine"}]}],
+                "Stop": [{"hooks": [{"type": "command", "command": "echo also mine"}]}],
+            }
+        }
+        profiles.write_json(profiles.hooks_path("claude", directory), existing)
+
+        _lines, config = self.install()
+
+        self.assertEqual(config["hooks"]["UserPromptSubmit"], existing["hooks"]["UserPromptSubmit"])
+        self.assertEqual(config["hooks"]["Stop"][0], existing["hooks"]["Stop"][0])
+        self.assertEqual(len(config["hooks"]["Stop"]), 2)
+
+    def test_unrelated_settings_are_preserved(self):
+        directory = profiles.harness_directory("claude", self.home_directory)
+        profiles.write_json(profiles.hooks_path("claude", directory), {"model": "opus", "theme": "dark"})
+
+        _lines, config = self.install()
+
+        self.assertEqual(config["model"], "opus")
+        self.assertEqual(config["theme"], "dark")
+
+    def test_installing_twice_changes_nothing(self):
+        self.install()
+        path = profiles.hooks_path("claude", profiles.harness_directory("claude", self.home_directory))
+        before = path.read_text()
+
+        lines, _config = self.install()
+
+        self.assertEqual(path.read_text(), before)
+        self.assertEqual(lines, [f"already registered in {path}"])
+
+    def test_a_hook_registered_by_another_path_form_counts_as_installed(self):
+        directory = profiles.harness_directory("claude", self.home_directory)
+        marker = f"{profiles.HOOKS_DIRECTORY}/{profiles.NOTIFY_SCRIPT}"
+        profiles.write_json(
+            profiles.hooks_path("claude", directory),
+            {"hooks": {event: [{"hooks": [{"command": f'"$HOME/.claude/{marker}"'}]}] for event in profiles.NOTIFY_EVENTS}},
+        )
+
+        _lines, config = self.install()
+
+        for event in profiles.NOTIFY_EVENTS:
+            self.assertEqual(len(config["hooks"][event]), 1)
+
+    def test_the_installed_script_is_refreshed_without_touching_registrations(self):
+        self.install()
+        directory = profiles.harness_directory("claude", self.home_directory)
+        script = directory / profiles.HOOKS_DIRECTORY / profiles.NOTIFY_SCRIPT
+        script.write_text("#!/bin/sh\nexit 1\n")
+
+        lines, config = self.install()
+
+        self.assertEqual(script.read_text(), "#!/bin/sh\nexit 0\n")
+        self.assertEqual(lines, [f"wrote {script}"])
+        for event in profiles.NOTIFY_EVENTS:
+            self.assertEqual(len(config["hooks"][event]), 1)
+
+    def test_a_harness_without_a_hooks_file_is_rejected(self):
+        directory = profiles.harness_directory("copilot", self.home_directory)
+
+        with self.assertRaisesRegex(ValueError, "copilot does not support installing hooks"):
+            profiles.hooks_path("copilot", directory)
+
+    def test_only_harnesses_that_take_hooks_are_offered(self):
+        self.assertEqual(profiles.HOOK_HARNESSES, ("claude", "codex"))
+
+    def test_malformed_hooks_configuration_is_reported(self):
+        directory = profiles.harness_directory("claude", self.home_directory)
+        profiles.write_json(profiles.hooks_path("claude", directory), {"hooks": {"Stop": "echo nope"}})
+
+        with self.assertRaisesRegex(TypeError, "hooks.Stop .* must be an array"):
+            self.install()
+
+    def test_install_requires_at_least_one_harness(self):
+        parser = argparse.ArgumentParser()
+        profiles.add_harness_flags(parser, profiles.HOOK_HARNESSES)
+        args = parser.parse_args([])
+
+        with self.assertRaisesRegex(ValueError, "--claude, --codex"):
+            profiles.install_hooks(args)
+
+    def test_missing_hook_script_is_reported(self):
+        (self.repository_root / profiles.HOOKS_DIRECTORY / profiles.NOTIFY_SCRIPT).unlink()
+
+        with self.assertRaisesRegex(FileNotFoundError, "hook script not found"):
+            self.install()
+
+
 class CoreSkillDependencyTests(unittest.TestCase):
     @staticmethod
     def mentions_skill(contents, name):

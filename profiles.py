@@ -14,13 +14,24 @@ CANONICAL_SKILLS = ".agents/skills"
 SKILL_GROUPS = ("core", "ext", "wip")
 
 # The harnesses this script understands: the directory under the home directory
-# where each keeps its configuration, and the name the skills CLI installs it
-# by. A --<name> flag selects the harness on every command.
+# where each keeps its configuration, the name the skills CLI installs it by,
+# and the file install-hooks writes hooks into. Harnesses without a hooks file
+# cannot be named on install-hooks. A --<name> flag selects the harness on
+# every command.
 HARNESSES = {
-    "claude": {"directory": ".claude", "agent": "claude-code"},
-    "codex": {"directory": ".codex", "agent": "codex"},
+    "claude": {"directory": ".claude", "agent": "claude-code", "hooks": "settings.json"},
+    "codex": {"directory": ".codex", "agent": "codex", "hooks": "hooks.json"},
     "copilot": {"directory": ".copilot", "agent": "github-copilot"},
 }
+
+# Hooks live in this repository and are copied into <harness>/hooks/ on
+# install. Claude Code and Codex agree on both the event names and the matcher
+# group shape, so one registration serves both.
+HOOKS_DIRECTORY = "hooks"
+HOOK_HARNESSES = tuple(name for name, harness in HARNESSES.items() if harness.get("hooks"))
+NOTIFY_SCRIPT = "notify.sh"
+NOTIFY_EVENTS = ("PermissionRequest", "Stop")
+NOTIFY_TIMEOUT = 3
 
 
 def harness_directory(harness, home_directory=None):
@@ -78,6 +89,88 @@ def read_toml(path):
         return {}
     with path.open("rb") as file:
         return tomllib.load(file)
+
+
+def write_json(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w") as file:
+        json.dump(data, file, indent=2)
+        file.write("\n")
+
+
+def hooks_path(harness, directory):
+    """The file install-hooks registers hooks in, for a harness that has one."""
+    relative = HARNESSES[harness].get("hooks")
+    if relative is None:
+        raise ValueError(f"{harness} does not support installing hooks")
+    return directory / relative
+
+
+def registers_command(groups, marker):
+    """Whether any handler in these matcher groups already runs marker."""
+    for group in groups:
+        if not isinstance(group, dict):
+            continue
+        handlers = group["hooks"] if isinstance(group.get("hooks"), list) else [group]
+        for handler in handlers:
+            if isinstance(handler, dict) and marker in str(handler.get("command", "")):
+                return True
+    return False
+
+
+def install_notification_hook(harness, directory, repository_root=None):
+    """Register the notification hook, leaving hooks already configured alone."""
+    repository_root = repository_root or REPOSITORY_ROOT
+    source = repository_root / HOOKS_DIRECTORY / NOTIFY_SCRIPT
+    if not source.is_file():
+        raise FileNotFoundError(f"hook script not found: {source}")
+
+    path = hooks_path(harness, directory)
+    script = directory / HOOKS_DIRECTORY / NOTIFY_SCRIPT
+    contents = source.read_text()
+
+    lines = []
+    if not script.is_file() or script.read_text() != contents:
+        script.parent.mkdir(parents=True, exist_ok=True)
+        script.write_text(contents)
+        lines.append(f"wrote {script}")
+    script.chmod(0o755)
+
+    config = read_json(path)
+    hooks = config.setdefault("hooks", {})
+    if not isinstance(hooks, dict):
+        raise TypeError(f"hooks in {path} must be an object")
+
+    # Match on the trailing path so a hook registered as "$HOME/..." counts as
+    # installed alongside one registered by absolute path.
+    marker = f"{HOOKS_DIRECTORY}/{NOTIFY_SCRIPT}"
+    added = []
+    for event in NOTIFY_EVENTS:
+        groups = hooks.setdefault(event, [])
+        if not isinstance(groups, list):
+            raise TypeError(f"hooks.{event} in {path} must be an array")
+        if registers_command(groups, marker):
+            continue
+        groups.append(
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": f'"{script}"',
+                        "timeout": NOTIFY_TIMEOUT,
+                    }
+                ]
+            }
+        )
+        added.append(event)
+
+    if added:
+        write_json(path, config)
+        lines.extend(f"registered {event} in {path}" for event in added)
+    elif not lines:
+        lines.append(f"already registered in {path}")
+
+    return lines
 
 
 def skill_files(root):
@@ -336,8 +429,22 @@ def sync_skills(args):
     sync_repository_skills(harnesses, selected_skill_groups(args.groups))
 
 
-def add_harness_flags(parser):
-    for harness in HARNESSES:
+def install_hooks(args):
+    harnesses = [harness for harness in HOOK_HARNESSES if getattr(args, harness, False)]
+    if not harnesses:
+        flags = ", ".join(f"--{harness}" for harness in HOOK_HARNESSES)
+        raise ValueError(f"name at least one harness to install hooks into: {flags}")
+
+    for harness in harnesses:
+        directory = harness_directory(harness)
+        print_lines(harness, directory, install_notification_hook(harness, directory))
+
+    if "codex" in harnesses:
+        print("Codex skips untrusted hooks; run /hooks in Codex to trust it.")
+
+
+def add_harness_flags(parser, harnesses=None):
+    for harness in harnesses or HARNESSES:
         parser.add_argument(
             f"--{harness}",
             action="store_true",
@@ -369,11 +476,14 @@ def main():
     )
     add_harness_flags(sync).set_defaults(func=sync_skills)
 
+    install = commands.add_parser("install-hooks", help="install repository hooks into the named harnesses")
+    add_harness_flags(install, HOOK_HARNESSES).set_defaults(func=install_hooks)
+
     args = parser.parse_args()
 
     try:
         args.func(args)
-    except (OSError, ValueError) as error:
+    except (OSError, TypeError, ValueError) as error:
         raise SystemExit(f"error: {error}")
 
 

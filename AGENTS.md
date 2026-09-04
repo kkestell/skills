@@ -32,6 +32,15 @@ Standalone skills live in `ext/`, and unfinished skills live in `wip/`.
 `profiles.py` installs only the groups explicitly selected; validation covers
 all three. Promote a skill by moving its directory between groups.
 
+## Hooks
+
+Agent hooks live in `hooks/` as standalone shell scripts, outside the skill
+groups. `profiles.py install-hooks` copies them into a harness configuration
+directory and registers them. A hook must read its event payload as JSON on
+stdin, work under both Claude Code and Codex, and exit 0 even when it cannot do
+its job, so a cosmetic failure never surfaces as an agent error. `npm run
+check` shellchecks everything in `hooks/`.
+
 ## Naming rules
 
 - Use kebab-case for directory names.

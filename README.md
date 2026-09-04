@@ -53,6 +53,21 @@ Both a group and at least one harness are required.
 Pull the latest repository changes and run the same command again to update
 installed skills.
 
+## Hooks
+
+`install-hooks` installs the hooks in [hooks/](./hooks) into the harnesses you
+name, copying each script into `~/<harness>/hooks/` and registering it on the
+`PermissionRequest` and `Stop` events:
+
+```bash
+./profiles.py install-hooks --claude --codex
+```
+
+Only `--claude` and `--codex` take hooks. The command adds only what is
+missing, so hooks you configured yourself are left alone and re-running it
+refreshes the installed scripts in place. Codex skips a hook until you trust
+it, so run `/hooks` in Codex once after installing.
+
 ## Inspect harnesses
 
 The other `profiles.py` commands are read-only, and report on every harness
@@ -69,6 +84,8 @@ unless you narrow them with the same flags:
 ## Repository layout
 
 ```text
+hooks/
+  notify.sh
 skills/
   core/
     kplan/

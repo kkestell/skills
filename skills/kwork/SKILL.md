@@ -35,8 +35,14 @@ argument-hint: "[plan, specification, or todo file path]"
 ### Validate
 
 6. Run focused checks while implementing.
-7. When the slice is complete, run the repository's required format, lint, type,
-   test, and example gates.
+7. When the slice is complete, choose final checks in proportion to what
+   changed.
+   - Run the repository's broad format, lint, type, test, and example gates when
+     production behavior, generated artifacts, interfaces, or build outputs
+     could plausibly change.
+   - For documentation-only, filename-only, and test-only changes, run focused
+     checks and inspect the diff unless repository guidance explicitly requires
+     broader validation for that change category.
    - Fix failures before committing.
    - Do not repeat passing broad gates unless later changes could affect them.
 8. Do not run a plan review or post-implementation review and do not spawn a
@@ -54,8 +60,8 @@ argument-hint: "[plan, specification, or todo file path]"
 
 - **Use the plan as an index** — follow its source links and tasks without
   recreating the planning exploration.
-- **Validate once at the end** — focused checks support development; broad gates
-  prove the completed slice.
+- **Validate proportionately** — focused checks prove narrow changes; broad
+  gates prove changes that can affect production behavior or outputs.
 - **Defer review to the milestone** — individual slices stay cheap while the
   cumulative result still receives an independent review.
 - **Ship complete slices** — leave the repository passing and committable.

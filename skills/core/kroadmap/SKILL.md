@@ -42,9 +42,10 @@ require it.
    - Keep later work as an ordered list of distinct milestones.
    - After the first milestone is complete, keep exactly one concise summary of
      the most recently completed milestone and remove its previous detail.
-8. A milestone is a logical outcome large enough to name. Divide the current
-   milestone into tasks with concrete build scope and gates that prove the task
-   complete against `docs/spec.md`.
+8. A milestone is an integrated outcome. Divide its build scope into tasks when
+   useful, and collect completion gates at the milestone boundary against
+   `docs/spec.md`. Tasks may be intermediate implementation steps; they do not
+   each need a standalone deliverable.
 9. Order milestones, tasks, and later work by position in the file. Do not
    number them; completed work can then be removed without renumbering what
    remains.

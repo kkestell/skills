@@ -10,7 +10,8 @@ test bullets.
 
 ## Goal
 
-One or two sentences describing the result of this slice.
+One or two sentences describing the result and whether it completes the feature
+or is an intermediate step.
 
 ## Implementation
 
@@ -32,5 +33,6 @@ state, and what a later plan owns. Omit for a standalone plan.
 
 ## Extra validation
 
-Include only checks beyond the repository's standard required gates. Omit when
-there are none.
+Include only checks unique to the change. Broad validation belongs at the
+feature or milestone completion boundary unless a concrete risk warrants it
+earlier. Omit when there are no extra checks.

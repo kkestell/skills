@@ -50,12 +50,13 @@ This skill produces an implementation plan. It never implements the plan.
      reread guidance already present in the session.
    - Check architectural fit directly. Do not produce a separate PHAME,
      pre-mortem, scoring, or steelman report.
-6. Size the work for one `kwork` session.
-   - Split only when one session cannot implement, test, validate, and commit
-     the change comfortably.
-   - Cut at coherent boundaries. Each plan must leave the repository working and
-     depend only on earlier plans.
-   - Prefer the fewest plans that fit.
+6. Plan around the feature or milestone's integrated outcome.
+   - Prefer one plan. Split only when the work needs multiple sessions.
+   - Plans may be intermediate steps with dependencies on earlier plans. State
+     unfinished integration and which step reaches the completion boundary.
+   - Preserve existing supported behavior. Add temporary safeguards only where
+     needed for correctness; do not create standalone deliverables for each
+     implementation phase.
 
 ### Write
 
@@ -73,8 +74,8 @@ This skill produces an implementation plan. It never implements the plan.
      roadmap.
    - Use concrete bullets. Add detail only where an implementer could otherwise
      make a materially wrong choice.
-   - For a series, make each plan independently executable without repeating the
-     shared specification or roadmap.
+   - For a series, make each plan executable from its stated starting state
+     without repeating the shared specification or roadmap.
 9. Print the final plan paths in execution order and stop.
    - Do not review the plan locally or with a subagent.
-   - Suggest one fresh `kwork` session per plan.
+   - Suggest a fresh session only when the remaining work needs one.

@@ -4,8 +4,7 @@ The order in which the project is built. This file records scope and gates, not
 design. `eng/architecture.md` holds durable design when it exists.
 
 Every milestone compares its implemented behavior against the corresponding
-sections of `docs/spec.md`. The gates listed under each task are the behavior
-that task must prove on top of that.
+sections of `docs/spec.md`. The milestone gates prove the integrated outcome.
 
 ## Most recently completed: {milestone}
 
@@ -35,20 +34,16 @@ project has completed its first milestone.}
 - {What to do.}
 - {What to do.}
 
-**Gates**
-
-- {What must be true before this task counts as done.}
-- {What must be true before this task counts as done.}
-
 ### {Task}
 
 **Build**
 
 - {What to do.}
 
-**Gates**
+### Milestone completion gates
 
-- {What must be true before this task counts as done.}
+- {What must work across the integrated feature.}
+- {What semantic or architectural boundaries must be verified.}
 
 ## Next milestone: {milestone}
 

@@ -47,8 +47,9 @@ project has completed its first milestone.}
 
 ## Next milestone: {milestone}
 
-{As above: what it makes possible, an example, and what it leaves out. Detailed
-tasks and gates can wait until it becomes the current milestone.}
+{As above: what it makes possible, an example, and what it leaves out. Define
+its tasks and gates with kroadmap when it becomes the current milestone, before
+planning begins.}
 
 ## Later work
 

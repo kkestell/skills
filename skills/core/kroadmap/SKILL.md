@@ -1,6 +1,6 @@
 ---
 name: kroadmap
-description: "Create or update eng/roadmap.md with user-directed milestones, scope, ordering, and completion gates. Use when defining, changing, or recording the project roadmap; do not invoke merely to read it."
+description: "Create or update eng/roadmap.md with user-directed milestones, implementation tasks, scope, ordering, and completion gates. Use when defining, changing, or recording the project roadmap; do not invoke merely to read it."
 argument-hint: "[roadmap change, or blank to create/review the roadmap]"
 ---
 
@@ -37,15 +37,18 @@ require it.
    keep the neutral `Roadmap` title. Remove sections that do not apply instead
    of inventing work to fill them.
 7. Keep the roadmap forward-looking.
-   - Keep detailed build scope and gates for the current milestone.
+   - Keep ordered implementation tasks and gates for the current milestone.
    - Describe the next milestone at a high level.
    - Keep later work as an ordered list of distinct milestones.
    - After the first milestone is complete, keep exactly one concise summary of
      the most recently completed milestone and remove its previous detail.
-8. A milestone is an integrated outcome. Divide its build scope into tasks when
-   useful, and collect completion gates at the milestone boundary against
-   `docs/spec.md`. Tasks may be intermediate implementation steps; they do not
-   each need a standalone deliverable.
+8. A milestone is an integrated outcome made up of bounded implementation tasks.
+   Define the current milestone's tasks here, with scope clear enough for
+   `kplan` to plan one task at a time. When promoting a milestone from next to
+   current, define its tasks before handing off to `kplan`. Collect completion
+   gates at the milestone boundary against `docs/spec.md`. Tasks may be
+   intermediate implementation steps; they do not each need a standalone
+   deliverable.
 9. Order milestones, tasks, and later work by position in the file. Do not
    number them; completed work can then be removed without renumbering what
    remains.
@@ -63,6 +66,6 @@ require it.
 - The user owns product direction; the agent may recommend ordering from real
   dependencies.
 - The specification owns behavior, architecture owns durable design, and the
-  roadmap owns build order and completion gates.
+  roadmap owns task creation, task scope, build order, and completion gates.
 - Describe work by its outcome outside the roadmap, never by a milestone or task
   number.

@@ -6,12 +6,11 @@ design. `eng/architecture.md` holds durable design when it exists.
 Every milestone compares its implemented behavior against the corresponding
 sections of `docs/spec.md`. The milestone gates prove the integrated outcome.
 
-## Most recently completed: {milestone}
+## Completed milestone: {milestone}
 
-{Two or three sentences naming what now works. Do not restate specified rules,
-design, or code behavior owned elsewhere. Keep exactly one of these summaries
-and replace it when the next milestone completes. Delete this section until the
-project has completed its first milestone.}
+{Retain each completed milestone's scope, checked-off tasks, example or source
+link with its expected result, and completion gates. Use the same structure as
+the current milestone below. Omit this section until a milestone is complete.}
 
 ## Current milestone: {milestone}
 
@@ -27,14 +26,14 @@ project has completed its first milestone.}
 
 {What this milestone deliberately does not do yet.}
 
-### {Task}
+### [ ] {Task}
 
 **Build**
 
 - {What to do.}
 - {What to do.}
 
-### {Task}
+### [ ] {Task}
 
 **Build**
 

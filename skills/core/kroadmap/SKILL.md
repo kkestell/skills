@@ -46,13 +46,16 @@ require it.
    file. Use the project name in the title when it is established; otherwise
    keep the neutral `Roadmap` title. Remove sections that do not apply instead
    of inventing work to fill them.
-7. Keep the roadmap forward-looking.
+7. Keep completed work and planned work in the roadmap.
    - Keep ordered implementation tasks and gates for the current milestone.
    - Keep the next milestone's ordered tasks and gates once planned; until then,
      describe it at a high level.
    - Keep later work as an ordered list of distinct milestones.
-   - After the first milestone is complete, keep exactly one concise summary of
-     the most recently completed milestone and remove its previous detail.
+   - Retain completed milestones with their scope, checked-off tasks, examples,
+     and completion gates. Mark completion in place; preserve earlier milestones
+     when later ones complete.
+   - When repository instructions move an example into a source file, replace
+     the snippet with a link to that file and retain its expected result.
 8. A milestone is an integrated outcome made up of bounded implementation tasks.
    Define the selected milestone's tasks here, with scope clear enough for
    `kwork` to plan briefly and implement one task at a time. A milestone must
@@ -60,9 +63,9 @@ require it.
    gates at the milestone boundary against `docs/spec.md`. Tasks may be
    intermediate implementation steps; they do not each need a standalone
    deliverable.
-9. Order milestones, tasks, and later work by position in the file. Do not
-   number them; completed work can then be removed without renumbering what
-   remains.
+9. Order milestones, tasks, and later work by position in the file. Use
+   completion labels and checked boxes to distinguish finished work from pending
+   work.
 10. Record scope and gates, not implementation design, standard repository
     commands, or duplicated specification rules. `kwork` works out implementation
     steps in context.

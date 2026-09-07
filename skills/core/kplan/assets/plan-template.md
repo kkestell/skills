@@ -26,11 +26,6 @@ and whether it leaves integration unfinished or completes the milestone.
 Include only implementation decisions that are not already owned by a linked
 source. Omit this section when there are none.
 
-## Sequence
-
-For a multi-plan series only: state the plan's position, required starting
-state, and what a later plan owns. Omit for a standalone plan.
-
 ## Extra validation
 
 Include only checks unique to the change. Broad validation belongs at the

@@ -11,11 +11,11 @@ holds. Omit when the repository does not establish this yet.}
   creating or modifying it. Reading it does not require the skill.
 - `eng/architecture.md` defines the implementation's durable design and
   boundaries. It may not exist yet.
-- `eng/roadmap.md` defines what gets built and in what order. Use the `kroadmap`
-  skill whenever creating or modifying it. Reading it does not require the
-  skill.
-- `eng/plans/` holds bounded implementation plans produced by `kplan` and
-  executed by `kwork`.
+- `eng/roadmap.md` defines milestones, their tasks, scope, order, and completion
+  gates. Use the `kroadmap` skill whenever creating or modifying it. Reading it
+  does not require the skill.
+- `eng/plans/` holds implementation plans for individual roadmap tasks, produced
+  by `kplan` and executed by `kwork`.
 
 The specification and roadmap are created when the project needs them. `kplan`
 requires both and will direct the user to the appropriate skill when either is
@@ -87,9 +87,17 @@ before implementation depends on it.
 When `eng/architecture.md` exists, read it before changing the program's
 structure. Do not invent architectural constraints when it does not exist.
 
-Build software in narrow, end-to-end vertical slices. A feature is not
-implemented until every part of the codebase it touches, and their tests, agree
-on it. Do not reserve names, add extension points, or build infrastructure for
+Finish one roadmap task at a time. A task may leave the feature partially
+implemented across phases. Preserve existing supported behavior and state
+unfinished integration clearly. Add temporary guards only when needed to prevent
+incorrect execution, not to make each task a standalone deliverable.
+
+Use focused checks for each task. Run broad validation when the milestone is
+integrated, or earlier when a concrete risk warrants it. Review the completed
+milestone once for correctness and simplicity. Milestone completion requires its
+affected phases and tests to agree.
+
+Do not reserve names, add extension points, or build infrastructure for
 hypothetical future features.
 
 Use `kplan` to plan substantial work and `kwork` to execute an implementation

@@ -80,8 +80,6 @@ This skill produces an implementation plan. It never implements the plan.
      roadmap.
    - Use concrete bullets. Add detail only where an implementer could otherwise
      make a materially wrong choice.
-   - For a series, make each plan executable from its stated starting state
-     without repeating the shared specification or roadmap.
-9. Print the final plan paths in execution order and stop.
+9. Print the final plan path and stop.
    - Do not review the plan locally or with a subagent.
    - Suggest a fresh session only when the remaining work needs one.

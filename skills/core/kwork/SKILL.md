@@ -24,10 +24,11 @@ argument-hint: "[plan, specification, or todo file path]"
    nearby patterns needed to execute it.
 4. Turn its implementation and test bullets into a short working checklist. Skip
    a separate todo tool when the plan is already small enough to track directly.
-5. Implement the plan.
-   - Treat the feature or milestone as the completion boundary. Intermediate
-     plans may leave integration unfinished; preserve existing supported
-     behavior and record what remains.
+5. Implement the selected plan's task and stop when its scoped changes and
+   focused checks are done.
+   - Intermediate tasks may leave the feature partially implemented. Preserve
+     existing supported behavior and record unfinished integration for later
+     roadmap tasks.
    - Keep architecture coherent as the feature develops. Add temporary guards
      only when needed to prevent incorrect behavior.
    - Follow the plan and repository guidance.
@@ -72,5 +73,5 @@ argument-hint: "[plan, specification, or todo file path]"
   broad gates at the feature or milestone boundary.
 - **Defer review to the milestone** — individual slices stay cheap while the
   cumulative result still receives an independent review.
-- **Complete integrated features** — plans organize progress; the feature or
-  milestone owns completion.
+- **Separate task and milestone completion** — finish the selected task;
+  integration gates belong to the completed milestone.

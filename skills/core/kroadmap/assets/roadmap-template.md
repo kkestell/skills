@@ -53,9 +53,8 @@ planning begins.}
 
 ## Later work
 
-Each of these is its own milestone, implemented in dependency order through one
-or more plans. Each begins by confirming that `docs/spec.md` fully specifies its
-behavior, then extends everything it affects together.
+Each of these is its own milestone. Before planning begins, confirm that
+`docs/spec.md` settles its behavior and define its ordered tasks with kroadmap.
 
 - {Later milestone.}
 - {Later milestone.}

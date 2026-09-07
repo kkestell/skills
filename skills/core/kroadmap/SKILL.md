@@ -13,8 +13,8 @@ require it.
 
 1. Resolve `<roadmap_work> $ARGUMENTS </roadmap_work>` and the repository root.
    Confirm that the path is a Git repository.
-2. Require `docs/spec.md`. If it is missing, stop and tell the user to run
-   `kspec` before creating or changing the roadmap.
+2. Require `docs/spec.md`. If it is missing, invoke `kspec` to establish the
+   behavior needed for the requested roadmap work, then resume this workflow.
 3. Read `AGENTS.md`, `docs/spec.md`, and `eng/roadmap.md` when it exists.
    Inspect source, tests, plans, and history only as needed to establish current
    status or dependencies.
@@ -26,9 +26,12 @@ require it.
    roadmap direction is sufficient authorization for this planning. If no
    roadmap or next direction exists, establish direction under step 5.
 4. Confirm that `docs/spec.md` settles the behavior needed for the proposed
-   roadmap work. If material behavior is missing or ambiguous, stop, name the
-   gap, and tell the user to resolve it with `kspec`. A file's existence alone
-   does not make it sufficient.
+   roadmap work. If material behavior is missing or ambiguous, invoke `kspec`
+   in the same session, scoped to the decisions needed for the selected
+   milestone. Ask only the questions needed to unblock that milestone, one at
+   a time, using existing decisions where available. Once those decisions are
+   recorded in the specification, resume planning its tasks, example, and
+   completion gates. Leave unrelated specification questions for later work.
 5. Treat product direction and priority as the user's decisions.
    - When the request already states the desired work and order, record it
      directly.

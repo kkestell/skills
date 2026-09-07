@@ -59,8 +59,10 @@ argument-hint: "[plan, specification, or todo file path]"
 
 9. Commit only when authorized by the user and allowed by repository guidance. A
    plan boundary does not require a commit.
-10. Report what changed, checks run, and any unfinished integration. Distinguish
-    completion of an intermediate plan from completion of the feature.
+10. Keep the handoff focused on what changed, checks run, and any unfinished
+    integration. Distinguish completion of an intermediate plan from completion
+    of the feature. Discuss review timing only when the user asks about it;
+    deferred review is not unfinished implementation or a routine next step.
 
 ## Principles
 

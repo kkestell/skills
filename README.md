@@ -2,7 +2,7 @@
 
 Skills for coding work and prose editing.
 
-The core workflow moves from `kspec` and `kroadmap` through `kplan` and `kwork`.
+The core workflow moves from `kspec` and `kroadmap` to `kwork`.
 See [skills/README.md](./skills/README.md) for the full workflow.
 
 ## Core workflow
@@ -15,8 +15,7 @@ review and commit it, and preserve context between sessions.
 | `kinit`    | Bootstrap `AGENTS.md` with project orientation and workflow routing.                       |
 | `kspec`    | Create or update the authoritative product specification with the user.                    |
 | `kroadmap` | Create or update user-directed milestones, ordering, and completion gates.                 |
-| `kplan`    | Turn the specification and roadmap into a concrete implementation plan.                    |
-| `kwork`    | Execute a plan end to end: implement, validate with independent review passes, and commit. |
+| `kwork`    | Plan briefly in context, implement one roadmap task, and validate it in the same session. |
 | `ktask`    | Execute a bounded one-off task without a persisted plan or commit.                         |
 | `kreview`  | Run independent completeness and code-simplification review passes over a body of work.    |
 
@@ -88,9 +87,6 @@ hooks/
   notify.sh
 skills/
   core/
-    kplan/
-      SKILL.md
-      assets/
     kwork/
       SKILL.md
   ext/

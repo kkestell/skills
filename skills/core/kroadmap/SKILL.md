@@ -44,8 +44,9 @@ require it.
      the most recently completed milestone and remove its previous detail.
 8. A milestone is an integrated outcome made up of bounded implementation tasks.
    Define the current milestone's tasks here, with scope clear enough for
-   `kplan` to plan one task at a time. When promoting a milestone from next to
-   current, define its tasks before handing off to `kplan`. Collect completion
+   `kwork` to plan briefly and implement one task at a time. When promoting a
+   milestone from next to current, define its tasks before handing off to
+   `kwork`. Collect completion
    gates at the milestone boundary against `docs/spec.md`. Tasks may be
    intermediate implementation steps; they do not each need a standalone
    deliverable.
@@ -53,8 +54,8 @@ require it.
    number them; completed work can then be removed without renumbering what
    remains.
 10. Record scope and gates, not implementation design, standard repository
-    commands, or duplicated specification rules. Plans own the implementation of
-    bounded slices.
+    commands, or duplicated specification rules. `kwork` works out implementation
+    steps in context.
 11. Mark work complete only when repository evidence proves it. Preserve
     unrelated roadmap content, never leave template prompts in the written file,
     and do not turn a possible future feature into a commitment.

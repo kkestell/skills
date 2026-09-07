@@ -14,12 +14,10 @@ holds. Omit when the repository does not establish this yet.}
 - `eng/roadmap.md` defines milestones, their tasks, scope, order, and completion
   gates. Use the `kroadmap` skill whenever creating or modifying it. Reading it
   does not require the skill.
-- `eng/plans/` holds implementation plans for individual roadmap tasks, produced
-  by `kplan` and executed by `kwork`.
 
-The specification and roadmap are created when the project needs them. `kplan`
+The specification and roadmap are created when the project needs them. `kwork`
 requires both and will direct the user to the appropriate skill when either is
-missing. The architecture document is not required to begin planning.
+missing. The architecture document is not required to begin work.
 
 ## Tech Stack
 
@@ -100,9 +98,9 @@ affected phases and tests to agree.
 Do not reserve names, add extension points, or build infrastructure for
 hypothetical future features.
 
-Use `kplan` to plan substantial work and `kwork` to execute an implementation
-plan. Both `docs/spec.md` and `eng/roadmap.md` must exist before planning
-begins.
+Use `kwork` to plan briefly in context, implement, and validate one roadmap task
+in the same session. Do not write an implementation plan file. Both
+`docs/spec.md` and `eng/roadmap.md` must exist before work begins.
 
 Preserve unrelated working-tree changes. Never commit unless the user asks for a
 commit explicitly.

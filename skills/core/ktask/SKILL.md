@@ -24,9 +24,9 @@ argument-hint: "[task description — a bug fix, small feature, refactor, or imp
    - If using a subagent, pass the task description and the template, then
      incorporate the returned plan into your context.
    - If the plan reveals the task is larger than a quick one-off, stop and
-     suggest the `kplan` skill instead.
+     suggest `kwork` for an existing roadmap task or `kroadmap` to define it.
 4. If anything is unclear, ask the user one focused question. Do not spin up a
-   long brainstorming loop — that's what `kplan` is for.
+   long brainstorming loop; resolve unsettled product behavior with `kspec`.
 
 ### Phase 2 — Explore
 
@@ -46,7 +46,7 @@ argument-hint: "[task description — a bug fix, small feature, refactor, or imp
    - Keep changes focused and minimal. This is not the time for drive-by
      refactors unless they directly support the task.
 7. If you hit an unexpected obstacle or the scope balloons, stop and tell the
-   user. Suggest `kplan` if the task needs more structure.
+   user. Suggest `kwork` for roadmap work or `kroadmap` to define its scope.
 
 ### Phase 4 — Validate
 
@@ -73,7 +73,7 @@ argument-hint: "[task description — a bug fix, small feature, refactor, or imp
 ## Principles
 
 - **Fast and focused** — this is the quick path. If it's not quick, switch to
-  `kplan` → `kwork`.
+  `kwork` for roadmap work.
 - **Plan in context, not on disk** — no plan file. The plan is a conversation
   artifact.
 - **Minimal ceremony** — no pre-flight git checks, no commit.

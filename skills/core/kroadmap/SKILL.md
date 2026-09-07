@@ -1,7 +1,7 @@
 ---
 name: kroadmap
 description: "Create or update eng/roadmap.md with user-directed milestones, implementation tasks, scope, ordering, and completion gates. Use when defining, changing, or recording the project roadmap; do not invoke merely to read it."
-argument-hint: "[roadmap change, or blank to create/review the roadmap]"
+argument-hint: "[roadmap change, or blank to plan the next milestone]"
 ---
 
 ## Workflow
@@ -18,6 +18,12 @@ require it.
 3. Read `AGENTS.md`, `docs/spec.md`, and `eng/roadmap.md` when it exists.
    Inspect source, tests, plans, and history only as needed to establish current
    status or dependencies.
+   With no arguments, plan the next milestone to implement using the roadmap's
+   established order. Define or refine the unfinished current milestone's tasks
+   and completion gates; if it is complete, promote the next milestone and plan
+   it. Use repository evidence to establish completion. Existing roadmap
+   direction is sufficient authorization for this planning. If no roadmap or
+   next direction exists, establish direction under step 5.
 4. Confirm that `docs/spec.md` settles the behavior needed for the proposed
    roadmap work. If material behavior is missing or ambiguous, stop, name the
    gap, and tell the user to resolve it with `kspec`. A file's existence alone

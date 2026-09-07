@@ -1,13 +1,14 @@
 ---
 name: kroadmap
-description: "Create or update eng/roadmap.md with user-directed milestones, implementation tasks, scope, ordering, and completion gates. Use when defining, changing, or recording the project roadmap; do not invoke merely to read it."
+description: "Create or update eng/roadmap.md with user-directed milestones, implementation tasks, scope, ordering, and completion gates. Use to add or revise milestones and their tasks; kwork checks off completed tasks."
 argument-hint: "[roadmap change, or blank to plan the next milestone]"
 ---
 
 ## Workflow
 
-This skill owns changes to `eng/roadmap.md`. Reading the roadmap does not
-require it.
+This skill adds and revises milestones and tasks in `eng/roadmap.md`.
+`kwork` marks completed tasks by checking their boxes. Reading the roadmap
+requires neither skill.
 
 ### Establish the roadmap work
 
@@ -18,13 +19,9 @@ require it.
 3. Read `AGENTS.md`, `docs/spec.md`, and `eng/roadmap.md` when it exists.
    Inspect source, tests, plans, and history only as needed to establish current
    status or dependencies.
-   With no arguments, plan the milestone after the current milestone using the
-   roadmap's established order. Define its tasks and completion gates even when
-   the current milestone is unfinished. Keep it under Next until repository
-   evidence proves the current milestone complete, then promote it. If the
-   roadmap has no current milestone, plan the first pending milestone. Existing
-   roadmap direction is sufficient authorization for this planning. If no
-   roadmap or next direction exists, establish direction under step 5.
+   With no arguments, define tasks and gates for the first milestone that lacks
+   them, following the roadmap's order. If all listed milestones are planned,
+   establish the next milestone's direction under step 5.
 4. Confirm that `docs/spec.md` settles the behavior needed for the proposed
    roadmap work. If material behavior is missing or ambiguous, invoke `kspec`
    in the same session, scoped to the decisions needed for the selected
@@ -46,14 +43,12 @@ require it.
    file. Use the project name in the title when it is established; otherwise
    keep the neutral `Roadmap` title. Remove sections that do not apply instead
    of inventing work to fill them.
-7. Keep completed work and planned work in the roadmap.
-   - Keep ordered implementation tasks and gates for the current milestone.
-   - Keep the next milestone's ordered tasks and gates once planned; until then,
-     describe it at a high level.
-   - Keep later work as an ordered list of distinct milestones.
-   - Retain completed milestones with their scope, checked-off tasks, examples,
-     and completion gates. Mark completion in place; preserve earlier milestones
-     when later ones complete.
+7. Write the roadmap as an ordered list of milestone sections, titled by name.
+   - Each planned milestone contains its scope, example, task checkboxes, and
+     completion gates.
+   - Task checkboxes record progress. Milestones stay in place without previous,
+     current, next, or completed categories.
+   - Retain completed tasks and their details as later milestones are added.
    - When repository instructions move an example into a source file, replace
      the snippet with a link to that file and retain its expected result.
 8. A milestone is an integrated outcome made up of bounded implementation tasks.
@@ -63,15 +58,14 @@ require it.
    gates at the milestone boundary against `docs/spec.md`. Tasks may be
    intermediate implementation steps; they do not each need a standalone
    deliverable.
-9. Order milestones, tasks, and later work by position in the file. Use
-   completion labels and checked boxes to distinguish finished work from pending
-   work.
+9. Order milestones and tasks by position in the file. Write each task as a
+   Markdown checkbox: `- [ ]` for pending work and `- [x]` for completed work.
 10. Record scope and gates, not implementation design, standard repository
     commands, or duplicated specification rules. `kwork` works out implementation
     steps in context.
-11. Mark work complete only when repository evidence proves it. Preserve
-    unrelated roadmap content, never leave template prompts in the written file,
-    and do not turn a possible future feature into a commitment.
+11. Preserve existing task completion states and unrelated roadmap content.
+    Never leave template prompts in the written file, and do not turn a possible
+    future feature into a commitment.
 12. Report what changed and ask the next unresolved roadmap question, if one
     remains.
 

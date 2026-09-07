@@ -12,8 +12,8 @@ argument-hint: "[task description or existing work document; blank selects the n
    - Require `docs/spec.md` and `eng/roadmap.md`. If either is missing, name
      the missing document and direct the user to `kspec` or `kroadmap`.
    - Read both documents and identify the requested roadmap task. If no task is
-     supplied, use roadmap ordering and current implementation state to select
-     the next unimplemented task.
+     supplied, select the first unchecked task in milestone and task order,
+     using implementation state to continue any work already started.
    - Read any supplied work document as context. An implementation plan file is
      not required.
    - Task creation and scope belong to `kroadmap`. If the task is absent from
@@ -38,8 +38,8 @@ argument-hint: "[task description or existing work document; blank selects the n
 5. Implement the selected task and stop when its scoped changes and
    focused checks are done.
    - Intermediate tasks may leave the feature partially implemented. Preserve
-     existing supported behavior and record unfinished integration for later
-     roadmap tasks.
+     existing supported behavior and report unfinished integration in the
+     handoff.
    - Keep architecture coherent as the feature develops. Add temporary guards
      only when needed to prevent incorrect behavior.
    - Follow the task scope and repository guidance.
@@ -65,11 +65,15 @@ argument-hint: "[task description or existing work document; blank selects the n
    review agent. Review is performed once across the completed milestone with
    `kreview`.
 
-### Commit and hand off
+### Record completion and hand off
 
-9. Commit only when authorized by the user and allowed by repository guidance. A
-   task boundary does not require a commit.
-10. Keep the handoff focused on what changed, checks run, and any unfinished
+9. After the selected task and its required checks pass, change its roadmap
+   checkbox from `- [ ]` to `- [x]`. This is the only roadmap edit made by
+   `kwork`; leave milestone headings, task text, examples, gates, and ordering
+   intact. Adding or revising milestones and tasks belongs to `kroadmap`.
+10. Commit only when authorized by the user and allowed by repository guidance.
+    A task boundary does not require a commit.
+11. Keep the handoff focused on what changed, checks run, and any unfinished
     integration. Distinguish completion of an intermediate task from completion
     of the feature. Discuss review timing only when the user asks about it;
     deferred review is not unfinished implementation or a routine next step.

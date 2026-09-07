@@ -18,12 +18,13 @@ require it.
 3. Read `AGENTS.md`, `docs/spec.md`, and `eng/roadmap.md` when it exists.
    Inspect source, tests, plans, and history only as needed to establish current
    status or dependencies.
-   With no arguments, plan the next milestone to implement using the roadmap's
-   established order. Define or refine the unfinished current milestone's tasks
-   and completion gates; if it is complete, promote the next milestone and plan
-   it. Use repository evidence to establish completion. Existing roadmap
-   direction is sufficient authorization for this planning. If no roadmap or
-   next direction exists, establish direction under step 5.
+   With no arguments, plan the milestone after the current milestone using the
+   roadmap's established order. Define its tasks and completion gates even when
+   the current milestone is unfinished. Keep it under Next until repository
+   evidence proves the current milestone complete, then promote it. If the
+   roadmap has no current milestone, plan the first pending milestone. Existing
+   roadmap direction is sufficient authorization for this planning. If no
+   roadmap or next direction exists, establish direction under step 5.
 4. Confirm that `docs/spec.md` settles the behavior needed for the proposed
    roadmap work. If material behavior is missing or ambiguous, stop, name the
    gap, and tell the user to resolve it with `kspec`. A file's existence alone
@@ -44,15 +45,15 @@ require it.
    of inventing work to fill them.
 7. Keep the roadmap forward-looking.
    - Keep ordered implementation tasks and gates for the current milestone.
-   - Describe the next milestone at a high level.
+   - Keep the next milestone's ordered tasks and gates once planned; until then,
+     describe it at a high level.
    - Keep later work as an ordered list of distinct milestones.
    - After the first milestone is complete, keep exactly one concise summary of
      the most recently completed milestone and remove its previous detail.
 8. A milestone is an integrated outcome made up of bounded implementation tasks.
-   Define the current milestone's tasks here, with scope clear enough for
-   `kwork` to plan briefly and implement one task at a time. When promoting a
-   milestone from next to current, define its tasks before handing off to
-   `kwork`. Collect completion
+   Define the selected milestone's tasks here, with scope clear enough for
+   `kwork` to plan briefly and implement one task at a time. A milestone must
+   have its tasks defined before implementation begins. Collect completion
    gates at the milestone boundary against `docs/spec.md`. Tasks may be
    intermediate implementation steps; they do not each need a standalone
    deliverable.

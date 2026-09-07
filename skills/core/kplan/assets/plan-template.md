@@ -10,8 +10,8 @@ test bullets.
 
 ## Goal
 
-One or two sentences describing the result and whether it completes the feature
-or is an intermediate step.
+One or two sentences describing this task's result, its required starting state,
+and whether it leaves integration unfinished or completes the milestone.
 
 ## Implementation
 

@@ -17,9 +17,10 @@ This skill produces an implementation plan. It never implements the plan.
      from the requested implementation work.
 2. Resolve `<feature_description> $ARGUMENTS </feature_description>`.
    - When it is present, use it as the proposed work.
-   - When it is empty, take the next slice from `eng/roadmap.md`. Inspect plans,
-     history, and code only when needed to distinguish the next unimplemented
-     slice.
+   - When it is empty, take the next unimplemented task from `eng/roadmap.md`.
+     If the roadmap names only a milestone, derive its next bounded task from
+     the milestone's scope and current implementation. Inspect plans, history,
+     and code only as needed to identify that task.
    - Continue without confirmation when the user has already authorized planning
      the next repository-defined slice. Ask one focused question only when the
      next work remains ambiguous.
@@ -50,13 +51,17 @@ This skill produces an implementation plan. It never implements the plan.
      reread guidance already present in the session.
    - Check architectural fit directly. Do not produce a separate PHAME,
      pre-mortem, scoring, or steelman report.
-6. Plan around the feature or milestone's integrated outcome.
-   - Prefer one plan. Split only when the work needs multiple sessions.
-   - Plans may be intermediate steps with dependencies on earlier plans. State
-     unfinished integration and which step reaches the completion boundary.
+6. Write one plan for one bounded implementation task within the milestone.
+   - Milestones comprise tasks. Choose a coherent task with concrete changes
+     and focused checks; session capacity does not determine its scope.
+   - State the task's starting state, dependencies, and any integration it leaves
+     unfinished. A task may cover one implementation phase or several related
+     phases.
+   - The milestone's integrated outcome determines broad validation and review
+     timing, not the scope of each plan. Identify when this task reaches that
+     boundary.
    - Preserve existing supported behavior. Add temporary safeguards only where
-     needed for correctness; do not create standalone deliverables for each
-     implementation phase.
+     needed for correctness.
 
 ### Write
 

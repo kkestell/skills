@@ -25,13 +25,28 @@ HARNESSES = {
 }
 
 # Hooks live in this repository and are copied into <harness>/hooks/ on
-# install. Claude Code and Codex agree on both the event names and the matcher
-# group shape, so one registration serves both.
+# install. Claude Code and Codex agree on the matcher group shape, so one
+# registration serves both harnesses wherever they share an event.
 HOOKS_DIRECTORY = "hooks"
 HOOK_HARNESSES = tuple(name for name, harness in HARNESSES.items() if harness.get("hooks"))
-NOTIFY_SCRIPT = "notify.sh"
-NOTIFY_EVENTS = ("PermissionRequest", "Stop")
-NOTIFY_TIMEOUT = 3
+
+# Every hook install-hooks knows about, with the events it registers on and the
+# harnesses it installs into. Both harnesses name the notification events
+# identically. no-attribution.sh answers with a Claude Code PreToolUse
+# permission decision, so it installs into Claude Code alone.
+HOOKS = (
+    {
+        "script": "notify.sh",
+        "events": ("PermissionRequest", "Stop"),
+        "harnesses": ("claude", "codex"),
+        "timeout": 3,
+    },
+    {
+        "script": "no-attribution.sh",
+        "events": ("PreToolUse",),
+        "harnesses": ("claude",),
+    },
+)
 
 
 def harness_directory(harness, home_directory=None):
@@ -118,15 +133,15 @@ def registers_command(groups, marker):
     return False
 
 
-def install_notification_hook(harness, directory, repository_root=None):
-    """Register the notification hook, leaving hooks already configured alone."""
+def install_hook(harness, directory, hook, repository_root=None):
+    """Register one hook, leaving hooks already configured alone."""
     repository_root = repository_root or REPOSITORY_ROOT
-    source = repository_root / HOOKS_DIRECTORY / NOTIFY_SCRIPT
+    source = repository_root / HOOKS_DIRECTORY / hook["script"]
     if not source.is_file():
         raise FileNotFoundError(f"hook script not found: {source}")
 
     path = hooks_path(harness, directory)
-    script = directory / HOOKS_DIRECTORY / NOTIFY_SCRIPT
+    script = directory / HOOKS_DIRECTORY / hook["script"]
     contents = source.read_text()
 
     lines = []
@@ -143,33 +158,35 @@ def install_notification_hook(harness, directory, repository_root=None):
 
     # Match on the trailing path so a hook registered as "$HOME/..." counts as
     # installed alongside one registered by absolute path.
-    marker = f"{HOOKS_DIRECTORY}/{NOTIFY_SCRIPT}"
+    marker = f"{HOOKS_DIRECTORY}/{hook['script']}"
     added = []
-    for event in NOTIFY_EVENTS:
+    for event in hook["events"]:
         groups = hooks.setdefault(event, [])
         if not isinstance(groups, list):
             raise TypeError(f"hooks.{event} in {path} must be an array")
         if registers_command(groups, marker):
             continue
-        groups.append(
-            {
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": f'"{script}"',
-                        "timeout": NOTIFY_TIMEOUT,
-                    }
-                ]
-            }
-        )
+        handler = {"type": "command", "command": f'"{script}"'}
+        if hook.get("timeout"):
+            handler["timeout"] = hook["timeout"]
+        groups.append({"hooks": [handler]})
         added.append(event)
 
     if added:
         write_json(path, config)
         lines.extend(f"registered {event} in {path}" for event in added)
     elif not lines:
-        lines.append(f"already registered in {path}")
+        lines.append(f"{hook['script']} already registered in {path}")
 
+    return lines
+
+
+def install_harness_hooks(harness, directory, repository_root=None):
+    """Register every hook that targets this harness."""
+    lines = []
+    for hook in HOOKS:
+        if harness in hook["harnesses"]:
+            lines.extend(install_hook(harness, directory, hook, repository_root))
     return lines
 
 
@@ -437,7 +454,7 @@ def install_hooks(args):
 
     for harness in harnesses:
         directory = harness_directory(harness)
-        print_lines(harness, directory, install_notification_hook(harness, directory))
+        print_lines(harness, directory, install_harness_hooks(harness, directory))
 
     if "codex" in harnesses:
         print("Codex skips untrusted hooks; run /hooks in Codex to trust it.")

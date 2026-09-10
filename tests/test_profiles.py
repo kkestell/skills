@@ -204,35 +204,51 @@ class InstallHooksTests(unittest.TestCase):
 
         self.repository_root = Path(self.repository.name)
         self.home_directory = Path(self.home.name)
-        source = self.repository_root / profiles.HOOKS_DIRECTORY / profiles.NOTIFY_SCRIPT
-        source.parent.mkdir(parents=True)
-        source.write_text("#!/bin/sh\nexit 0\n")
+        source_directory = self.repository_root / profiles.HOOKS_DIRECTORY
+        source_directory.mkdir(parents=True)
+        for hook in profiles.HOOKS:
+            (source_directory / hook["script"]).write_text("#!/bin/sh\nexit 0\n")
+
+    @staticmethod
+    def hooks_for(harness):
+        return [hook for hook in profiles.HOOKS if harness in hook["harnesses"]]
+
+    @staticmethod
+    def events_for(harness):
+        events = []
+        for hook in InstallHooksTests.hooks_for(harness):
+            events.extend(hook["events"])
+        return events
 
     def install(self, harness="claude"):
         directory = profiles.harness_directory(harness, self.home_directory)
-        lines = profiles.install_notification_hook(
+        lines = profiles.install_harness_hooks(
             harness,
             directory,
             repository_root=self.repository_root,
         )
         return lines, profiles.read_json(profiles.hooks_path(harness, directory))
 
-    def test_hooks_are_registered_on_every_notification_event(self):
+    def test_hooks_are_registered_on_every_event_they_declare(self):
         lines, config = self.install()
 
-        self.assertEqual(sorted(config["hooks"]), sorted(profiles.NOTIFY_EVENTS))
+        self.assertEqual(sorted(config["hooks"]), sorted(self.events_for("claude")))
         self.assertTrue(any(line.startswith("wrote ") for line in lines))
 
-    def test_the_script_is_copied_next_to_the_harness_configuration(self):
-        self.install()
-        script = (
-            profiles.harness_directory("claude", self.home_directory)
-            / profiles.HOOKS_DIRECTORY
-            / profiles.NOTIFY_SCRIPT
-        )
+    def test_a_hook_is_installed_only_into_the_harnesses_it_names(self):
+        _lines, config = self.install("codex")
 
-        self.assertEqual(script.read_text(), "#!/bin/sh\nexit 0\n")
-        self.assertTrue(script.stat().st_mode & 0o111)
+        self.assertEqual(sorted(config["hooks"]), sorted(self.events_for("codex")))
+        self.assertNotIn("PreToolUse", config["hooks"])
+
+    def test_every_script_is_copied_next_to_the_harness_configuration(self):
+        self.install()
+        directory = profiles.harness_directory("claude", self.home_directory)
+
+        for hook in self.hooks_for("claude"):
+            script = directory / profiles.HOOKS_DIRECTORY / hook["script"]
+            self.assertEqual(script.read_text(), "#!/bin/sh\nexit 0\n")
+            self.assertTrue(script.stat().st_mode & 0o111)
 
     def test_claude_and_codex_use_their_own_configuration_files(self):
         self.install("claude")
@@ -274,32 +290,36 @@ class InstallHooksTests(unittest.TestCase):
         lines, _config = self.install()
 
         self.assertEqual(path.read_text(), before)
-        self.assertEqual(lines, [f"already registered in {path}"])
+        self.assertEqual(
+            lines,
+            [f"{hook['script']} already registered in {path}" for hook in self.hooks_for("claude")],
+        )
 
     def test_a_hook_registered_by_another_path_form_counts_as_installed(self):
         directory = profiles.harness_directory("claude", self.home_directory)
-        marker = f"{profiles.HOOKS_DIRECTORY}/{profiles.NOTIFY_SCRIPT}"
-        profiles.write_json(
-            profiles.hooks_path("claude", directory),
-            {"hooks": {event: [{"hooks": [{"command": f'"$HOME/.claude/{marker}"'}]}] for event in profiles.NOTIFY_EVENTS}},
-        )
+        existing = {}
+        for hook in self.hooks_for("claude"):
+            marker = f"$HOME/.claude/{profiles.HOOKS_DIRECTORY}/{hook['script']}"
+            for event in hook["events"]:
+                existing[event] = [{"hooks": [{"command": f'"{marker}"'}]}]
+        profiles.write_json(profiles.hooks_path("claude", directory), {"hooks": existing})
 
         _lines, config = self.install()
 
-        for event in profiles.NOTIFY_EVENTS:
+        for event in self.events_for("claude"):
             self.assertEqual(len(config["hooks"][event]), 1)
 
     def test_the_installed_script_is_refreshed_without_touching_registrations(self):
         self.install()
         directory = profiles.harness_directory("claude", self.home_directory)
-        script = directory / profiles.HOOKS_DIRECTORY / profiles.NOTIFY_SCRIPT
+        script = directory / profiles.HOOKS_DIRECTORY / profiles.HOOKS[0]["script"]
         script.write_text("#!/bin/sh\nexit 1\n")
 
         lines, config = self.install()
 
         self.assertEqual(script.read_text(), "#!/bin/sh\nexit 0\n")
-        self.assertEqual(lines, [f"wrote {script}"])
-        for event in profiles.NOTIFY_EVENTS:
+        self.assertIn(f"wrote {script}", lines)
+        for event in self.events_for("claude"):
             self.assertEqual(len(config["hooks"][event]), 1)
 
     def test_a_harness_without_a_hooks_file_is_rejected(self):
@@ -327,7 +347,7 @@ class InstallHooksTests(unittest.TestCase):
             profiles.install_hooks(args)
 
     def test_missing_hook_script_is_reported(self):
-        (self.repository_root / profiles.HOOKS_DIRECTORY / profiles.NOTIFY_SCRIPT).unlink()
+        (self.repository_root / profiles.HOOKS_DIRECTORY / profiles.HOOKS[0]["script"]).unlink()
 
         with self.assertRaisesRegex(FileNotFoundError, "hook script not found"):
             self.install()

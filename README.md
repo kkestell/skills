@@ -56,16 +56,18 @@ installed skills.
 
 `install-hooks` installs the hooks in [hooks/](./hooks) into the harnesses you
 name, copying each script into `~/<harness>/hooks/` and registering it on the
-`PermissionRequest` and `Stop` events:
+events that hook declares:
 
 ```bash
 ./profiles.py install-hooks --claude --codex
 ```
 
-Only `--claude` and `--codex` take hooks. The command adds only what is
-missing, so hooks you configured yourself are left alone and re-running it
-refreshes the installed scripts in place. Codex skips a hook until you trust
-it, so run `/hooks` in Codex once after installing.
+Only `--claude` and `--codex` take hooks, and each hook installs only into the
+harnesses it targets: `notify.sh` into both, `no-attribution.sh` into Claude
+Code alone. The command adds only what is missing, so hooks you configured
+yourself are left alone and re-running it refreshes the installed scripts in
+place. Codex skips a hook until you trust it, so run `/hooks` in Codex once
+after installing.
 
 ## Inspect harnesses
 
@@ -84,6 +86,7 @@ unless you narrow them with the same flags:
 
 ```text
 hooks/
+  no-attribution.sh
   notify.sh
 skills/
   core/

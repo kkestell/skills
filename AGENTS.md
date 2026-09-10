@@ -36,9 +36,12 @@ all three. Promote a skill by moving its directory between groups.
 
 Agent hooks live in `hooks/` as standalone shell scripts, outside the skill
 groups. `profiles.py install-hooks` copies them into a harness configuration
-directory and registers them. A hook must read its event payload as JSON on
-stdin, work under both Claude Code and Codex, and exit 0 even when it cannot do
-its job, so a cosmetic failure never surfaces as an agent error. `npm run
+directory and registers them on the events listed for that hook in the `HOOKS`
+table in `profiles.py`. A hook must read its event payload as JSON on stdin and
+exit 0 even when it cannot do its job, so a failure never surfaces as an agent
+error; a hook that decides a permission request writes the decision as JSON on
+stdout. Prefer hooks that work under both Claude Code and Codex; one that
+depends on a single harness's event schema lists only that harness. `npm run
 check` shellchecks everything in `hooks/`.
 
 ## Naming rules

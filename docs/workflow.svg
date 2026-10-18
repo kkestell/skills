@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 320" width="1110" height="320" role="img" aria-label="Workflow: Spec (/kspec) resolves product decisions with you and writes spec.md, which feeds todo.md; the next task goes to Plan, then Work, then Review, then Commit, and the task is checked off in todo.md. Plan loops on steering. Review sends decisions to you, then the agent fixes.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 244" width="780" height="244" role="img" aria-label="Workflow: a task goes to Plan, then Work, then Review, then Commit. Plan loops on steering. Review sends decisions to you, then the agent fixes.">
   <defs>
     <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M1 1 L9 5 L1 9" fill="none" stroke="#5b6472" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9,79 +9,54 @@
     <style>
       .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif; }
       .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
-      .file { fill: #11151b; stroke: #2a313b; stroke-width: 1; }
       .skill { fill: #151b23; stroke: #7dd3fc; stroke-opacity: 0.55; stroke-width: 1.2; }
       .human { fill: #11151b; stroke: #7dd3fc; stroke-opacity: 0.35; stroke-width: 1; stroke-dasharray: 3 3; }
       .title { fill: #e6edf3; font-size: 15px; font-weight: 600; }
       .sub { fill: #6e7781; font-size: 11px; }
-      .filename { fill: #9aa4b2; font-size: 12.5px; }
       .label { fill: #6e7781; font-size: 11px; }
       .accent-label { fill: #7dd3fc; fill-opacity: 0.75; font-size: 11px; }
       .edge { fill: none; stroke: #5b6472; stroke-width: 1.4; }
       .loop { fill: none; stroke: #7dd3fc; stroke-opacity: 0.6; stroke-width: 1.4; }
-      .return { fill: none; stroke: #5b6472; stroke-width: 1.4; stroke-dasharray: 4 4; }
     </style>
   </defs>
 
-  <rect width="1110" height="320" rx="16" fill="#0b0e13"/>
+  <rect width="780" height="244" rx="16" fill="#0b0e13"/>
 
   <text x="40" y="52" class="sans label" letter-spacing="0.4">one task · one plan · one review · one commit</text>
 
-  <!-- Specification skill and its output -->
-  <rect x="40" y="132" width="110" height="80" rx="12" class="skill"/>
-  <text x="95" y="154" class="sans title" text-anchor="middle">Spec</text>
-  <text x="95" y="174" class="mono sub" text-anchor="middle">/kspec</text>
-  <text x="95" y="196" class="mono filename" text-anchor="middle">spec.md</text>
-
-  <!-- Resolve product decisions before writing the spec -->
-  <path d="M73 132 C 73 100, 117 100, 117 130" class="loop" marker-end="url(#accent)"/>
-  <text x="95" y="96" class="sans accent-label" text-anchor="middle">decide behavior</text>
-
-  <!-- Backlog -->
-
-  <rect x="190" y="148" width="110" height="48" rx="10" class="file"/>
-  <text x="245" y="172" class="mono filename" text-anchor="middle" dominant-baseline="central">todo.md</text>
-
   <!-- Skills -->
-  <rect x="370" y="140" width="140" height="64" rx="12" class="skill"/>
-  <text x="440" y="166" class="sans title" text-anchor="middle">Plan</text>
-  <text x="440" y="186" class="mono sub" text-anchor="middle">plans/…md</text>
+  <rect x="40" y="140" width="140" height="64" rx="12" class="skill"/>
+  <text x="110" y="166" class="sans title" text-anchor="middle">Plan</text>
+  <text x="110" y="186" class="mono sub" text-anchor="middle">plans/…md</text>
 
-  <rect x="560" y="140" width="140" height="64" rx="12" class="skill"/>
-  <text x="630" y="166" class="sans title" text-anchor="middle">Work</text>
-  <text x="630" y="186" class="mono sub" text-anchor="middle">work/…md</text>
+  <rect x="230" y="140" width="140" height="64" rx="12" class="skill"/>
+  <text x="300" y="166" class="sans title" text-anchor="middle">Work</text>
+  <text x="300" y="186" class="mono sub" text-anchor="middle">work/…md</text>
 
-  <rect x="750" y="140" width="140" height="64" rx="12" class="skill"/>
-  <text x="820" y="166" class="sans title" text-anchor="middle">Review</text>
-  <text x="820" y="186" class="mono sub" text-anchor="middle">reviews/…md</text>
+  <rect x="420" y="140" width="140" height="64" rx="12" class="skill"/>
+  <text x="490" y="166" class="sans title" text-anchor="middle">Review</text>
+  <text x="490" y="186" class="mono sub" text-anchor="middle">reviews/…md</text>
 
-  <rect x="940" y="140" width="130" height="64" rx="12" class="skill"/>
-  <text x="1005" y="166" class="sans title" text-anchor="middle">Commit</text>
-  <text x="1005" y="186" class="mono sub" text-anchor="middle">all of it, once</text>
+  <rect x="610" y="140" width="130" height="64" rx="12" class="skill"/>
+  <text x="675" y="166" class="sans title" text-anchor="middle">Commit</text>
+  <text x="675" y="186" class="mono sub" text-anchor="middle">all of it, once</text>
 
   <!-- Human decision -->
-  <rect x="765" y="56" width="110" height="34" rx="17" class="human"/>
-  <text x="820" y="73" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">you decide</text>
+  <rect x="435" y="56" width="110" height="34" rx="17" class="human"/>
+  <text x="490" y="73" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">you decide</text>
 
   <!-- Main flow -->
-  <path d="M150 172 H188" class="edge" marker-end="url(#gray)"/>
-  <path d="M300 172 H368" class="edge" marker-end="url(#gray)"/>
-  <text x="335" y="162" class="sans label" text-anchor="middle">next task</text>
-  <path d="M510 172 H558" class="edge" marker-end="url(#gray)"/>
-  <path d="M700 172 H748" class="edge" marker-end="url(#gray)"/>
-  <path d="M890 172 H938" class="edge" marker-end="url(#gray)"/>
+  <path d="M180 172 H228" class="edge" marker-end="url(#gray)"/>
+  <path d="M370 172 H418" class="edge" marker-end="url(#gray)"/>
+  <path d="M560 172 H608" class="edge" marker-end="url(#gray)"/>
 
   <!-- Steer loop on Plan -->
-  <path d="M418 140 C 418 98, 462 98, 462 138" class="loop" marker-end="url(#accent)"/>
-  <text x="440" y="96" class="sans accent-label" text-anchor="middle">steer</text>
+  <path d="M88 140 C 88 98, 132 98, 132 138" class="loop" marker-end="url(#accent)"/>
+  <text x="110" y="96" class="sans accent-label" text-anchor="middle">steer</text>
 
   <!-- Review decision loop -->
-  <path d="M797 140 V92" class="loop" marker-end="url(#accent)"/>
-  <path d="M843 90 V138" class="loop" marker-end="url(#accent)"/>
-  <text x="789" y="120" class="sans accent-label" text-anchor="end">needs a decision</text>
-  <text x="851" y="120" class="sans accent-label">agent fixes</text>
-
-  <!-- Return to backlog -->
-  <path d="M1005 204 C 1005 300, 245 300, 245 198" class="return" marker-end="url(#gray)"/>
-  <text x="625" y="300" class="sans label" text-anchor="middle">check off the task</text>
+  <path d="M467 140 V92" class="loop" marker-end="url(#accent)"/>
+  <path d="M513 90 V138" class="loop" marker-end="url(#accent)"/>
+  <text x="459" y="120" class="sans accent-label" text-anchor="end">needs a decision</text>
+  <text x="521" y="120" class="sans accent-label">agent fixes</text>
 </svg>

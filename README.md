@@ -8,10 +8,6 @@ Skill definitions and their supporting files live in `skills/`.
 
 Each artifact directory may contain a `_template.md`; if it does, the skill uses it, otherwise the skill falls back to its built-in default template.
 
-### `/kspec`
-
-Creates or updates `agents/spec.md`. Resolves product behavior with the user before writing, then summarizes what was specified and the important decisions.
-
 ### `/kplan`
 
 Plans a code or behavior change. Writes a plan to `agents/plans/` and stages it without committing.

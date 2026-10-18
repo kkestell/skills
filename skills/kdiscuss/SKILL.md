@@ -12,7 +12,7 @@ Develop a stronger proposal with another agent. Finish with agreed improvements 
 
 1. Read `<discussion> $ARGUMENTS </discussion>`. The first argument selects `claude`, `codex`, or `opencode`; the rest names the topic or artifact. If either is missing or the agent is unsupported, ask for the missing information and stop.
 2. Read the named artifact and the evidence needed to judge it. For a code plan, inspect the relevant code and tests. Establish the goal, constraints, current proposal, and questions that could change the outcome. Do not invent requirements to fill a gap.
-3. Use the selected agent through this skill's `scripts/discuss.py`. It selects Claude Code with Opus 5.5 and high effort, Codex with GPT-6.1 Sol and high effort, or OpenCode with DeepSeek V4.1 Flash from the DeepSeek provider and max effort. If the CLI, authentication, or model is unavailable, report the blocker; do not substitute another agent or model.
+3. Use the selected agent through this skill's `scripts/discuss.py`. It selects Claude Code with Fable and high effort, Codex with GPT-6.1 Sol and high effort, or OpenCode with DeepSeek V4.1 Flash from the DeepSeek provider and max effort. If the CLI, authentication, or model is unavailable, report the blocker; do not substitute another agent or model.
 
 ## Open the discussion
 

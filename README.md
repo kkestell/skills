@@ -22,7 +22,7 @@ Implements a plan and writes a work log to `agents/work/`. Stages the work log a
 
 ### `/kdiscuss <claude|codex|opencode> <topic or artifact path>`
 
-Refines a plan, argument, or idea with another agent in a persistent conversation. Updates supplied plans with agreed improvements, reports unresolved questions, and ends with an overview of the exchange and a one- or two-sentence summary of each message. Uses Claude Code with Opus 5.5 and high effort, Codex with GPT-6.1 Sol and high effort, or OpenCode with DeepSeek V4.1 Flash from the DeepSeek provider and max effort. Requires the selected CLI and its authentication to be configured.
+Refines a plan, argument, or idea with another agent in a persistent conversation. Updates supplied plans with agreed improvements, reports unresolved questions, and ends with an overview of the exchange and a one- or two-sentence summary of each message. Uses Claude Code with Fable and high effort, Codex with GPT-6.1 Sol and high effort, or OpenCode with DeepSeek V4.1 Flash from the DeepSeek provider and max effort. Requires the selected CLI and its authentication to be configured.
 
 ### `/kreview`
 

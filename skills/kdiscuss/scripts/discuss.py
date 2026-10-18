@@ -15,7 +15,7 @@ import uuid
 
 MAX_TURNS = 6
 MODELS = {
-    "claude": "claude-opus-5-5",
+    "claude": "fable",
     "codex": "gpt-6.1-sol",
     # OpenCode's catalog ID for DeepSeek V4.1 Flash.
     "opencode": "deepseek/deepseek-flash",

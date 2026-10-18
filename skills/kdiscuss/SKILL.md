@@ -1,8 +1,10 @@
 ---
 name: kdiscuss
-description: Refine a plan, argument, or idea through a bounded discussion with another agent. Use for challenging assumptions and resolving design questions, not implementation or code review.
+description: Refine a plan, argument, or idea through a bounded discussion with another agent. Use for challenging assumptions and resolving design questions, not implementation or code review. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "<claude|codex|opencode> <topic or artifact path>"
 ---
+
+Use this skill only when the user invokes it or explicitly asks for it, or when a skill the user invoked runs it. Never use it on your own initiative.
 
 ## Objective
 

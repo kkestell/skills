@@ -1,8 +1,10 @@
 ---
 name: kplan
-description: Explore a code or behavior change and write a plan in `agents/plans/`. Use for implementation planning, not standalone documentation edits.
+description: Explore a code or behavior change and write a plan in `agents/plans/`. Use for implementation planning, not standalone documentation edits. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "[jira ticket, feature idea, bug report, or improvement to explore]"
 ---
+
+Use this skill only when the user invokes it or explicitly asks for it, or when a skill the user invoked runs it. Never use it on your own initiative.
 
 ## Objective
 

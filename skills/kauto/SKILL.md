@@ -1,8 +1,10 @@
 ---
 name: kauto
-description: Plan, implement, review, and commit a code or behavior change without stopping for user input, using `/kplan`, `/kwork`, and `/kreview`. Use when the user wants a change carried through to a commit autonomously.
+description: Plan, implement, review, and commit a code or behavior change without stopping for user input, using `/kplan`, `/kwork`, and `/kreview`. Use when the user wants a change carried through to a commit autonomously. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "[jira ticket, feature idea, bug report, or improvement to carry out]"
 ---
+
+Use this skill only when the user invokes it or explicitly asks for it, or when a skill the user invoked runs it. Never use it on your own initiative.
 
 ## Objective
 

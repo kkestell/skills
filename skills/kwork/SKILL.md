@@ -1,8 +1,10 @@
 ---
 name: kwork
-description: Implement a plan from `agents/plans/`, write a work log in `agents/work/`, and stage the changes for review. Use to carry out a written plan, not to plan or review.
+description: Implement a plan from `agents/plans/`, write a work log in `agents/work/`, and stage the changes for review. Use to carry out a written plan, not to plan or review. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "[plan path or slug]"
 ---
+
+Use this skill only when the user invokes it or explicitly asks for it, or when a skill the user invoked runs it. Never use it on your own initiative.
 
 ## Objective
 

@@ -1,8 +1,10 @@
 ---
 name: kreview
-description: "Review code in staged changes, a diff, branch, commit, or specified files, fix every finding after asking the user for any decision a fix needs, write a review in `agents/reviews/`, and commit the staged work. Do not use for plan critiques or standalone documentation reviews."
+description: "Review code in staged changes, a diff, branch, commit, or specified files, fix every finding after asking the user for any decision a fix needs, write a review in `agents/reviews/`, and commit the staged work. Do not use for plan critiques or standalone documentation reviews. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
 argument-hint: "[review scope]"
 ---
+
+Use this skill only when the user invokes it or explicitly asks for it, or when a skill the user invoked runs it. Never use it on your own initiative.
 
 ## Objective
 

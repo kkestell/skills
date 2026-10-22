@@ -1,6 +1,6 @@
 ---
 name: kreview
-description: "Review code in staged changes, a diff, branch, commit, or specified files, fix every finding after asking the user for any decision a fix needs, write a review in `agents/reviews/`, and commit the staged work. Do not use for plan critiques or standalone documentation reviews. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
+description: "Review code in staged changes, a diff, branch, commit, or specified files, fix every finding after asking the user for any decision a fix needs, write a review in `agents/reviews/`, and stage the review and fixes. Do not use for plan critiques or standalone documentation reviews. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
 argument-hint: "[review scope]"
 ---
 
@@ -8,7 +8,7 @@ Use this skill only when the user invokes it or explicitly asks for it, or when 
 
 ## Objective
 
-Review the code the user names, fix every finding, and commit. Fix trivial findings directly, and ask the user to decide the rest before fixing them.
+Review the code the user names, fix every finding, and stage the fixes. Fix trivial findings directly, and ask the user to decide the rest before fixing them.
 
 This skill and `agents/reviews/` are for code reviews. Plan critiques and standalone documentation reviews are outside its scope. Read plans and documentation as context for code under review.
 
@@ -43,15 +43,14 @@ This skill and `agents/reviews/` are for code reviews. Plan critiques and standa
 11. Read `agents/reviews/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the review in `agents/reviews/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
 12. State the scope and significant gaps in coverage. Give every finding an ID in severity order, most severe first, and list it in the summary table with its fix label. Give each finding its own section with its severity, category, fix label, source location, what can happen, the evidence, and the fix. The fix is the change you made, and for a finding that needed a decision, the decision the user made. Record the checks you ran. If there are no findings, say so. End with a short verdict.
 
-## Commit
+## Stage
 
-13. Stage the review and the fixes. Do not stage anything else.
-14. Commit everything staged in one commit, including the plan staged by `/kplan` and the work and work log staged by `/kwork`.
-15. Give the final response and stop.
+13. Stage the review and the fixes. Do not stage anything else. Do not commit.
+14. Give the final response and stop.
 
 ## Final response
 
-When the review is committed, reply in the form below and nothing else. Lead with the main point, write plainly, and leave out the checks that passed, the suspected bugs you ruled out, and the steps you took.
+When the review is staged, reply in the form below and nothing else. Lead with the main point, write plainly, and leave out the checks that passed, the suspected bugs you ruled out, and the steps you took.
 
 ```markdown
 One or two sentences giving the verdict and the number of findings by severity.
@@ -61,13 +60,15 @@ One or two sentences giving the verdict and the number of findings by severity.
 | F1 | High     | Fixed | Parser drops the final token    | `src/parser.rs:42` |
 | F2 | Medium   | Fixed | Retry loop hides the real error | `src/fetch.rs:88`  |
 
-**Review:** `agents/reviews/YYYY-MM-DD-NNN-slug.md` · **Commit:** `abc1234`
+**Review:** `agents/reviews/YYYY-MM-DD-NNN-slug.md`
 
 **Files:**
 
 - `agents/reviews/YYYY-MM-DD-NNN-slug.md` (created)
 - `src/fetch.rs` (modified)
 - `src/parser.rs` (modified)
+
+**Next:** `/kexplain staged changes`
 ```
 
-The table lists every finding, most severe first. If there are none, replace the table with `No findings.` List every file in the commit, marked `(created)` or `(modified)`.
+The table lists every finding, most severe first. If there are none, replace the table with `No findings.` List every file the review created or modified, marked `(created)` or `(modified)`.

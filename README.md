@@ -22,11 +22,19 @@ Refines a plan, argument, or idea with another agent in a persistent conversatio
 
 ### `/kreview`
 
-Reviews code in a diff, branch, commit, or files and fixes every finding. Fixes trivial findings directly and asks the user to decide the rest before fixing them. Writes a review to `agents/reviews/` and commits everything staged.
+Reviews code in a diff, branch, commit, or files and fixes every finding. Fixes trivial findings directly and asks the user to decide the rest before fixing them. Writes a review to `agents/reviews/` and stages it with the fixes without committing.
+
+### `/kpr <url>`
+
+Reviews a GitHub pull request. Checks whether the implementation is proportionate before delegating to `/kreview`, using the diff for straightforward changes and a temporary clone for complex ones. Reports a proposed verdict and actionable comments in chat, then removes the temporary clone. Does not change the PR or post without approval.
+
+### `/kexplain`
+
+Explains a change in staged changes, a diff, branch, or commit. Writes a self-contained HTML walkthrough with prose, code, diagrams, and other visual aids to `agents/explanations/`, and stages it when it explains staged changes.
 
 ### `/kauto`
 
-Plans, implements, and reviews a change without stopping for user input. Runs `/kplan` and `/kwork`, and runs `/kreview` in a subagent that makes the review's decisions itself and commits. Ends with a summary of the design and architecture decisions it made.
+Plans, implements, and reviews a change without stopping for user input. Runs `/kplan` and `/kwork`, runs `/kreview` in a subagent that makes the review's decisions itself, and commits. Ends with a summary of the design and architecture decisions it made.
 
 ## Workflows
 
@@ -37,8 +45,10 @@ The steps can share one session or each run in a fresh one.
 1. `/kplan add CSV export`
 2. `/kwork agents/plans/2026-09-25-001-export.md`
 3. `/kreview staged changes for agents/plans/2026-09-25-001-export.md`
+4. `/kexplain staged changes`
+5. Commit.
 
-The plan, work log, code changes, review, and fixes land in one commit.
+The plan, work log, code changes, review, fixes, and explanation land in one commit.
 
 ### Implement a task autonomously
 

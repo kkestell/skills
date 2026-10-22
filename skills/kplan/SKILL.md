@@ -35,7 +35,7 @@ Write a plan without changing the code.
 
 ## Stage
 
-12. Stage the plan. Do not stage anything else. Do not commit; `/kreview` commits the plan with the work.
+12. Stage the plan. Do not stage anything else. Do not commit.
 13. Give the final response and stop.
 
 ## Final response

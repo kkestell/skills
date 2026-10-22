@@ -1,0 +1,113 @@
+<!doctype html>
+<!--
+  Template for change explanations. Keep the head, the base styles, and the scripts as they are; write the page
+  inside <main>. Delete this comment.
+
+  Loaded libraries:
+  - Tailwind CSS 4 (browser build): utility classes in markup. Dark mode follows the system setting via `dark:`.
+  - highlight.js 11: put code in <pre><code class="language-python">…</code></pre>. Escape <, >, and & in code.
+    The common build covers most languages, including diff, and this page adds hcl (Terraform). Load others from
+    https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/languages/<name>.min.js before the init script.
+    To highlight lines, give the <pre> a data-mark attribute with line numbers and ranges: <pre data-mark="3,7-9">.
+    Put the file path above an excerpt in <p class="file">path</p>.
+  - Mermaid 11: put a diagram in <pre class="mermaid">…</pre>. Flowcharts, sequence, state, and class diagrams all work.
+  - Chart.js 4: draw on a <canvas> in an inline script. Use it only for real quantities.
+
+  Base styles cover headings, prose, lists, code, tables, figures, and the .file caption. If you add a class, give it
+  a name no library uses: Mermaid styles .label, .node, .edge, .cluster, and .edgeLabel inside its diagrams, and page
+  rules with those names break them. Prefix your own classes, for example .x-step.
+
+  Write animations and interactive steppers with plain CSS and JavaScript inline in this file.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Explanation title</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css" media="(prefers-color-scheme: light)" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css" media="(prefers-color-scheme: dark)" />
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+    <style type="text/tailwindcss">
+      body { @apply bg-white text-zinc-800 antialiased dark:bg-zinc-950 dark:text-zinc-200; }
+      h1 { @apply text-3xl font-semibold tracking-tight text-zinc-950 dark:text-white; }
+      h2 { @apply mt-14 mb-4 text-xl font-semibold text-zinc-950 dark:text-white; }
+      h3 { @apply mt-8 mb-3 font-semibold text-zinc-950 dark:text-white; }
+      p, ul, ol { @apply my-4 leading-7; }
+      ul { @apply list-disc pl-6; }
+      ol { @apply list-decimal pl-6; }
+      a { @apply text-blue-600 underline underline-offset-2 dark:text-blue-400; }
+      :not(pre) > code { @apply rounded bg-zinc-100 px-1.5 py-0.5 text-[0.9em] dark:bg-zinc-800; }
+      pre:not(.mermaid) { @apply my-4 overflow-x-auto rounded-lg border border-zinc-200 text-sm dark:border-zinc-800; }
+      pre code.hljs { padding: 1rem; line-height: 1.5rem; }
+      pre.mermaid { @apply my-8 flex justify-center bg-transparent; }
+      figure { @apply my-8; }
+      figcaption { @apply mt-2 text-center text-sm text-zinc-500; }
+      .file { @apply mt-6 -mb-2 font-mono text-xs text-zinc-500; }
+      table { @apply my-6 w-full border-collapse text-sm; }
+      th, td { @apply border border-zinc-200 px-3 py-2 text-left align-top dark:border-zinc-800; }
+      th { @apply bg-zinc-50 font-semibold dark:bg-zinc-900; }
+    </style>
+  </head>
+
+  <body>
+    <main class="mx-auto max-w-3xl px-6 py-16">
+      <header>
+        <p class="text-sm text-zinc-500">repository · commit or scope</p>
+        <h1>Explanation title</h1>
+        <p class="text-lg text-zinc-600 dark:text-zinc-400">One or two sentences saying what the change does and why it matters.</p>
+      </header>
+
+      <!-- Explanation goes here. -->
+    </main>
+
+    <script>
+      const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+
+      // highlight.js ships no HCL grammar, so register one for Terraform and Terragrunt.
+      hljs.registerLanguage("hcl", (hljs) => {
+        const interpolation = { className: "subst", begin: /\$\{|%\{/, end: /\}/, keywords: { keyword: "for in if else endfor endif", literal: "true false null" } };
+        const string = { className: "string", begin: /"/, end: /"/, contains: [hljs.BACKSLASH_ESCAPE, interpolation] };
+        const heredoc = { className: "string", begin: /<<-?\s*[A-Za-z_]\w*\s*$/, end: /^\s*[A-Za-z_]\w*\s*$/, contains: [interpolation] };
+        const call = { className: "built_in", begin: /\b[A-Za-z_][\w-]*(?=\()/ };
+        interpolation.contains = [string, call, hljs.NUMBER_MODE];
+        return {
+          name: "HCL",
+          aliases: ["terraform", "tf", "terragrunt"],
+          keywords: { keyword: "for in if", literal: "true false null" },
+          contains: [
+            hljs.HASH_COMMENT_MODE,
+            hljs.C_LINE_COMMENT_MODE,
+            hljs.C_BLOCK_COMMENT_MODE,
+            heredoc,
+            string,
+            { className: "keyword", begin: /^\s*[A-Za-z_][\w-]*(?=(\s+("[^"]*"|[A-Za-z_][\w-]*))*\s*\{)/ },
+            { className: "attr", begin: /\b[A-Za-z_][\w-]*(?=\s*=(?!=))/ },
+            call,
+            hljs.NUMBER_MODE,
+          ],
+        };
+      });
+
+      hljs.highlightAll();
+
+      // Band each marked line, assuming the 1rem padding and 1.5rem line height above.
+      const markColor = dark ? "rgb(251 191 36 / 0.15)" : "rgb(253 230 138 / 0.6)";
+      for (const pre of document.querySelectorAll("pre[data-mark]")) {
+        const bands = pre.dataset.mark.split(",").map((range) => {
+          const [first, last = first] = range.split("-").map(Number);
+          return `linear-gradient(transparent calc(1rem + ${first - 1} * 1.5rem), ${markColor} 0 calc(1rem + ${last} * 1.5rem), transparent 0)`;
+        });
+        pre.querySelector("code").style.backgroundImage = bands.join(", ");
+      }
+    </script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      // deterministicIds: without it, diagrams rendered in the same millisecond share an id and one renders blank.
+      mermaid.initialize({ startOnLoad: true, deterministicIds: true, theme: dark ? "dark" : "neutral", fontFamily: getComputedStyle(document.body).fontFamily });
+    </script>
+  </body>
+</html>

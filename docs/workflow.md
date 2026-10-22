@@ -16,7 +16,7 @@ Don't forget:
 
 Each task should be a session-sized unit of work: reasonably self-contained, so the project builds once it's done, and meaningfully testable.
 
-For each task, the agent writes a plan, implements it, and reviews the changes. You review the plan and make any decisions the agent raises. The plan, code, work log, and review are committed together.
+For each task, the agent writes a plan, implements it, and reviews the changes. You review the plan and make any decisions the agent raises, then commit the plan, code, work log, and review together.
 
 The skills write their files to `agents/`, which keeps the workflow's records together and out of the way of the code.
 
@@ -48,7 +48,11 @@ Once the plan looks right, the work skill takes over. The agent implements the p
 /kreview staged changes for agents/plans/2026-10-16-001-export.md
 ```
 
-After the implementation is done, the review skill checks it. The agent reviews the changes against the plan, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `agents/reviews/`, with the findings and how each was resolved, and commits the plan, code changes, work log, and review together.
+After the implementation is done, the review skill checks it. The agent reviews the changes against the plan, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
+
+### 4. Commit
+
+Read the staged changes and commit the plan, code changes, work log, and review together.
 
 ### Variations
 
@@ -60,13 +64,21 @@ To get a second opinion on a plan, run the discuss skill between planning and wo
 
 The agent discusses the plan with another agent (Claude Code, Codex, or OpenCode) for up to six replies. It updates the plan with the improvements they agree on and reports any questions left unresolved.
 
+To understand a change before you commit it, run the explain skill after the review:
+
+```
+/kexplain staged changes
+```
+
+The agent writes a self-contained HTML page to `agents/explanations/` that walks through the change with prose, code, diagrams, and other visual aids: what changed, how it fits into the rest of the system, and how things worked before compared to how they work now. It also works on changes you've already committed, such as `/kexplain the last commit`.
+
 To carry a task from plan to commit without stopping for input, use the auto skill:
 
 ```
 /kauto add CSV export
 ```
 
-The agent runs the plan, work, and review skills in sequence and makes the decisions they would ask you about. Its final response lists each design decision it made, with the reason.
+The agent runs the plan, work, and review skills in sequence, makes the decisions they would ask you about, and commits. Its final response lists each design decision it made, with the reason.
 
 ### Consistent Responses
 
@@ -109,9 +121,10 @@ Describe your project in one sentence.
 .
 ├── AGENTS.md
 ├── agents/
-│   ├── plans/     # Implementation plans
-│   ├── work/      # Work logs and verification results
-│   └── reviews/   # Code reviews and finding resolutions
+│   ├── plans/          # Implementation plans
+│   ├── work/           # Work logs and verification results
+│   ├── reviews/        # Code reviews and finding resolutions
+│   └── explanations/   # HTML walkthroughs of changes
 ├── src/
 └── tests/
 ```

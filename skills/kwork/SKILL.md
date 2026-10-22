@@ -31,7 +31,7 @@ Implement the plan, record what was done, and stage the changes for review.
 
 ## Stage
 
-9. Stage the implementation, the work log, and the plan if it is not already staged. Do not stage unrelated changes. Do not commit; `/kreview` commits the work after the review.
+9. Stage the implementation, the work log, and the plan if it is not already staged. Do not stage unrelated changes. Do not commit.
 10. Give the final response and stop.
 
 ## Final response

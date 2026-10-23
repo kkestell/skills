@@ -31,7 +31,7 @@ Implement the plan, record what was done, and stage the changes for review.
 
 ## Stage
 
-9. Stage the implementation, the work log, and the plan if it is not already staged. Do not stage unrelated changes. Do not commit.
+9. Stage the implementation, the work log, and the plan if it is not already staged. Do not stage unrelated changes. Do not commit unless a plan task cannot be carried out without a commit, such as a deploy that runs from committed code. Then commit what that task needs, record the commit in the work log, and stage the rest.
 10. Give the final response and stop.
 
 ## Final response
@@ -57,4 +57,4 @@ One or two sentences saying what was built and whether the plan's goal is met.
 **Next:** `/kreview staged changes for agents/plans/YYYY-MM-DD-NNN-slug.md`
 ```
 
-Write `None.` under Surprises if the work went as planned. Count lines from the staged changes, excluding `agents/`, with `git diff --cached --shortstat -- . ':(exclude)agents'`. List every staged file, marked `(created)` or `(modified)`.
+Write `None.` under Surprises if the work went as planned. Count lines from the staged changes, excluding `agents/`, with `git diff --cached --shortstat -- . ':(exclude)agents'`, and add the lines of any commits you made. List every staged or committed file, marked `(created)` or `(modified)`. If you committed, list the commits under Surprises and name them in the Next line, as in `/kreview staged changes and commits abc1234 for agents/plans/YYYY-MM-DD-NNN-slug.md`.

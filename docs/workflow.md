@@ -54,6 +54,8 @@ After the implementation is done, the review skill checks it. The agent reviews 
 
 Read the staged changes and commit the plan, code changes, work log, and review together.
 
+One commit is the ideal, not a rule. When a plan task needs a commit partway through, such as a deploy that runs from committed code, the work skill makes that commit, records it in the work log, and leaves the rest staged.
+
 ### Variations
 
 To get a second opinion on a plan, run the discuss skill between planning and work:
@@ -71,6 +73,14 @@ To understand a change before you commit it, run the explain skill after the rev
 ```
 
 The agent writes a self-contained HTML page to `agents/explanations/` that walks through the change with prose, code, diagrams, and other visual aids: what changed, how it fits into the rest of the system, and how things worked before compared to how they work now. It also works on changes you've already committed, such as `/kexplain the last commit`.
+
+To record how a cycle went, run the telemetry skill after the review:
+
+```
+/ktelemetry agents/plans/2026-10-16-001-export.md
+```
+
+The agent measures the plan, work log, and review against the code change, reads the Claude Code sessions that produced them for tokens, turns, questions, and compactions per stage, and posts the measurements with an assessment of where each finding should have been caught as an issue in a private repository. I use these to improve the skills. The skill fails for anyone without access to that repository.
 
 To carry a task from plan to commit without stopping for input, use the auto skill:
 

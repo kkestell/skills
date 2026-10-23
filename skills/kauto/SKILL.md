@@ -25,11 +25,11 @@ Carry the change from plan to commit on your own. You are working autonomously, 
 
 ## Review
 
-5. Start one subagent and have it run `/kreview staged changes for <plan path>`. Tell it to settle each decision `/kreview` would ask the user for itself, using the same rule as in Plan, and to return the skill's final response and every decision it made.
+5. Start one subagent and have it run `/kreview staged changes for <plan path>`, naming any commits `/kwork` made alongside the staged changes. Tell it to settle each decision `/kreview` would ask the user for itself, using the same rule as in Plan, and to return the skill's final response and every decision it made.
 
 ## Commit
 
-6. Commit everything staged in one commit: the plan, the work log, the code changes, the review, and the fixes.
+6. Commit everything staged in one commit: the plan, the work log, the code changes, the review, and the fixes. If `/kwork` committed for a plan task, this commit holds the rest.
 
 ## Final response
 

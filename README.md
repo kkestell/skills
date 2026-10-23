@@ -46,15 +46,16 @@ The steps can share one session or each run in a fresh one.
 2. `/kwork agents/plans/2026-09-25-001-export.md`
 3. `/kreview staged changes for agents/plans/2026-09-25-001-export.md`
 4. `/kexplain staged changes`
-5. Commit.
+5. `/ktelemetry agents/plans/2026-09-25-001-export.md`
+6. Commit.
 
-The plan, work log, code changes, review, fixes, and explanation land in one commit.
+Ideally, the plan, work log, code changes, review, fixes, and explanation land in one commit. When a plan task needs a commit partway through, such as a deploy, `/kwork` makes it and the rest lands in a later commit. The telemetry step records how the cycle went and is only for the repository owner.
 
 ### Implement a task autonomously
 
 1. `/kauto add CSV export`
 
-The plan, code changes, and review land in one commit, with every finding fixed.
+The plan, code changes, and review land in one commit, with every finding fixed, unless a plan task needs an earlier commit.
 
 ### Refine a plan before implementation
 

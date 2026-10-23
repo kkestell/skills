@@ -71,4 +71,4 @@ One or two sentences giving the verdict and the number of findings by severity.
 **Next:** `/kexplain staged changes`
 ```
 
-The table lists every finding, most severe first. If there are none, replace the table with `No findings.` List every file the review created or modified, marked `(created)` or `(modified)`.
+The table lists every finding, most severe first. If there are none, replace the table with `No findings.` List every file the review created or modified, marked `(created)` or `(modified)`. If a work log in `agents/work/` names the plan the review covers, add `/ktelemetry <plan path>` as a second Next line after `/kexplain staged changes`.

@@ -16,7 +16,7 @@ Carry the change from plan to commit on your own. You are working autonomously, 
 
 ## Plan
 
-2. Run `/kplan` with the feature description. Where `/kplan` would brainstorm with the user, settle each decision yourself: choose the option that fits the existing code and architecture with the least complexity, and record the decision in the plan.
+2. Run `/kplan` with the feature description. Where `/kplan` would brainstorm with the user, settle each decision yourself: choose the option that leaves the codebase simplest and easiest to maintain overall, even when that rewrites an existing abstraction or deletes code, and record the decision in the plan.
 3. Note the plan path and every design or architecture decision you made. Continue past `/kplan`'s final response.
 
 ## Implement

@@ -16,14 +16,14 @@ Write a plan without changing the code.
 
 ## Explore the code
 
-2. Search the relevant files and read the code to change, nearby examples, public APIs, and tests. Follow an existing pattern when it fits. If the request is too unclear to know where to look, brainstorm first.
+2. Search the relevant files and read the code to change, nearby examples, public APIs, and tests. Look beyond the files to change at the rest of the codebase: whether it already does this, whether an existing abstraction has the wrong shape for the change, and whether the change would extend the architecture naturally or sit bolted on. Follow an existing pattern when it is sound. If the request is too unclear to know where to look, brainstorm first.
 
 ## Brainstorm
 
 3. Brainstorm with the user before writing when the user asks to brainstorm, the request is unclear, or exploring leaves a real engineering or design decision. Otherwise, go to Write.
 4. Ask one focused question at a time and wait for the answer. For each decision, give the options, their trade-offs, and a recommendation. Do not ask what the repository documents or existing code already answer.
 5. Speak clearly and simply. Do not use jargon, invented terms, or shorthand.
-6. Say so directly when a request adds a lot of complexity, contradicts the architecture or an earlier decision, or fits poorly with existing code. Name the cost and recommend a simpler option.
+6. Say so directly when a request adds a lot of complexity, contradicts the architecture or an earlier decision, or fits poorly with existing code. Name the cost and recommend the option that leaves the codebase simplest overall, which may rewrite an abstraction or delete code rather than make the smallest change.
 7. Stop brainstorming when the scope and every decision are settled.
 
 ## Write

@@ -66,13 +66,14 @@ To get a second opinion on a plan, run the discuss skill between planning and wo
 
 The agent discusses the plan with another agent (Claude Code, Codex, or OpenCode) for up to six replies. It updates the plan with the improvements they agree on and reports any questions left unresolved.
 
-To understand a change before you commit it, run the explain skill after the review:
+To understand a plan or a change before you act on it, run the explain skill on the plan before work or on the staged changes after the review:
 
 ```
+/kexplain agents/plans/2026-10-16-001-export.md
 /kexplain staged changes
 ```
 
-The agent writes a self-contained HTML page to `agents/explanations/` that walks through the change with prose, code, diagrams, and other visual aids: what changed, how it fits into the rest of the system, and how things worked before compared to how they work now. It also works on changes you've already committed, such as `/kexplain the last commit`.
+The agent writes a self-contained HTML page to `agents/explanations/` that gives the big picture with diagrams and little code: which parts of the system the work touches, how they fit together, and how things worked before compared to how they work after. It leads with flags for anything overengineered, speculative, needlessly complex, or handling edge cases that don't matter, which are easy to miss in a detailed plan or a long diff. It also works on changes you've already committed, such as `/kexplain the last commit`.
 
 To record how a cycle went, run the telemetry skill after the review:
 

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 320" width="780" height="320" role="img" aria-label="Improvement loop: a task cycle is measured by ktelemetry, which files an issue. You triage it. To act now, the skills are fixed, the issue is closed, and the skills are reinstalled for the next cycle. To wait, the next cycle runs unchanged and adds more evidence.">
+  <defs>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 L9 5 L1 9" fill="none" stroke="#5b6472" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 L9 5 L1 9" fill="none" stroke="#7dd3fc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif; }
+      .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+      .skill { fill: #151b23; stroke: #7dd3fc; stroke-opacity: 0.55; stroke-width: 1.2; }
+      .human { fill: #11151b; stroke: #7dd3fc; stroke-opacity: 0.35; stroke-width: 1; stroke-dasharray: 3 3; }
+      .title { fill: #e6edf3; font-size: 15px; font-weight: 600; }
+      .sub { fill: #6e7781; font-size: 11px; }
+      .label { fill: #6e7781; font-size: 11px; }
+      .accent-label { fill: #7dd3fc; fill-opacity: 0.75; font-size: 11px; }
+      .edge { fill: none; stroke: #5b6472; stroke-width: 1.4; }
+      .loop { fill: none; stroke: #7dd3fc; stroke-opacity: 0.6; stroke-width: 1.4; }
+    </style>
+  </defs>
+
+  <rect width="780" height="320" rx="16" fill="#0b0e13"/>
+
+  <text x="40" y="292" class="sans label" letter-spacing="0.4">one cycle · one issue · fix now or wait for more evidence</text>
+
+  <!-- Measure and file -->
+  <rect x="40" y="84" width="150" height="64" rx="12" class="skill"/>
+  <text x="115" y="110" class="sans title" text-anchor="middle">Task cycle</text>
+  <text x="115" y="130" class="mono sub" text-anchor="middle">plan · work · review</text>
+
+  <rect x="240" y="84" width="140" height="64" rx="12" class="skill"/>
+  <text x="310" y="110" class="sans title" text-anchor="middle">Measure</text>
+  <text x="310" y="130" class="mono sub" text-anchor="middle">/ktelemetry</text>
+
+  <rect x="430" y="84" width="140" height="64" rx="12" class="skill"/>
+  <text x="500" y="110" class="sans title" text-anchor="middle">Issue</text>
+  <text x="500" y="130" class="mono sub" text-anchor="middle">skills-telemetry</text>
+
+  <!-- Human decision -->
+  <rect x="620" y="99" width="120" height="34" rx="17" class="human"/>
+  <text x="680" y="116" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">you triage</text>
+
+  <!-- Fix and reinstall -->
+  <rect x="610" y="210" width="140" height="64" rx="12" class="skill"/>
+  <text x="680" y="236" class="sans title" text-anchor="middle">Fix skills</text>
+  <text x="680" y="256" class="mono sub" text-anchor="middle">commit · close #N</text>
+
+  <rect x="380" y="210" width="140" height="64" rx="12" class="skill"/>
+  <text x="450" y="236" class="sans title" text-anchor="middle">Reinstall</text>
+  <text x="450" y="256" class="mono sub" text-anchor="middle">npx skills add</text>
+
+  <!-- Main flow -->
+  <path d="M190 116 H238" class="edge" marker-end="url(#gray)"/>
+  <path d="M380 116 H428" class="edge" marker-end="url(#gray)"/>
+  <path d="M570 116 H618" class="edge" marker-end="url(#gray)"/>
+  <path d="M610 242 H522" class="edge" marker-end="url(#gray)"/>
+  <path d="M380 242 H135 Q115 242 115 222 V150" class="edge" marker-end="url(#gray)"/>
+  <text x="250" y="234" class="sans label" text-anchor="middle">next cycle runs the new skills</text>
+
+  <!-- Act now -->
+  <path d="M680 133 V208" class="loop" marker-end="url(#accent)"/>
+  <text x="688" y="176" class="sans accent-label">act now</text>
+
+  <!-- Wait for more evidence -->
+  <path d="M680 99 V70 Q680 56 666 56 H129 Q115 56 115 70 V82" class="loop" marker-end="url(#accent)"/>
+  <text x="398" y="48" class="sans accent-label" text-anchor="middle">wait: the next cycle adds evidence</text>
+</svg>

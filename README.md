@@ -30,7 +30,7 @@ Reviews a GitHub pull request. Checks whether the implementation is proportionat
 
 ### `/kexplain`
 
-Explains a change in staged changes, a diff, branch, or commit. Writes a self-contained HTML walkthrough with prose, code, diagrams, and other visual aids to `agents/explanations/`, and stages it when it explains staged changes.
+Explains a plan or a change in staged changes, a diff, branch, or commit. Writes a self-contained HTML overview to `agents/explanations/` that shows the architecture with diagrams, uses little code, and flags anything overengineered, speculative, or needlessly complex. Stages it when it explains something staged.
 
 ### `/kauto`
 

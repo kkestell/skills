@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 290" width="780" height="290" role="img" aria-label="Example: telemetry issue 2 raised two findings. A deferred deploy, because kwork could not commit, was acted on now: kwork may commit when a plan task needs it, in commit a44b684, and the issue was closed. An unverified claim in the docs, a single low finding, was held until it recurs.">
+  <defs>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 L9 5 L1 9" fill="none" stroke="#5b6472" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 L9 5 L1 9" fill="none" stroke="#7dd3fc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif; }
+      .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+      .skill { fill: #151b23; stroke: #7dd3fc; stroke-opacity: 0.55; stroke-width: 1.2; }
+      .held { fill: #11151b; stroke: #5b6472; stroke-width: 1.2; }
+      .human { fill: #11151b; stroke: #7dd3fc; stroke-opacity: 0.35; stroke-width: 1; stroke-dasharray: 3 3; }
+      .title { fill: #e6edf3; font-size: 15px; font-weight: 600; }
+      .muted { fill: #9da7b3; font-size: 15px; font-weight: 600; }
+      .sub { fill: #6e7781; font-size: 11px; }
+      .label { fill: #6e7781; font-size: 11px; }
+      .accent-label { fill: #7dd3fc; fill-opacity: 0.75; font-size: 11px; }
+      .edge { fill: none; stroke: #5b6472; stroke-width: 1.4; }
+      .wait { fill: none; stroke: #5b6472; stroke-width: 1.4; stroke-dasharray: 4 4; }
+      .loop { fill: none; stroke: #7dd3fc; stroke-opacity: 0.6; stroke-width: 1.4; }
+    </style>
+  </defs>
+
+  <rect width="780" height="290" rx="16" fill="#0b0e13"/>
+
+  <text x="40" y="44" class="sans label" letter-spacing="0.4">issue #2 · two findings · one fixed now, one held for more evidence</text>
+
+  <!-- Issue -->
+  <rect x="30" y="134" width="120" height="64" rx="12" class="skill"/>
+  <text x="90" y="160" class="sans title" text-anchor="middle">Issue #2</text>
+  <text x="90" y="180" class="mono sub" text-anchor="middle">LiteLLM move</text>
+
+  <!-- Findings -->
+  <rect x="190" y="76" width="190" height="64" rx="12" class="skill"/>
+  <text x="285" y="102" class="sans title" text-anchor="middle">Deploy deferred</text>
+  <text x="285" y="122" class="mono sub" text-anchor="middle">kwork may not commit</text>
+
+  <rect x="190" y="192" width="190" height="64" rx="12" class="skill"/>
+  <text x="285" y="218" class="sans title" text-anchor="middle">Unverified doc claim</text>
+  <text x="285" y="238" class="mono sub" text-anchor="middle">one Low finding</text>
+
+  <!-- Decisions -->
+  <rect x="420" y="91" width="96" height="34" rx="17" class="human"/>
+  <text x="468" y="108" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">act now</text>
+
+  <rect x="420" y="207" width="96" height="34" rx="17" class="human"/>
+  <text x="468" y="224" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">wait</text>
+
+  <!-- Outcomes -->
+  <rect x="556" y="76" width="194" height="64" rx="12" class="skill"/>
+  <text x="653" y="102" class="sans title" text-anchor="middle">kwork may commit</text>
+  <text x="653" y="122" class="mono sub" text-anchor="middle">a44b684 · #2 closed</text>
+
+  <rect x="556" y="192" width="194" height="64" rx="12" class="held"/>
+  <text x="653" y="218" class="sans muted" text-anchor="middle">Held</text>
+  <text x="653" y="238" class="mono sub" text-anchor="middle">revisit if it recurs</text>
+
+  <!-- Flow -->
+  <path d="M150 166 C 170 166 168 108 188 108" class="edge" marker-end="url(#gray)"/>
+  <path d="M150 166 C 170 166 168 224 188 224" class="edge" marker-end="url(#gray)"/>
+  <path d="M380 108 H418" class="edge" marker-end="url(#gray)"/>
+  <path d="M380 224 H418" class="edge" marker-end="url(#gray)"/>
+  <path d="M516 108 H554" class="loop" marker-end="url(#accent)"/>
+  <path d="M516 224 H554" class="wait" marker-end="url(#gray)"/>
+</svg>

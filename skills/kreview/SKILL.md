@@ -10,6 +10,8 @@ Use this skill only when the user invokes it or explicitly asks for it, or when 
 
 Review the code the user names, fix every finding, and stage the fixes. Fix trivial findings directly, and ask the user to decide the rest before fixing them.
 
+Correctness matters for what happens in normal use. Handling every case that could occur does not. The fix for an unlikely edge case is a short code comment naming it, not code that handles it; it gets handled once it is observed or causes a real problem.
+
 This skill and `agents/reviews/` are for code reviews. Plan critiques and standalone documentation reviews are outside its scope. Read plans and documentation as context for code under review.
 
 ## Choose what to review
@@ -20,8 +22,8 @@ This skill and `agents/reviews/` are for code reviews. Plan critiques and standa
 ## Review
 
 3. Trace behavior through callers, state changes, resource lifetimes, and tests. Judge implementation choices by their purpose and consequence. Do not treat a language feature or coding pattern as a defect on its own.
-4. Read the requirements that define the behavior. If the user has approved a new design, review against that design. Flag complex or expensive code that adds no required behavior.
-5. Confirm each suspected bug by tracing the code, reproducing the behavior, or running a focused check before reporting it. If you cannot confirm it, leave it out. Choose checks that fit the repository. Do not require a fixed set of commands, and stay within the requested scope. Say when you reviewed only part of the code. Do not change the code under review until Fix. Revert any edit a check needs before you finish.
+4. Read the requirements that define the behavior. If the user has approved a new design, review against that design. Flag complex or expensive code that adds no required behavior, including defensive or speculative code: redundant checks, fallbacks, retries, and recovery for failures that have not happened.
+5. Confirm each suspected bug by tracing the code, reproducing the behavior, or running a focused check before reporting it. If you cannot confirm it, leave it out. Do not report missing defensive code, and do not ask for tests of hypothetical edge cases. Choose checks that fit the repository. Do not require a fixed set of commands, and stay within the requested scope. Say when you reviewed only part of the code. Do not change the code under review until Fix. Revert any edit a check needs before you finish.
 
 ## Classify
 
@@ -29,7 +31,7 @@ This skill and `agents/reviews/` are for code reviews. Plan critiques and standa
    - `Trivial`: the fix needs no decision from the user.
    - `Needs decision`: a behavior, design, or interface choice remains unresolved.
 
-   Use requirements, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial.
+   Use requirements, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial. An unlikely edge case is `Trivial`, and its fix is a comment.
 
 ## Fix
 

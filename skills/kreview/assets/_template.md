@@ -8,7 +8,7 @@ Severity describes the cost of leaving the finding unfixed. The levels, most sev
 
 - `High`: wrong results, lost or corrupted data, a crash, or a security hole that normal use can trigger.
 - `Medium`: wrong behavior that only an uncommon but realistic case triggers, or code that makes future changes materially riskier or more expensive.
-- `Low`: no effect on behavior and little effect on future changes, such as unclear naming, stale comments, or minor duplication.
+- `Low`: an unlikely edge case, fixed with a comment naming it, or no effect on behavior and little effect on future changes, such as unclear naming, stale comments, or minor duplication.
 
 Categories:
 

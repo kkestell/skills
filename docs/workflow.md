@@ -30,9 +30,17 @@ The skills write their files to `agents/`, which keeps the workflow's records to
 /kplan add CSV export
 ```
 
-Give the plan skill a task. The agent explores the codebase, works through any open design decisions with you, and writes an implementation plan to `agents/plans/`.
+Give the plan skill a task. The agent explores the codebase, makes the engineering decisions, and writes an implementation plan to `agents/plans/`. It then shows you the plan's **Check your assumptions** list: the decisions and unconfirmed assumptions you would be surprised to find after the code is written, each with what was decided and why, its consequences, an alternative, and the trade-offs. You answer only the entries you want changed, and the agent edits the plan to match.
 
 Planning upfront forces the agent to confront edge cases before writing code and lets you steer the design before bad code is written.
+
+The plan skill takes a small, clear request directly. For a change that is ambiguous, large, or still taking shape, start with the brief skill:
+
+```
+/kbrief add CSV export
+```
+
+The agent works through what the change should do with you, one question at a time, and writes a brief to `agents/briefs/`: the problem, the outcome you want, each decision with your reason and the options you turned down, and what is out of scope. You confirm the brief says what you meant, then plan from it with `/kplan agents/briefs/2026-10-16-001-export.md`. The plan delivers the brief's outcome and keeps its decisions, so your intent is written down before any engineering decisions are made. Given such a request without a brief, the plan skill stops and points you to the brief skill.
 
 ### 2. Work
 
@@ -48,7 +56,7 @@ Once the plan looks right, the work skill takes over. The agent implements the p
 /kreview staged changes for agents/plans/2026-10-16-001-export.md
 ```
 
-After the implementation is done, the review skill checks it. The agent reviews the changes against the plan, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
+After the implementation is done, the review skill checks it. The agent reviews the changes against the plan and, when there is one, the brief, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
 
 ### 4. Commit
 
@@ -83,13 +91,13 @@ To record how a cycle went, run the telemetry skill after the review:
 
 The agent measures the plan, work log, and review against the code change, reads the Claude Code sessions that produced them for tokens, turns, questions, and compactions per stage, and posts the measurements with an assessment of where each finding should have been caught as an issue in a private repository. I use these to improve the skills. The skill fails for anyone without access to that repository.
 
-To carry a task from plan to commit without stopping for input, use the auto skill:
+To delegate each stage to its own agent from Hypercube or another agent orchestration tool, use the task skill:
 
 ```
-/kauto add CSV export
+/ktask add CSV export
 ```
 
-The agent runs the plan, work, and review skills in sequence, makes the decisions they would ask you about, and commits. Its final response lists each design decision it made, with the reason.
+The agent you run it in starts a separate Opus 5.5 agent at high effort for each of the plan, work, and review skills, all in the same checkout, and passes each one what the previous one reported. When the planning agent reports that the request needs a brief, it starts a brief agent first and plans from the brief. Each stage agent asks you directly for any decision its skill needs. The review agent fixes High and Medium findings and records Low ones without fixing them. The first agent checks that the plan, work log, review, and code are staged, commits them as one commit, and summarizes what happened.
 
 ### Consistent Responses
 
@@ -132,6 +140,7 @@ Describe your project in one sentence.
 .
 ├── AGENTS.md
 ├── agents/
+│   ├── briefs/         # Intent and decisions for a change
 │   ├── plans/          # Implementation plans
 │   ├── work/           # Work logs and verification results
 │   ├── reviews/        # Code reviews and finding resolutions

@@ -8,9 +8,13 @@ Skill definitions and their supporting files live in `skills/`.
 
 Each artifact directory may contain a `_template.md`; if it does, the skill uses it, otherwise the skill falls back to its built-in default template.
 
+### `/kbrief`
+
+Works out with you what a change should do and why, one question at a time. Writes a brief to `agents/briefs/` recording the outcome, your decisions and their reasons, the options you turned down, and what is out of scope. Shows you the brief to confirm, then stages it without committing.
+
 ### `/kplan`
 
-Plans a code or behavior change. Writes a plan to `agents/plans/` and stages it without committing.
+Plans a code or behavior change from a brief, or from a request small and clear enough to need none. Sends an ambiguous or large request to `/kbrief` instead. Writes a plan to `agents/plans/`, shows you its **Check your assumptions** list so you can change any entry, and stages the plan without committing.
 
 ### `/kwork`
 
@@ -22,7 +26,7 @@ Refines a plan, argument, or idea with another agent in a persistent conversatio
 
 ### `/kreview`
 
-Reviews code in a diff, branch, commit, or files and fixes every finding. Fixes trivial findings directly and asks the user to decide the rest before fixing them. Writes a review to `agents/reviews/` and stages it with the fixes without committing.
+Reviews code in a diff, branch, commit, or files and fixes every finding. When the change has a brief, also checks that it delivers the brief's outcome, keeps its decisions, and stays within its scope. Fixes trivial findings directly and asks the user to decide the rest before fixing them. Writes a review to `agents/reviews/` and stages it with the fixes without committing.
 
 ### `/kpr <url>`
 
@@ -32,9 +36,9 @@ Reviews a GitHub pull request. Checks whether the implementation is proportionat
 
 Explains a plan or a change in staged changes, a diff, branch, or commit. Writes a self-contained HTML overview to `agents/explanations/` that shows the architecture with diagrams, uses little code, and flags anything overengineered, speculative, or needlessly complex. Stages it when it explains something staged.
 
-### `/kauto`
+### `/ktask`
 
-Plans, implements, and reviews a change without stopping for user input. Runs `/kplan` and `/kwork`, runs `/kreview` in a subagent that makes the review's decisions itself, and commits. Ends with a summary of the design and architecture decisions it made.
+Delegates a change stage by stage from Hypercube or another agent orchestration tool. Starts an Opus 5.5 agent at high effort for each of `/kplan`, `/kwork`, and `/kreview`, all in the same checkout, plus one for `/kbrief` when the planner reports the request needs a brief; each asks the user directly for any decision it needs. The review agent fixes High and Medium findings and records Low ones unfixed. Checks that the plan, work log, review, and code are staged, then commits everything as one commit.
 
 ## Workflows
 
@@ -51,11 +55,19 @@ The steps can share one session or each run in a fresh one.
 
 Ideally, the plan, work log, code changes, review, fixes, and explanation land in one commit. When a plan task needs a commit partway through, such as a deploy, `/kwork` makes it and the rest lands in a later commit. The telemetry step records how the cycle went and is only for the repository owner.
 
-### Implement a task autonomously
+### Work out a larger change first
 
-1. `/kauto add CSV export`
+1. `/kbrief add CSV export`
+2. `/kplan agents/briefs/2026-09-25-001-export.md`
+3. Continue as in Implement a task.
 
-The plan, code changes, and review land in one commit, with every finding fixed, unless a plan task needs an earlier commit.
+The brief lands in the same commit as the plan and code.
+
+### Delegate a task stage by stage
+
+1. `/ktask add CSV export`
+
+Each stage runs in its own agent. The plan, code changes, work log, and review land in one commit, with High and Medium findings fixed, unless a plan task needs an earlier commit.
 
 ### Refine a plan before implementation
 

@@ -12,6 +12,7 @@ Severity describes the cost of leaving the finding unfixed. The levels, most sev
 
 Categories:
 
+- `Intent`: the brief's outcome, decisions, and scope.
 - `Correctness`: required behavior and reachable state changes.
 - `Error handling`: failures, useful errors, cancellation, and partial effects.
 - `Resources`: resource ownership, lifetime, and cleanup.
@@ -30,7 +31,7 @@ Categories:
 
 ## Scope and coverage
 
-State what you reviewed in a short paragraph.
+State what you reviewed in a short paragraph, and name the brief you checked it against, if any.
 
 Gaps:
 

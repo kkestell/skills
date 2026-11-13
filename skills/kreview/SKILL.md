@@ -22,7 +22,7 @@ This skill and `agents/reviews/` are for code reviews. Plan critiques and standa
 ## Review
 
 3. Trace behavior through callers, state changes, resource lifetimes, and tests. Judge implementation choices by their purpose and consequence. Do not treat a language feature or coding pattern as a defect on its own.
-4. Read the requirements that define the behavior. If the user has approved a new design, review against that design. Flag complex or expensive code that adds no required behavior, including defensive or speculative code: redundant checks, fallbacks, retries, and recovery for failures that have not happened.
+4. Read the requirements that define the behavior. If the user has approved a new design, review against that design. When the scope or the changes under review include a brief in `agents/briefs/`, or a plan that links one, read the brief and check that the change delivers its Outcome, keeps each of its Decisions, and leaves out what it puts Out of scope. Report each gap as an `Intent` finding. A decision the user approved later, such as a changed Check your assumptions entry in the plan, overrides the brief. Flag complex or expensive code that adds no required behavior, including defensive or speculative code: redundant checks, fallbacks, retries, and recovery for failures that have not happened.
 5. Confirm each suspected bug by tracing the code, reproducing the behavior, or running a focused check before reporting it. If you cannot confirm it, leave it out. Do not report missing defensive code, and do not ask for tests of hypothetical edge cases. Choose checks that fit the repository. Do not require a fixed set of commands, and stay within the requested scope. Say when you reviewed only part of the code. Do not change the code under review until Fix. Revert any edit a check needs before you finish.
 
 ## Classify
@@ -31,7 +31,7 @@ This skill and `agents/reviews/` are for code reviews. Plan critiques and standa
    - `Trivial`: the fix needs no decision from the user.
    - `Needs decision`: a behavior, design, or interface choice remains unresolved.
 
-   Use requirements, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial. An unlikely edge case is `Trivial`, and its fix is a comment.
+   Use requirements, briefs, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial. An unlikely edge case is `Trivial`, and its fix is a comment. An `Intent` fix is `Trivial` when the brief settles how to close the gap.
 
 ## Fix
 
@@ -43,7 +43,7 @@ This skill and `agents/reviews/` are for code reviews. Plan critiques and standa
 ## Report
 
 11. Read `agents/reviews/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the review in `agents/reviews/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
-12. State the scope and significant gaps in coverage. Give every finding an ID in severity order, most severe first, and list it in the summary table with its fix label. Give each finding its own section with its severity, category, fix label, source location, what can happen, the evidence, and the fix. The fix is the change you made, and for a finding that needed a decision, the decision the user made. Record the checks you ran. If there are no findings, say so. End with a short verdict.
+12. State the scope, the brief you checked against if any, and significant gaps in coverage. Give every finding an ID in severity order, most severe first, and list it in the summary table with its fix label. Give each finding its own section with its severity, category, fix label, source location, what can happen, the evidence, and the fix. The fix is the change you made, and for a finding that needed a decision, the decision the user made. Record the checks you ran. If there are no findings, say so. End with a short verdict.
 
 ## Stage
 

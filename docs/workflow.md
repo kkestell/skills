@@ -16,33 +16,47 @@ Don't forget:
 
 Each task should be a session-sized unit of work: reasonably self-contained, so the project builds once it's done, and meaningfully testable.
 
-For each task, the agent writes a plan, implements it, and reviews the changes. You review the plan and make any decisions the agent raises, then commit the plan, code, work log, and review together.
+For each task, first work out what the change should do with a brief if the request is ambiguous, large, or still taking shape. Small, clear requests can go straight to planning. The agent writes a plan, implements it, and reviews the changes. You confirm the brief when there is one, review the plan, and make any decisions the agent raises, then commit the brief, plan, code, work log, and review together.
 
 The skills write their files to `agents/`, which keeps the workflow's records together and out of the way of the code.
 
-![The workflow: Plan, Work, Review, and Commit](workflow.svg)
+![The workflow: optional Brief, then Plan, Work, Review, and Commit](workflow.svg)
 
 ## The Workflow
 
-### 1. Plan
+### 1. Brief (when needed)
 
-```
-/kplan add CSV export
-```
-
-Give the plan skill a task. The agent explores the codebase, makes the engineering decisions, and writes an implementation plan to `agents/plans/`. It then shows you the plan's **Check your assumptions** list: the decisions and unconfirmed assumptions you would be surprised to find after the code is written, each with what was decided and why, its consequences, an alternative, and the trade-offs. You answer only the entries you want changed, and the agent edits the plan to match.
-
-Planning upfront forces the agent to confront edge cases before writing code and lets you steer the design before bad code is written.
-
-The plan skill takes a small, clear request directly. For a change that is ambiguous, large, or still taking shape, start with the brief skill:
+For a change that is ambiguous, large, or still taking shape, start with the brief skill. Skip this step for a small, clear request.
 
 ```
 /kbrief add CSV export
 ```
 
-The agent works through what the change should do with you, one question at a time, and writes a brief to `agents/briefs/`: the problem, the outcome you want, each decision with your reason and the options you turned down, and what is out of scope. You confirm the brief says what you meant, then plan from it with `/kplan agents/briefs/2026-10-16-001-export.md`. The plan delivers the brief's outcome and keeps its decisions, so your intent is written down before any engineering decisions are made. Given such a request without a brief, the plan skill stops and points you to the brief skill.
+The agent works through what the change should do and why with you, one question at a time, and writes a brief to `agents/briefs/`: the problem, the outcome you want, each decision with your reason and the options you turned down, and what is out of scope. The brief records your intent, not an implementation plan.
 
-### 2. Work
+You confirm the brief says what you meant. The agent stages it without committing, ready for the plan skill.
+
+### 2. Plan
+
+Plan from the confirmed brief:
+
+```
+/kplan agents/briefs/2026-10-16-001-export.md
+```
+
+Or give the plan skill a small, clear request directly:
+
+```
+/kplan add CSV export
+```
+
+The agent explores the codebase, makes the engineering decisions, and writes an implementation plan to `agents/plans/`. When there is a brief, the plan delivers its outcome and keeps its decisions. The agent then shows you the plan's **Check your assumptions** list: the decisions and unconfirmed assumptions you would be surprised to find after the code is written, each with what was decided and why, its consequences, an alternative, and the trade-offs. You answer only the entries you want changed, and the agent edits the plan to match.
+
+Planning upfront forces the agent to confront edge cases before writing code and lets you steer the design before bad code is written.
+
+Given an ambiguous or large request without a brief, the plan skill stops and points you to the brief skill.
+
+### 3. Work
 
 ```
 /kwork agents/plans/2026-10-16-001-export.md
@@ -50,7 +64,7 @@ The agent works through what the change should do with you, one question at a ti
 
 Once the plan looks right, the work skill takes over. The agent implements the plan, runs the checks, and writes a work log to `agents/work/` recording how the change was verified, where it departed from the plan, and any surprises it ran into.
 
-### 3. Review
+### 4. Review
 
 ```
 /kreview staged changes for agents/plans/2026-10-16-001-export.md
@@ -58,9 +72,9 @@ Once the plan looks right, the work skill takes over. The agent implements the p
 
 After the implementation is done, the review skill checks it. The agent reviews the changes against the plan and, when there is one, the brief, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
 
-### 4. Commit
+### 5. Commit
 
-Read the staged changes and commit the plan, code changes, work log, and review together.
+Read the staged changes and commit the brief (when there is one), plan, code changes, work log, and review together.
 
 One commit is the ideal, not a rule. When a plan task needs a commit partway through, such as a deploy that runs from committed code, the work skill makes that commit, records it in the work log, and leaves the rest staged.
 
@@ -97,11 +111,11 @@ To delegate each stage to its own agent from Hypercube or another agent orchestr
 /ktask add CSV export
 ```
 
-The agent you run it in starts a separate Opus 5.5 agent at high effort for each of the plan, work, and review skills, all in the same checkout, and passes each one what the previous one reported. When the planning agent reports that the request needs a brief, it starts a brief agent first and plans from the brief. Each stage agent asks you directly for any decision its skill needs. The review agent fixes High and Medium findings and records Low ones without fixing them. The first agent checks that the plan, work log, review, and code are staged, commits them as one commit, and summarizes what happened.
+The agent you run it in starts a separate Opus 5.5 agent at high effort for each of the plan, work, and review skills, all in the same checkout, and passes each one what the previous one reported. When the planning agent reports that the request needs a brief, it starts a brief agent first and plans from the brief. Each stage agent asks you directly for any decision its skill needs. The review agent fixes High and Medium findings and records Low ones without fixing them. The first agent checks that the brief (when needed), plan, work log, review, and code are staged, commits them as one commit, and summarizes what happened.
 
 ### Consistent Responses
 
-Each skill has a **Final response** section that specifies the format and information the assistant should include when it finishes. The response summarizes the result and links to the files it produced. Depending on the skill, it also calls out decisions, surprises, or review findings. The plan, work, and review skills include the next command to run.
+Each skill has a **Final response** section that specifies the format and information the assistant should include when it finishes. The response summarizes the result and links to the files it produced. Depending on the skill, it also calls out decisions, surprises, or review findings. The brief, plan, work, and review skills include the next command to run.
 
 I've found this consistency really nice. I know where to look for the result, what needs my attention, and which command to run next.
 
@@ -179,6 +193,6 @@ The skills are written to work across Claude Code, Codex, and OpenCode, so you c
 
 It's worth using a different model for review. The model that wrote the code may repeat the assumptions it made during implementation; another model may question those assumptions or catch mistakes the first one missed. You still need to read the code and judge the findings yourself.
 
-The plan, work, and review can all happen in a single session, as long as you keep an eye on the context window. Other times it makes sense to run each in a fresh session. The trade-off is that the agent has to reorient itself at the start of every fresh session. Prefix caching makes long sessions much, much cheaper than they look.
+The brief, plan, work, and review can all happen in a single session, as long as you keep an eye on the context window. Other times it makes sense to run each in a fresh session. The trade-off is that the agent has to reorient itself at the start of every fresh session. Prefix caching makes long sessions much, much cheaper than they look.
 
 For Claude Code settings I use, see [Claude Code Tips and Tricks](claude-code-tips.md).

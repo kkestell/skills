@@ -1,6 +1,6 @@
 # K Skills
 
-For how the plan, work, and review skills fit into a project, see [An Agentic Development Workflow](docs/workflow.md).
+For how the brief, plan, work, and review skills fit into a project, see [An Agentic Development Workflow](docs/workflow.md).
 
 ## Skills
 
@@ -28,6 +28,10 @@ Refines a plan, argument, or idea with another agent in a persistent conversatio
 
 Reviews code in a diff, branch, commit, or files and fixes every finding. When the change has a brief, also checks that it delivers the brief's outcome, keeps its decisions, and stays within its scope. Fixes trivial findings directly and asks the user to decide the rest before fixing them. Writes a review to `agents/reviews/` and stages it with the fixes without committing.
 
+### `/kdeslop`
+
+Audits the current repository for dead code, duplication, broken guarantees, over-engineering, hollow tests, and misleading comments or docs. Runs parallel area reviewers, independently verifies and deduplicates their findings, and writes a review grouped by severity to `agents/reviews/`. Stages only the review, fixes nothing, and starts no follow-up work.
+
 ### `/kpr <url>`
 
 Reviews a GitHub pull request. Checks whether the implementation is proportionate before delegating to `/kreview`, using the diff for straightforward changes and a temporary clone for complex ones. Reports a proposed verdict and actionable comments in chat, then removes the temporary clone. Does not change the PR or post without approval.
@@ -53,7 +57,7 @@ The steps can share one session or each run in a fresh one.
 5. `/ktelemetry agents/plans/2026-09-25-001-export.md`
 6. Commit.
 
-Ideally, the plan, work log, code changes, review, fixes, and explanation land in one commit. When a plan task needs a commit partway through, such as a deploy, `/kwork` makes it and the rest lands in a later commit. The telemetry step records how the cycle went and is only for the repository owner.
+Ideally, the brief (when needed), plan, work log, code changes, review, fixes, and explanation land in one commit. When a plan task needs a commit partway through, such as a deploy, `/kwork` makes it and the rest lands in a later commit. The telemetry step records how the cycle went and is only for the repository owner.
 
 ### Work out a larger change first
 
@@ -67,7 +71,7 @@ The brief lands in the same commit as the plan and code.
 
 1. `/ktask add CSV export`
 
-Each stage runs in its own agent. The plan, code changes, work log, and review land in one commit, with High and Medium findings fixed, unless a plan task needs an earlier commit.
+Each stage runs in its own agent, including `/kbrief` when the request needs one. The brief (when needed), plan, code changes, work log, and review land in one commit, with High and Medium findings fixed, unless a plan task needs an earlier commit.
 
 ### Refine a plan before implementation
 

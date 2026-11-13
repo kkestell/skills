@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 244" width="780" height="244" role="img" aria-label="Workflow: a task goes to Plan, then Work, then Review, then Commit. Plan loops on steering. Review sends decisions to you, then the agent fixes.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 970 244" width="970" height="244" role="img" aria-label="Workflow: an ambiguous or large task starts with /kbrief to clarify intent and confirm a brief. Small, clear requests skip Brief. Then Plan, Work, Review, and Commit. Plan loops on steering. Review sends decisions to you, then the agent fixes.">
   <defs>
     <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M1 1 L9 5 L1 9" fill="none" stroke="#5b6472" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -10,6 +10,7 @@
       .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif; }
       .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
       .skill { fill: #151b23; stroke: #7dd3fc; stroke-opacity: 0.55; stroke-width: 1.2; }
+      .optional { stroke-dasharray: 5 4; }
       .human { fill: #11151b; stroke: #7dd3fc; stroke-opacity: 0.35; stroke-width: 1; stroke-dasharray: 3 3; }
       .title { fill: #e6edf3; font-size: 15px; font-weight: 600; }
       .sub { fill: #6e7781; font-size: 11px; }
@@ -20,43 +21,53 @@
     </style>
   </defs>
 
-  <rect width="780" height="244" rx="16" fill="#0b0e13"/>
+  <rect width="970" height="244" rx="16" fill="#0b0e13"/>
 
-  <text x="40" y="52" class="sans label" letter-spacing="0.4">one task · one plan · one review · one commit</text>
+  <text x="40" y="52" class="sans label" letter-spacing="0.4">optional brief · one task · one plan · one review · one commit</text>
 
   <!-- Skills -->
-  <rect x="40" y="140" width="140" height="64" rx="12" class="skill"/>
-  <text x="110" y="166" class="sans title" text-anchor="middle">Plan</text>
-  <text x="110" y="186" class="mono sub" text-anchor="middle">plans/…md</text>
+  <rect x="40" y="140" width="140" height="64" rx="12" class="skill optional"/>
+  <text x="110" y="166" class="sans title" text-anchor="middle">Brief</text>
+  <text x="110" y="186" class="mono sub" text-anchor="middle">briefs/…md</text>
+  <text x="110" y="224" class="sans label" text-anchor="middle">optional · /kbrief</text>
 
   <rect x="230" y="140" width="140" height="64" rx="12" class="skill"/>
-  <text x="300" y="166" class="sans title" text-anchor="middle">Work</text>
-  <text x="300" y="186" class="mono sub" text-anchor="middle">work/…md</text>
+  <text x="300" y="166" class="sans title" text-anchor="middle">Plan</text>
+  <text x="300" y="186" class="mono sub" text-anchor="middle">plans/…md</text>
 
   <rect x="420" y="140" width="140" height="64" rx="12" class="skill"/>
-  <text x="490" y="166" class="sans title" text-anchor="middle">Review</text>
-  <text x="490" y="186" class="mono sub" text-anchor="middle">reviews/…md</text>
+  <text x="490" y="166" class="sans title" text-anchor="middle">Work</text>
+  <text x="490" y="186" class="mono sub" text-anchor="middle">work/…md</text>
 
-  <rect x="610" y="140" width="130" height="64" rx="12" class="skill"/>
-  <text x="675" y="166" class="sans title" text-anchor="middle">Commit</text>
-  <text x="675" y="186" class="mono sub" text-anchor="middle">all of it, once</text>
+  <rect x="610" y="140" width="140" height="64" rx="12" class="skill"/>
+  <text x="680" y="166" class="sans title" text-anchor="middle">Review</text>
+  <text x="680" y="186" class="mono sub" text-anchor="middle">reviews/…md</text>
+
+  <rect x="800" y="140" width="130" height="64" rx="12" class="skill"/>
+  <text x="865" y="166" class="sans title" text-anchor="middle">Commit</text>
+  <text x="865" y="186" class="mono sub" text-anchor="middle">all of it, once</text>
 
   <!-- Human decision -->
-  <rect x="435" y="56" width="110" height="34" rx="17" class="human"/>
-  <text x="490" y="73" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">you decide</text>
+  <rect x="625" y="56" width="110" height="34" rx="17" class="human"/>
+  <text x="680" y="73" class="sans" font-size="12.5" fill="#c9d1d9" text-anchor="middle" dominant-baseline="central">you decide</text>
 
   <!-- Main flow -->
   <path d="M180 172 H228" class="edge" marker-end="url(#gray)"/>
   <path d="M370 172 H418" class="edge" marker-end="url(#gray)"/>
   <path d="M560 172 H608" class="edge" marker-end="url(#gray)"/>
+  <path d="M750 172 H798" class="edge" marker-end="url(#gray)"/>
+
+  <!-- Clarify and confirm loop on Brief -->
+  <path d="M88 140 C 88 98, 132 98, 132 138" class="loop" marker-end="url(#accent)"/>
+  <text x="110" y="96" class="sans accent-label" text-anchor="middle">clarify &amp; confirm</text>
 
   <!-- Steer loop on Plan -->
-  <path d="M88 140 C 88 98, 132 98, 132 138" class="loop" marker-end="url(#accent)"/>
-  <text x="110" y="96" class="sans accent-label" text-anchor="middle">steer</text>
+  <path d="M278 140 C 278 98, 322 98, 322 138" class="loop" marker-end="url(#accent)"/>
+  <text x="300" y="96" class="sans accent-label" text-anchor="middle">steer</text>
 
   <!-- Review decision loop -->
-  <path d="M467 140 V92" class="loop" marker-end="url(#accent)"/>
-  <path d="M513 90 V138" class="loop" marker-end="url(#accent)"/>
-  <text x="459" y="120" class="sans accent-label" text-anchor="end">needs a decision</text>
-  <text x="521" y="120" class="sans accent-label">agent fixes</text>
+  <path d="M657 140 V92" class="loop" marker-end="url(#accent)"/>
+  <path d="M703 90 V138" class="loop" marker-end="url(#accent)"/>
+  <text x="649" y="120" class="sans accent-label" text-anchor="end">needs a decision</text>
+  <text x="711" y="120" class="sans accent-label">agent fixes</text>
 </svg>

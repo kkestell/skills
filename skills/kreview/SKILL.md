@@ -10,7 +10,7 @@ Use this skill only when the user invokes it or explicitly asks for it, or when 
 
 Review the code the user names, fix every finding, and stage the fixes. Fix trivial findings directly, and ask the user to decide the rest before fixing them.
 
-Correctness matters for what happens in normal use. Handling every case that could occur does not. The fix for an unlikely edge case is a short code comment naming it, not code that handles it; it gets handled once it is observed or causes a real problem.
+Correctness matters for what happens in normal use. Handling every case that could occur does not.
 
 This skill and `.agents/reviews/` are for code reviews. Plan critiques and standalone documentation reviews are outside its scope. Read plans and documentation as context for code under review.
 
@@ -31,7 +31,7 @@ This skill and `.agents/reviews/` are for code reviews. Plan critiques and stand
    - `Trivial`: the fix needs no decision from the user.
    - `Needs decision`: a behavior, design, or interface choice remains unresolved.
 
-   Use requirements, briefs, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial. An unlikely edge case is `Trivial`, and its fix is a comment. An `Intent` fix is `Trivial` when the brief settles how to close the gap.
+   Use requirements, briefs, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial. An `Intent` fix is `Trivial` when the brief settles how to close the gap.
 
 ## Fix
 

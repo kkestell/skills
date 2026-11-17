@@ -49,7 +49,7 @@ Each agent asks the user directly for any decision its skill would ask the user 
 
 9. Start the review agent with this message:
 
-   > Run `/kreview <review scope>`. Fix the High and Medium findings. Record each Low finding in the review with the fix label `Not fixed` and leave its code unchanged. Ask the user directly for any decision a High or Medium fix needs. When the review is staged, reply with `/kreview`'s final response.
+   > Run `/kreview <review scope>`. Ask the user directly for any decision a fix needs. When the review is staged, reply with `/kreview`'s final response.
 
 ## Commit
 
@@ -70,10 +70,10 @@ Two to four sentences saying what was built, how, and whether the plan's goal is
 
 - A departure from the plan or follow-up work the work agent reported.
 
-| ID | Severity | Fix       | Title                           | Location           |
-| -- | -------- | --------- | ------------------------------- | ------------------ |
-| F1 | High     | Fixed     | Parser drops the final token    | `src/parser.rs:42` |
-| F2 | Low      | Not fixed | Stale comment on the token loop | `src/parser.rs:57` |
+| ID | Severity | Fix   | Title                           | Location           |
+| -- | -------- | ----- | ------------------------------- | ------------------ |
+| F1 | High     | Fixed | Parser drops the final token    | `src/parser.rs:42` |
+| F2 | Low      | Fixed | Stale comment on the token loop | `src/parser.rs:57` |
 
 **Brief:** `.agents/briefs/YYYY-MM-DD-NNN-slug.md` · **Plan:** `.agents/plans/YYYY-MM-DD-NNN-slug.md` · **Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Review:** `.agents/reviews/YYYY-MM-DD-NNN-slug.md`
 

@@ -111,7 +111,7 @@ To delegate each stage to its own agent from Hypercube or another agent orchestr
 /ktask add CSV export
 ```
 
-The agent you run it in starts a separate Opus 5.5 agent at high effort for each of the plan, work, and review skills, all in the same checkout, and passes each one what the previous one reported. When the planning agent reports that the request needs a brief, it starts a brief agent first and plans from the brief. Each stage agent asks you directly for any decision its skill needs. The review agent fixes High and Medium findings and records Low ones without fixing them. The first agent checks that the brief (when needed), plan, work log, review, and code are staged, commits them as one commit, and summarizes what happened.
+The agent you run it in starts a separate Opus 5.5 agent at high effort for each of the plan, work, and review skills, all in the same checkout, and passes each one what the previous one reported. When the planning agent reports that the request needs a brief, it starts a brief agent first and plans from the brief. Each stage agent asks you directly for any decision its skill needs. The review agent fixes every finding. The first agent checks that the brief (when needed), plan, work log, review, and code are staged, commits them as one commit, and summarizes what happened.
 
 ### Consistent Responses
 

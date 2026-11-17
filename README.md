@@ -42,7 +42,7 @@ Explains a plan or a change in staged changes, a diff, branch, or commit. Writes
 
 ### `/ktask`
 
-Delegates a change stage by stage from Hypercube or another agent orchestration tool. Starts an Opus 5.5 agent at high effort for each of `/kplan`, `/kwork`, and `/kreview`, all in the same checkout, plus one for `/kbrief` when the planner reports the request needs a brief; each asks the user directly for any decision it needs. The review agent fixes High and Medium findings and records Low ones unfixed. Checks that the plan, work log, review, and code are staged, then commits everything as one commit.
+Delegates a change stage by stage from Hypercube or another agent orchestration tool. Starts an Opus 5.5 agent at high effort for each of `/kplan`, `/kwork`, and `/kreview`, all in the same checkout, plus one for `/kbrief` when the planner reports the request needs a brief; each asks the user directly for any decision it needs. The review agent fixes every finding. Checks that the plan, work log, review, and code are staged, then commits everything as one commit.
 
 ## Workflows
 
@@ -71,7 +71,7 @@ The brief lands in the same commit as the plan and code.
 
 1. `/ktask add CSV export`
 
-Each stage runs in its own agent, including `/kbrief` when the request needs one. The brief (when needed), plan, code changes, work log, and review land in one commit, with High and Medium findings fixed, unless a plan task needs an earlier commit.
+Each stage runs in its own agent, including `/kbrief` when the request needs one. The brief (when needed), plan, code changes, work log, and review land in one commit, with every finding fixed, unless a plan task needs an earlier commit.
 
 ### Refine a plan before implementation
 

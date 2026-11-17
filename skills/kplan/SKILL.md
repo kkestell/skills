@@ -1,6 +1,6 @@
 ---
 name: kplan
-description: Explore a code or behavior change, given a brief from `agents/briefs/` or a small, clear request, and write a plan in `agents/plans/`. Use for implementation planning, not standalone documentation edits; send ambiguous or large requests to `/kbrief` first. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
+description: Explore a code or behavior change, given a brief from `.agents/briefs/` or a small, clear request, and write a plan in `.agents/plans/`. Use for implementation planning, not standalone documentation edits; send ambiguous or large requests to `/kbrief` first. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "[brief path, or a small jira ticket, bug report, or improvement]"
 ---
 
@@ -13,7 +13,7 @@ Write a plan without changing the code.
 ## Establish the work
 
 1. Read `<feature_description> $ARGUMENTS </feature_description>`. If it is empty, ask what the user wants to plan and stop.
-2. If it names a brief in `agents/briefs/`, read the brief. The brief is the user's settled intent: plan to deliver its Outcome, keep every decision it records, and settle its Left to the plan questions yourself.
+2. If it names a brief in `.agents/briefs/`, read the brief. The brief is the user's settled intent: plan to deliver its Outcome, keep every decision it records, and settle its Left to the plan questions yourself.
 
 ## Explore the code
 
@@ -30,7 +30,7 @@ Write a plan without changing the code.
 
 ## Write
 
-7. Read `agents/plans/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the plan in `agents/plans/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
+7. Read `.agents/plans/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the plan in `.agents/plans/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
 8. Keep the plan to relevant code references, tasks tied to files, decisions that need explanation, names, and tests for this change. Link the brief under Goal instead of restating it. Do not repeat repository rules, standard validation commands, conversation history, rejected options, or work for a later change.
 9. Use the same names in plan tasks, proposed code, comments, and documentation. Do not give one concept several names or give an existing term a new meaning.
 10. Under Check your assumptions, list the decisions and unconfirmed assumptions the user would be surprised to find after the code is written, such as changed or dropped behavior, slower paths, compatibility breaks, narrowed scope, new dependencies, migrations, and readings of an ambiguous request. For each entry, give the decision that had to be made, what you decided and the evidence behind it, the consequences of that choice, an alternative, and the trade-offs between them, in the form the template shows. Usually three to seven entries; write `None.` when nothing qualifies. Do not list decisions the brief already records. Internal coding choices stay in Decisions.
@@ -53,14 +53,14 @@ When the plan is staged, reply in the form below and nothing else. Lead with the
 ```markdown
 Two to four sentences explaining, at a high level, what the code change does and how.
 
-**Plan:** `agents/plans/YYYY-MM-DD-NNN-slug.md`
+**Plan:** `.agents/plans/YYYY-MM-DD-NNN-slug.md`
 
 **Files:**
 
 - `src/parser.rs` (modified)
 - `src/tokens.rs` (created)
 
-**Next:** `/kwork agents/plans/YYYY-MM-DD-NNN-slug.md`
+**Next:** `/kwork .agents/plans/YYYY-MM-DD-NNN-slug.md`
 ```
 
 List every file the plan will create or modify, marked `(created)` or `(modified)`.

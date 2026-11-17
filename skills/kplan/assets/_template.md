@@ -6,7 +6,7 @@ Write the plan after making the main decisions. Keep the sections needed to expl
 
 State the problem and what should happen when the work is done. When the plan follows a brief, link it here and do not restate it.
 
-**Brief:** `agents/briefs/YYYY-MM-DD-NNN-slug.md`
+**Brief:** `.agents/briefs/YYYY-MM-DD-NNN-slug.md`
 
 ## Related code
 

@@ -1,6 +1,6 @@
 ---
 name: kbrief
-description: Work out with the user what a change should do and why, and write a brief in `agents/briefs/` that records their intent and decisions for `/kplan` to plan against. Use for ambiguous, large, or open-ended requests before planning, not for implementation planning. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
+description: Work out with the user what a change should do and why, and write a brief in `.agents/briefs/` that records their intent and decisions for `/kplan` to plan against. Use for ambiguous, large, or open-ended requests before planning, not for implementation planning. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "[feature idea, problem, or change to think through]"
 ---
 
@@ -28,7 +28,7 @@ Settle with the user what the change should do and why, and write it down as a b
 
 ## Write
 
-8. Read `agents/briefs/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the brief in `agents/briefs/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
+8. Read `.agents/briefs/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the brief in `.agents/briefs/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
 9. Write in the user's terms, from the outside of the system. Record only what the user said or approved, with their reasons. Do not name files, functions, or tasks, and do not propose code.
 10. Keep the brief short. Leave out the conversation itself; keep the decisions, the reasons behind them, and the options the user turned down.
 
@@ -49,7 +49,7 @@ When the brief is staged, reply in the form below and nothing else. Lead with th
 ```markdown
 Two to four sentences stating what the change should do and the decisions that shape it most.
 
-**Brief:** `agents/briefs/YYYY-MM-DD-NNN-slug.md`
+**Brief:** `.agents/briefs/YYYY-MM-DD-NNN-slug.md`
 
-**Next:** `/kplan agents/briefs/YYYY-MM-DD-NNN-slug.md`
+**Next:** `/kplan .agents/briefs/YYYY-MM-DD-NNN-slug.md`
 ```

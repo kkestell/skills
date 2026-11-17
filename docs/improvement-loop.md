@@ -16,7 +16,7 @@ The improvement loop is a simple way to find out. After a task cycle, a skill me
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | Skills         | A version hash for each skill                                                                                                                        | Installed skill files   |
 | Code change    | Lines added and removed, files, test lines                                                                                                           | Git                     |
-| Artifacts      | Size of the plan, work log, and review, and their size relative to the code change                                                                   | `agents/`               |
+| Artifacts      | Size of the plan, work log, and review, and their size relative to the code change                                                                   | `.agents/`               |
 | Plan           | Tasks, test items, decisions, code references                                                                                                        | Plan                    |
 | Work           | Departures from the plan, decisions, follow-up, checks run, manual verification                                                                      | Work log                |
 | Review         | Findings by severity, category, and fix, coverage gaps, checks run                                                                                   | Review                  |
@@ -53,13 +53,13 @@ One report raised two findings. A deploy had been deferred because the work skil
    ```
 
    ```
-   /telemetry agents/plans/2026-10-16-001-export.md
+   /telemetry .agents/plans/2026-10-16-001-export.md
    ```
 
 3. **Measure with a script and judge with the agent.** The script counts what can be counted: artifact sizes, lines changed, and tokens, turns, and questions per stage from the session files. The agent adds what a script can't: where each finding should have been caught, how the plan compared with the outcome, and one concrete change to a skill.
 
    ```
-   python3 scripts/telemetry.py measure agents/plans/2026-10-16-001-export.md > issue.md
+   python3 scripts/telemetry.py measure .agents/plans/2026-10-16-001-export.md > issue.md
    ```
 
 4. **Record the skill versions.** Put a hash of each skill in the report, so you know which version produced it.

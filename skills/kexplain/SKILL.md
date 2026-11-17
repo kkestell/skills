@@ -1,6 +1,6 @@
 ---
 name: kexplain
-description: "Explain a plan in `agents/plans/` or a code change in staged changes, a diff, branch, or commit by writing a self-contained HTML overview in `agents/explanations/` that shows the architecture with diagrams and flags overengineering, speculation, and needless complexity. Use to help the user understand and sanity-check a plan or change, not to review it line by line or modify it. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
+description: "Explain a plan in `.agents/plans/` or a code change in staged changes, a diff, branch, or commit by writing a self-contained HTML overview in `.agents/explanations/` that shows the architecture with diagrams and flags overengineering, speculation, and needless complexity. Use to help the user understand and sanity-check a plan or change, not to review it line by line or modify it. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
 argument-hint: "[plan path or changes to explain]"
 ---
 
@@ -15,7 +15,7 @@ Plans and changes written by agents are detailed enough that excess hides in the
 ## Choose what to explain
 
 1. Read `<explain_scope> $ARGUMENTS </explain_scope>`. If it is empty, explain the staged changes. If the scope is a plan, or the staged changes are only a plan, explain the plan. Ask only when there is nothing to explain or the scope is ambiguous.
-2. Read the plan or the changes, then the code around them: the components they touch, callers, dependencies, data flow, configuration, and tests. Read any plan, work log, or review in `agents/` that covers the change, and the request or ticket behind it when one is cited. Learn how the system works today well enough to describe it.
+2. Read the plan or the changes, then the code around them: the components they touch, callers, dependencies, data flow, configuration, and tests. Read any plan, work log, or review in `.agents/` that covers the change, and the request or ticket behind it when one is cited. Learn how the system works today well enough to describe it.
 
 ## Find what to flag
 
@@ -48,13 +48,13 @@ Plans and changes written by agents are detailed enough that excess hides in the
 
 ## Build the page
 
-18. Read `agents/explanations/_template.html`, or this skill's `assets/_template.html` if the workspace has none, and build the page from it. Keep the template's head, base styles, and scripts as they are, and write the page inside `<main>`. Add CSS only for elements the template does not style, in the existing style block, and keep any JavaScript inline. Do not reference local files.
-19. Write the page to `agents/explanations/`. Name the file `YYYY-MM-DD-NNN-slug.html`, using the next sequence for the day.
+18. Read `.agents/explanations/_template.html`, or this skill's `assets/_template.html` if the workspace has none, and build the page from it. Keep the template's head, base styles, and scripts as they are, and write the page inside `<main>`. Add CSS only for elements the template does not style, in the existing style block, and keep any JavaScript inline. Do not reference local files.
+19. Write the page to `.agents/explanations/`. Name the file `YYYY-MM-DD-NNN-slug.html`, using the next sequence for the day.
 20. Render the page with headless Chrome and fix what is wrong. On macOS the binary is `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`; on Linux try `google-chrome` or `chromium`. If there is no Chrome, skip this step.
 
     ```sh
-    "$CHROME" --headless --disable-gpu --hide-scrollbars --virtual-time-budget=10000 --window-size=1200,6000 --screenshot=/tmp/explanation.png "file://$PWD/agents/explanations/<file>.html"
-    "$CHROME" --headless --disable-gpu --virtual-time-budget=10000 --dump-dom "file://$PWD/agents/explanations/<file>.html" > /tmp/explanation.dom.html
+    "$CHROME" --headless --disable-gpu --hide-scrollbars --virtual-time-budget=10000 --window-size=1200,6000 --screenshot=/tmp/explanation.png "file://$PWD/.agents/explanations/<file>.html"
+    "$CHROME" --headless --disable-gpu --virtual-time-budget=10000 --dump-dom "file://$PWD/.agents/explanations/<file>.html" > /tmp/explanation.dom.html
     ```
 
     Look at the screenshot: diagrams are drawn and readable, any code is highlighted with marked lines banded, and nothing overlaps or overflows. In the dumped DOM, every `pre.mermaid` must contain an `<svg>` with a `viewBox`, and the text `Syntax error` must not appear.
@@ -76,7 +76,7 @@ One or two sentences saying, in plain words, what the plan or change does.
 - `ExporterRegistry` holds one exporter; call `CsvExporter` directly.
 - Retry loop around a local file write.
 
-**Explanation:** `agents/explanations/YYYY-MM-DD-NNN-slug.html`
+**Explanation:** `.agents/explanations/YYYY-MM-DD-NNN-slug.html`
 ```
 
 Give each flag one short line. If there are none, write `**Flags:** None.`

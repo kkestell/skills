@@ -54,8 +54,8 @@ Each agent asks the user directly for any decision its skill would ask the user 
 ## Commit
 
 10. Check that the stages produced their results. If any check fails, tell the user what is missing and stop without committing.
-    - `git diff --cached --name-only -- . ':(exclude)agents'` lists code changes, or the work agent reported commits.
-    - The plan, a work log in `agents/work/`, and a review in `agents/reviews/` exist and are staged, or are in a commit the work agent reported.
+    - `git diff --cached --name-only -- . ':(exclude).agents'` lists code changes, or the work agent reported commits.
+    - The plan, a work log in `.agents/work/`, and a review in `.agents/reviews/` exist and are staged, or are in a commit the work agent reported.
     - A brief named in the feature description or written by the brief agent is staged or already committed.
 11. Commit everything staged in one commit. The subject is the plan's title, its first line. The body is two or three sentences on what changed, taken from the agents' responses. If the work agent committed for a plan task, this commit holds the rest.
 
@@ -75,7 +75,7 @@ Two to four sentences saying what was built, how, and whether the plan's goal is
 | F1 | High     | Fixed     | Parser drops the final token    | `src/parser.rs:42` |
 | F2 | Low      | Not fixed | Stale comment on the token loop | `src/parser.rs:57` |
 
-**Brief:** `agents/briefs/YYYY-MM-DD-NNN-slug.md` · **Plan:** `agents/plans/YYYY-MM-DD-NNN-slug.md` · **Work log:** `agents/work/YYYY-MM-DD-NNN-slug.md` · **Review:** `agents/reviews/YYYY-MM-DD-NNN-slug.md`
+**Brief:** `.agents/briefs/YYYY-MM-DD-NNN-slug.md` · **Plan:** `.agents/plans/YYYY-MM-DD-NNN-slug.md` · **Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Review:** `.agents/reviews/YYYY-MM-DD-NNN-slug.md`
 
 **Commit:** `abc1234` · **Lines:** +120 / −45 (net +75)
 
@@ -85,4 +85,4 @@ Two to four sentences saying what was built, how, and whether the plan's goal is
 - `src/tokens.rs` (created)
 ```
 
-Drop the Brief link when there was no brief. Write `None.` under Surprises if the work agent reported none. The table is the review agent's findings table; if it had no findings, replace the table with `No findings.` Count lines from the commit, excluding `agents/`, with `git show --shortstat --format= HEAD -- . ':(exclude)agents'`, and add the lines of any commits the work agent made. List every code file in the commit, marked `(created)` or `(modified)`.
+Drop the Brief link when there was no brief. Write `None.` under Surprises if the work agent reported none. The table is the review agent's findings table; if it had no findings, replace the table with `No findings.` Count lines from the commit, excluding `.agents/`, with `git show --shortstat --format= HEAD -- . ':(exclude).agents'`, and add the lines of any commits the work agent made. List every code file in the commit, marked `(created)` or `(modified)`.

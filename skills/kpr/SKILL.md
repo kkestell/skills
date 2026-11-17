@@ -31,7 +31,7 @@ Assume good intent and a competent developer. Focus on high-value, high-impact f
 
    - Review only. Do not fix findings, ask the user to choose fixes, stage changes, commit, push, post comments, or submit a GitHub review. These instructions replace `/kreview`'s Fix and Stage steps.
    - Confirm each substantive finding through code tracing or a focused check. Explain the reachable consequence and recommend a fix where appropriate. Review issues introduced by this PR; use existing code as context.
-   - For a temporary clone, work there and write the internal review to its normal `agents/reviews/YYYY-MM-DD-NNN-slug.md` location using the repository template or `/kreview`'s fallback. Adapt fix labels to `Proposed` and describe recommended fixes, never claim they were applied. This is a temporary handoff artifact, not a separate user-facing report.
+   - For a temporary clone, work there and write the internal review to its normal `.agents/reviews/YYYY-MM-DD-NNN-slug.md` location using the repository template or `/kreview`'s fallback. Adapt fix labels to `Proposed` and describe recommended fixes, never claim they were applied. This is a temporary handoff artifact, not a separate user-facing report.
    - For a diff-only review, return the review directly to the primary agent without creating a report file.
    - Report completion to the primary agent with the review path or full review text, reviewed revision, confirmed findings and evidence, recommended comments with source locations, proposed verdict, and any material coverage limitations. Do not use `/kreview`'s user-facing final response.
 

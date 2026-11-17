@@ -22,7 +22,7 @@ SKILLS_DIR = Path(__file__).resolve().parents[2]
 KINDS = {"plan": "plans", "work": "work", "review": "reviews"}
 TEMPLATE_SKILLS = {"plan": "kplan", "work": "kwork", "review": "kreview"}
 SEQUENCE = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{3}-")
-PLAN_REFERENCE = re.compile(r"agents/plans/([\w.-]+)\.md")
+PLAN_REFERENCE = re.compile(r"\.agents/plans/([\w.-]+)\.md")
 LIST_ITEM = re.compile(r"^(?:[-*+]|\d+[.)])\s+\S")
 FINDING_HEADING = re.compile(r"^F\d+\.\s")
 TABLE_ROW = re.compile(r"^\|\s*(F\d+)\s*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|")
@@ -49,15 +49,15 @@ def resolve_plan(artifact):
         raise ValueError(f"Not a file: {artifact}")
     root = Path(git(artifact.parent, "rev-parse", "--show-toplevel").strip())
     relative = artifact.relative_to(root).as_posix()
-    if relative.startswith("agents/plans/"):
+    if relative.startswith(".agents/plans/"):
         return root, relative
     match = PLAN_REFERENCE.search(artifact.read_text())
-    if match and (root / "agents/plans" / f"{match.group(1)}.md").is_file():
-        return root, f"agents/plans/{match.group(1)}.md"
-    candidate = root / "agents/plans" / artifact.name
+    if match and (root / ".agents/plans" / f"{match.group(1)}.md").is_file():
+        return root, f".agents/plans/{match.group(1)}.md"
+    candidate = root / ".agents/plans" / artifact.name
     if candidate.is_file():
         return root, candidate.relative_to(root).as_posix()
-    raise ValueError(f"{relative} names no plan in agents/plans/")
+    raise ValueError(f"{relative} names no plan in .agents/plans/")
 
 
 def slug_of(path):
@@ -66,7 +66,7 @@ def slug_of(path):
 
 def find_related(root, plan, directory):
     """Work logs or reviews that name the plan, or failing that share its slug."""
-    folder = root / "agents" / directory
+    folder = root / ".agents" / directory
     if not folder.is_dir():
         return []
     files = sorted(f for f in folder.glob("*.md") if not f.name.startswith("_"))
@@ -123,7 +123,7 @@ def items(lines):
 
 
 def template_text(root, kind):
-    local = root / "agents" / KINDS[kind] / "_template.md"
+    local = root / ".agents" / KINDS[kind] / "_template.md"
     if local.is_file():
         return local.read_text(), local.relative_to(root).as_posix()
     bundled = SKILLS_DIR / TEMPLATE_SKILLS[kind] / "assets/_template.md"
@@ -224,7 +224,7 @@ def artifact(root, relative, kind):
 def numstat(root, *args):
     added = removed = tests = 0
     files = []
-    for line in git(root, *args, "--", ".", ":(exclude)agents").splitlines():
+    for line in git(root, *args, "--", ".", ":(exclude).agents").splitlines():
         fields = line.split("\t")
         if len(fields) != 3 or not fields[0].isdigit():
             continue
@@ -238,7 +238,7 @@ def numstat(root, *args):
 
 
 def code_change(root, artifacts, commits):
-    """Lines changed outside agents/, from the index plus any given commits, or from the commits that added the artifacts."""
+    """Lines changed outside .agents/, from the index plus any given commits, or from the commits that added the artifacts."""
     staged = set(git(root, "diff", "--cached", "--name-only").splitlines())
     mode = "staged" if artifacts & staged else "commits"
     if mode == "staged":
@@ -561,7 +561,7 @@ def markdown(report):
     out.append("")
     code_lines = change["added"] + change["removed"]
     out.append(f"**Code change:** +{change['added']} / −{change['removed']} lines in {change['files']} files, "
-               f"{change['test_lines']} of them in tests, excluding `agents/`.")
+               f"{change['test_lines']} of them in tests, excluding `.agents/`.")
     total = plan["bytes"] + sum(w["bytes"] for w in works) + sum(r["bytes"] for r in reviews)
     ratio = f"{total / code_lines:.0f}" if code_lines else "–"
     out.append(f"**Artifact bytes per changed code line:** {ratio} · "
@@ -732,7 +732,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     measuring = commands.add_parser("measure", help="Print the measured part of the issue as Markdown")
-    measuring.add_argument("artifact", type=Path, help="A plan, work log, or review in agents/")
+    measuring.add_argument("artifact", type=Path, help="A plan, work log, or review in .agents/")
     measuring.add_argument("--commit", action="append", default=[], metavar="SHA",
                            help="Add these commits to the staged changes, or measure them instead of the artifact commits")
     measuring.add_argument("--sessions", type=Path, help="Claude Code project directory to scan instead of the default")

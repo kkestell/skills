@@ -20,7 +20,7 @@ Record how one plan, work, and review cycle went, so the skills can be improved 
 
 ## Establish the cycle
 
-2. Read `<artifact> $ARGUMENTS </artifact>`. It names a plan, work log, or review in `agents/`. If it is empty and exactly one review is staged, use that review. Otherwise ask which cycle to measure and stop.
+2. Read `<artifact> $ARGUMENTS </artifact>`. It names a plan, work log, or review in `.agents/`. If it is empty and exactly one review is staged, use that review. Otherwise ask which cycle to measure and stop.
 3. Run the measurement and save its output; it is the first part of the issue body:
 
    ```bash

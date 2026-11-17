@@ -10,9 +10,9 @@ import unittest
 import telemetry
 
 
-PLAN = "agents/plans/2026-10-20-001-export.md"
-WORK = "agents/work/2026-10-20-001-export.md"
-REVIEW = "agents/reviews/2026-10-20-002-export-second-pass.md"
+PLAN = ".agents/plans/2026-10-20-001-export.md"
+WORK = ".agents/work/2026-10-20-001-export.md"
+REVIEW = ".agents/reviews/2026-10-20-002-export-second-pass.md"
 
 
 def git(root, *args):

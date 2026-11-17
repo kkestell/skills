@@ -18,7 +18,7 @@ Each task should be a session-sized unit of work: reasonably self-contained, so 
 
 For each task, first work out what the change should do with a brief if the request is ambiguous, large, or still taking shape. Small, clear requests can go straight to planning. The agent writes a plan, implements it, and reviews the changes. You confirm the brief when there is one, review the plan, and make any decisions the agent raises, then commit the brief, plan, code, work log, and review together.
 
-The skills write their files to `agents/`, which keeps the workflow's records together and out of the way of the code.
+The skills write their files to `.agents/`, which keeps the workflow's records together and out of the way of the code.
 
 ![The workflow: optional Brief, then Plan, Work, Review, and Commit](workflow.svg)
 
@@ -32,7 +32,7 @@ For a change that is ambiguous, large, or still taking shape, start with the bri
 /kbrief add CSV export
 ```
 
-The agent works through what the change should do and why with you, one question at a time, and writes a brief to `agents/briefs/`: the problem, the outcome you want, each decision with your reason and the options you turned down, and what is out of scope. The brief records your intent, not an implementation plan.
+The agent works through what the change should do and why with you, one question at a time, and writes a brief to `.agents/briefs/`: the problem, the outcome you want, each decision with your reason and the options you turned down, and what is out of scope. The brief records your intent, not an implementation plan.
 
 You confirm the brief says what you meant. The agent stages it without committing, ready for the plan skill.
 
@@ -41,7 +41,7 @@ You confirm the brief says what you meant. The agent stages it without committin
 Plan from the confirmed brief:
 
 ```
-/kplan agents/briefs/2026-10-16-001-export.md
+/kplan .agents/briefs/2026-10-16-001-export.md
 ```
 
 Or give the plan skill a small, clear request directly:
@@ -50,7 +50,7 @@ Or give the plan skill a small, clear request directly:
 /kplan add CSV export
 ```
 
-The agent explores the codebase, makes the engineering decisions, and writes an implementation plan to `agents/plans/`. When there is a brief, the plan delivers its outcome and keeps its decisions. The agent then shows you the plan's **Check your assumptions** list: the decisions and unconfirmed assumptions you would be surprised to find after the code is written, each with what was decided and why, its consequences, an alternative, and the trade-offs. You answer only the entries you want changed, and the agent edits the plan to match.
+The agent explores the codebase, makes the engineering decisions, and writes an implementation plan to `.agents/plans/`. When there is a brief, the plan delivers its outcome and keeps its decisions. The agent then shows you the plan's **Check your assumptions** list: the decisions and unconfirmed assumptions you would be surprised to find after the code is written, each with what was decided and why, its consequences, an alternative, and the trade-offs. You answer only the entries you want changed, and the agent edits the plan to match.
 
 Planning upfront forces the agent to confront edge cases before writing code and lets you steer the design before bad code is written.
 
@@ -59,18 +59,18 @@ Given an ambiguous or large request without a brief, the plan skill stops and po
 ### 3. Work
 
 ```
-/kwork agents/plans/2026-10-16-001-export.md
+/kwork .agents/plans/2026-10-16-001-export.md
 ```
 
-Once the plan looks right, the work skill takes over. The agent implements the plan, runs the checks, and writes a work log to `agents/work/` recording how the change was verified, where it departed from the plan, and any surprises it ran into.
+Once the plan looks right, the work skill takes over. The agent implements the plan, runs the checks, and writes a work log to `.agents/work/` recording how the change was verified, where it departed from the plan, and any surprises it ran into.
 
 ### 4. Review
 
 ```
-/kreview staged changes for agents/plans/2026-10-16-001-export.md
+/kreview staged changes for .agents/plans/2026-10-16-001-export.md
 ```
 
-After the implementation is done, the review skill checks it. The agent reviews the changes against the plan and, when there is one, the brief, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
+After the implementation is done, the review skill checks it. The agent reviews the changes against the plan and, when there is one, the brief, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `.agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
 
 ### 5. Commit
 
@@ -83,7 +83,7 @@ One commit is the ideal, not a rule. When a plan task needs a commit partway thr
 To get a second opinion on a plan, run the discuss skill between planning and work:
 
 ```
-/kdiscuss codex agents/plans/2026-10-16-001-export.md
+/kdiscuss codex .agents/plans/2026-10-16-001-export.md
 ```
 
 The agent discusses the plan with another agent (Claude Code, Codex, or OpenCode) for up to six replies. It updates the plan with the improvements they agree on and reports any questions left unresolved.
@@ -91,16 +91,16 @@ The agent discusses the plan with another agent (Claude Code, Codex, or OpenCode
 To understand a plan or a change before you act on it, run the explain skill on the plan before work or on the staged changes after the review:
 
 ```
-/kexplain agents/plans/2026-10-16-001-export.md
+/kexplain .agents/plans/2026-10-16-001-export.md
 /kexplain staged changes
 ```
 
-The agent writes a self-contained HTML page to `agents/explanations/` that gives the big picture with diagrams and little code: which parts of the system the work touches, how they fit together, and how things worked before compared to how they work after. It leads with flags for anything overengineered, speculative, needlessly complex, or handling edge cases that don't matter, which are easy to miss in a detailed plan or a long diff. It also works on changes you've already committed, such as `/kexplain the last commit`.
+The agent writes a self-contained HTML page to `.agents/explanations/` that gives the big picture with diagrams and little code: which parts of the system the work touches, how they fit together, and how things worked before compared to how they work after. It leads with flags for anything overengineered, speculative, needlessly complex, or handling edge cases that don't matter, which are easy to miss in a detailed plan or a long diff. It also works on changes you've already committed, such as `/kexplain the last commit`.
 
 To record how a cycle went, run the telemetry skill after the review:
 
 ```
-/ktelemetry agents/plans/2026-10-16-001-export.md
+/ktelemetry .agents/plans/2026-10-16-001-export.md
 ```
 
 The agent measures the plan, work log, and review against the code change, reads the Claude Code sessions that produced them for tokens, turns, questions, and compactions per stage, and posts the measurements with an assessment of where each finding should have been caught as an issue in a private repository. I use these to improve the skills. The skill fails for anyone without access to that repository.
@@ -153,7 +153,7 @@ Describe your project in one sentence.
 ```text
 .
 ├── AGENTS.md
-├── agents/
+├── .agents/
 │   ├── briefs/         # Intent and decisions for a change
 │   ├── plans/          # Implementation plans
 │   ├── work/           # Work logs and verification results

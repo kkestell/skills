@@ -1,6 +1,6 @@
 ---
 name: kwork
-description: Implement a plan from `agents/plans/`, write a work log in `agents/work/`, and stage the changes for review. Use to carry out a written plan, not to plan or review. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
+description: Implement a plan from `.agents/plans/`, write a work log in `.agents/work/`, and stage the changes for review. Use to carry out a written plan, not to plan or review. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it.
 argument-hint: "[plan path or slug]"
 ---
 
@@ -12,7 +12,7 @@ Implement the plan, record what was done, and stage the changes for review.
 
 ## Establish the work
 
-1. Read `<plan> $ARGUMENTS </plan>` and select the plan in `agents/plans/`:
+1. Read `<plan> $ARGUMENTS </plan>` and select the plan in `.agents/plans/`:
    - If a path or slug is supplied, resolve it to a plan. Ask which plan to implement and stop only if it matches no plan or is ambiguous.
    - If no argument is supplied, inspect the plans and repository evidence such as existing code, reviews, and Git history to identify unimplemented plans. If exactly one remains, select it and proceed without asking. Do not require an explicit completion marker to recognize an implemented plan. Ask which plan to implement and stop only if no unimplemented plan can be identified or multiple candidates remain.
 2. Read the plan.
@@ -26,7 +26,7 @@ Implement the plan, record what was done, and stage the changes for review.
 
 ## Write the work log
 
-7. Read `agents/work/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the work log in `agents/work/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using today's date, the next sequence for the day, and the plan's slug.
+7. Read `.agents/work/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the work log in `.agents/work/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using today's date, the next sequence for the day, and the plan's slug.
 8. Keep the log concise. Record where the work departed from the plan and why, decisions made during the work, the checks that ran, manual verification with the commands to reproduce it, and follow-up work. Do not repeat the plan, the diff, or the conversation.
 
 ## Stage
@@ -45,16 +45,16 @@ One or two sentences saying what was built and whether the plan's goal is met.
 
 - A departure from the plan, a detour, something unexpected in the code, or follow-up work.
 
-**Work log:** `agents/work/YYYY-MM-DD-NNN-slug.md` · **Lines:** +120 / −45 (net +75)
+**Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Lines:** +120 / −45 (net +75)
 
 **Files:**
 
 - `src/parser.rs` (modified)
 - `src/tokens.rs` (created)
-- `agents/plans/YYYY-MM-DD-NNN-slug.md` (created)
-- `agents/work/YYYY-MM-DD-NNN-slug.md` (created)
+- `.agents/plans/YYYY-MM-DD-NNN-slug.md` (created)
+- `.agents/work/YYYY-MM-DD-NNN-slug.md` (created)
 
-**Next:** `/kreview staged changes for agents/plans/YYYY-MM-DD-NNN-slug.md`
+**Next:** `/kreview staged changes for .agents/plans/YYYY-MM-DD-NNN-slug.md`
 ```
 
-Write `None.` under Surprises if the work went as planned. Count lines from the staged changes, excluding `agents/`, with `git diff --cached --shortstat -- . ':(exclude)agents'`, and add the lines of any commits you made. List every staged or committed file, marked `(created)` or `(modified)`. If you committed, list the commits under Surprises and name them in the Next line, as in `/kreview staged changes and commits abc1234 for agents/plans/YYYY-MM-DD-NNN-slug.md`.
+Write `None.` under Surprises if the work went as planned. Count lines from the staged changes, excluding `.agents/`, with `git diff --cached --shortstat -- . ':(exclude).agents'`, and add the lines of any commits you made. List every staged or committed file, marked `(created)` or `(modified)`. If you committed, list the commits under Surprises and name them in the Next line, as in `/kreview staged changes and commits abc1234 for .agents/plans/YYYY-MM-DD-NNN-slug.md`.

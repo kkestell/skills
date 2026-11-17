@@ -1,6 +1,6 @@
 ---
 name: kdeslop
-description: "Audit the current repository for dead code, duplication, broken guarantees, over-engineering, hollow tests, and misleading comments or docs. Delegate parallel area reviews, independently verify and deduplicate findings, and write and stage a review in `agents/reviews/` without fixing anything. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
+description: "Audit the current repository for dead code, duplication, broken guarantees, over-engineering, hollow tests, and misleading comments or docs. Delegate parallel area reviews, independently verify and deduplicate findings, and write and stage a review in `.agents/reviews/` without fixing anything. Never use it unless the user invokes it or explicitly asks for it, or a skill the user invoked runs it."
 ---
 
 Use this skill only when the user invokes it or explicitly asks for it, or when a skill the user invoked runs it. Never use it on your own initiative.
@@ -68,8 +68,8 @@ List established defects separately from suspected findings and untested opinion
 
 ## Report
 
-11. Read `agents/reviews/_template.md`, or this skill's `assets/_template.md` if the workspace has none. Adapt a workspace template to this audit: group findings by severity, use the six lenses, mark every fix `Not fixed`, and omit fix-execution or follow-up sections. Never claim a proposed fix was applied.
-12. Write a single Markdown review in `agents/reviews/YYYY-MM-DD-NNN-deslop.md`, using the next sequence for the day across that directory, as `/kreview` does. Include the repository path and revision, local-change context, area ownership and actual coverage, exclusions and material gaps, severity counts, verified findings, and checks actually run. Give findings IDs `F1`, `F2`, and so on in severity order, grouped under High, Medium, and Low. Each finding needs exact `file:line` evidence with quoted source, what is wrong, its concrete consequence, and a one-line proposed fix. Include only findings you independently established, not rejected suspicions or untested opinions. If there are no verified findings, say so without implying proof that the repository is defect-free.
+11. Read `.agents/reviews/_template.md`, or this skill's `assets/_template.md` if the workspace has none. Adapt a workspace template to this audit: group findings by severity, use the six lenses, mark every fix `Not fixed`, and omit fix-execution or follow-up sections. Never claim a proposed fix was applied.
+12. Write a single Markdown review in `.agents/reviews/YYYY-MM-DD-NNN-deslop.md`, using the next sequence for the day across that directory, as `/kreview` does. Include the repository path and revision, local-change context, area ownership and actual coverage, exclusions and material gaps, severity counts, verified findings, and checks actually run. Give findings IDs `F1`, `F2`, and so on in severity order, grouped under High, Medium, and Low. Each finding needs exact `file:line` evidence with quoted source, what is wrong, its concrete consequence, and a one-line proposed fix. Include only findings you independently established, not rejected suspicions or untested opinions. If there are no verified findings, say so without implying proof that the repository is defect-free.
 13. Stage only the review file. Do not stage source changes or any pre-existing staged work. Do not commit. Give the final response and stop; do not fix anything or initiate follow-up work.
 
 ## Final response
@@ -82,7 +82,7 @@ Deslop audit: 2 High, 3 Medium, 1 Low. Nothing fixed.
 - **F1:** Cancellation returns success while the background write continues (`src/writer.rs:42`).
 - **F2:** The documented dry-run command still deploys (`docs/deploy.md:18`).
 
-**Review:** [agents/reviews/YYYY-MM-DD-NNN-deslop.md](agents/reviews/YYYY-MM-DD-NNN-deslop.md)
+**Review:** [.agents/reviews/YYYY-MM-DD-NNN-deslop.md](.agents/reviews/YYYY-MM-DD-NNN-deslop.md)
 ```
 
 Omit the High list when there are no High findings. If there are no verified findings, keep the zero counts, say `No verified findings. Nothing fixed.`, and link the review, retaining any coverage limitation.

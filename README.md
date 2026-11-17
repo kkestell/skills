@@ -26,7 +26,7 @@ Refines a plan, argument, or idea with another agent in a persistent conversatio
 
 ### `/kreview`
 
-Reviews code in a diff, branch, commit, or files and fixes every finding. When the change has a brief, also checks that it delivers the brief's outcome, keeps its decisions, and stays within its scope. Fixes trivial findings directly and asks the user to decide the rest before fixing them. Writes a review to `.agents/reviews/` and stages it with the fixes without committing.
+Reviews code in a diff, branch, commit, or files and fixes every finding. When the change has a brief, also checks that it delivers the brief's outcome, keeps its decisions, and stays within its scope. Decides each fix itself and asks the user only about fixes that would change what they see or do in everyday use. Writes a review to `.agents/reviews/` and stages it with the fixes without committing.
 
 ### `/kdeslop`
 

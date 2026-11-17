@@ -21,8 +21,8 @@ Settle with the user what the change should do and why, and write it down as a b
 ## Brainstorm
 
 3. Ask one focused question at a time and wait for the answer. For each decision, give the options, their trade-offs, and a recommendation. Do not ask what the repository documents or existing code already answer.
-4. Settle the questions the user owns: what the change should do, for whom, its scope, its priorities, and any technical constraint the user cares about, such as a dependency, a data store, or compatibility. Leave every other implementation choice to the plan.
-5. Speak clearly and simply. Do not use jargon, invented terms, or shorthand.
+4. Settle the questions the user owns: what the change should do, for whom, its scope, its priorities, and any technical constraint the user cares about, such as a dependency, a data store, or compatibility. These are product questions, about what the user sees or does in everyday use of the product. Leave every other choice to the plan, including internal design and how rare cases behave, such as races, crashes, failures that coincide, and states everyday use does not reach.
+5. Ask as the user experiences the product, clearly and simply, without code names, jargon, invented terms, or shorthand. The user should be able to answer without reading the code.
 6. Say so directly when a request adds a lot of complexity, contradicts the architecture or an earlier decision, or fits poorly with existing code. Name the cost and recommend the option that leaves the codebase simplest overall, which may rewrite an abstraction or delete code rather than make the smallest change.
 7. Stop brainstorming when every question the user owns is settled or the user has left it to the planner.
 

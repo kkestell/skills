@@ -22,17 +22,18 @@ Implement the plan, record what was done, and stage the changes for review.
 3. Read the code the plan references before changing it. Carry out the plan's tasks in order and write the tests it names.
 4. Use the names the plan gives. Do not add work the plan does not call for.
 5. When the code contradicts the plan or a task cannot be done as written, make the smallest departure that still meets the plan's goal, record it in the work log, and report it under Surprises. Do not redesign the change.
-6. Validate the change. Fix failures before continuing.
+6. Decide every question the work raises yourself, including how rare cases behave, such as races, crashes, failures that coincide, and states everyday use does not reach; handle those the simplest reasonable way. Ask the user only when every departure that meets the plan's goal would change what the user sees or does in everyday use beyond what the plan says. Ask as the user experiences the product, without code names, and wait for the answer.
+7. Validate the change. Fix failures before continuing.
 
 ## Write the work log
 
-7. Read `.agents/work/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the work log in `.agents/work/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using today's date, the next sequence for the day, and the plan's slug.
-8. Keep the log concise. Record where the work departed from the plan and why, decisions made during the work, the checks that ran, manual verification with the commands to reproduce it, and follow-up work. Do not repeat the plan, the diff, or the conversation.
+8. Read `.agents/work/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the work log in `.agents/work/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using today's date, the next sequence for the day, and the plan's slug.
+9. Keep the log concise. Record where the work departed from the plan and why, decisions made during the work, the checks that ran, manual verification with the commands to reproduce it, and follow-up work. Do not repeat the plan, the diff, or the conversation.
 
 ## Stage
 
-9. Stage the implementation, the work log, and the plan if it is not already staged. Do not stage unrelated changes. Do not commit unless a plan task cannot be carried out without a commit, such as a deploy that runs from committed code. Then commit what that task needs, record the commit in the work log, and stage the rest.
-10. Give the final response and stop.
+10. Stage the implementation, the work log, and the plan if it is not already staged. Do not stage unrelated changes. Do not commit unless a plan task cannot be carried out without a commit, such as a deploy that runs from committed code. Then commit what that task needs, record the commit in the work log, and stage the rest.
+11. Give the final response and stop.
 
 ## Final response
 
@@ -43,7 +44,7 @@ One or two sentences saying what was built and whether the plan's goal is met.
 
 **Surprises:**
 
-- A departure from the plan, a detour, something unexpected in the code, or follow-up work.
+- A departure from the plan or follow-up work, in plain terms.
 
 **Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Lines:** +120 / −45 (net +75)
 

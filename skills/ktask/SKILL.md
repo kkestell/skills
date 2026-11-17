@@ -14,7 +14,7 @@ Delegate each stage to its own agent and commit the result. You do not plan, imp
 
 Start each stage as a new agent with fresh context, running Opus 5.5 at high effort in this checkout. All the agents share the checkout; none gets its own worktree. In Hypercube, use `create_session` with harness `claude`, model `opus`, effort `high`, and `dir` `"."`. If the host cannot start an agent with that model and effort, tell the user and stop.
 
-Each agent asks the user directly for any decision its skill would ask the user for. After you start an agent, wait for its final response without writing to the user. When an agent reports that it could not finish its stage, tell the user what it reported and stop. End each agent once its stage is done.
+Each agent asks the user directly for any decision its skill would ask the user for; the skills bring the user only product questions, choices that change what the user sees or does in everyday use. After you start an agent, wait for its final response without writing to the user. When an agent reports that it could not finish its stage, tell the user what it reported, as they experience the product and without code names, and stop. End each agent once its stage is done.
 
 ## Start
 

@@ -22,29 +22,31 @@ Write a plan without changing the code.
 ## Check the input
 
 4. Without a brief, plan only a request that is small and clear: one you can plan without asking the user what the change should do, its scope, or its priorities. If the request is ambiguous, large, or open-ended, or leaves such a question open, stop and give the final response for a missing brief.
-5. With a brief, if the code makes a decision in the brief unworkable, stop and tell the user which decision and why. Do not plan around it.
+5. With a brief, if the code makes a decision in the brief unworkable, stop and tell the user, in their terms, which decision and why. Do not plan around it.
 
 ## Decide
 
-6. Settle the engineering decisions yourself. Choose the option that leaves the codebase simplest overall, which may rewrite an abstraction or delete code rather than make the smallest change.
+6. Settle every decision yourself except product questions. A product question is a choice that changes what the user sees or does in everyday use of the product. Everything else is yours: internal design, which component owns a rule, data and protocol shapes, removing code that cannot run in real use, and how rare cases behave, such as races, crashes, failures that coincide, and states everyday use does not reach. Handle rare cases the simplest reasonable way. A rare-case decision becomes a product question only when it changes what the user sees in everyday use.
+7. Choose the option that leaves the codebase simplest overall, which may rewrite an abstraction or delete code rather than make the smallest change.
 
 ## Write
 
-7. Read `.agents/plans/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the plan in `.agents/plans/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
-8. Keep the plan to relevant code references, tasks tied to files, decisions that need explanation, names, and tests for this change. Link the brief under Goal instead of restating it. Do not repeat repository rules, standard validation commands, conversation history, rejected options, or work for a later change.
-9. Use the same names in plan tasks, proposed code, comments, and documentation. Do not give one concept several names or give an existing term a new meaning.
-10. Under Check your assumptions, list the decisions and unconfirmed assumptions the user would be surprised to find after the code is written, such as changed or dropped behavior, slower paths, compatibility breaks, narrowed scope, new dependencies, migrations, and readings of an ambiguous request. For each entry, give the decision that had to be made, what you decided and the evidence behind it, the consequences of that choice, an alternative, and the trade-offs between them, in the form the template shows. Usually three to seven entries; write `None.` when nothing qualifies. Do not list decisions the brief already records. Internal coding choices stay in Decisions.
-11. Do not review the plan yourself or ask another agent to review it.
+8. Read `.agents/plans/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the plan in `.agents/plans/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
+9. Keep the plan to relevant code references, tasks tied to files, decisions that need explanation, names, and tests for this change. Link the brief under Goal instead of restating it. Do not repeat repository rules, standard validation commands, conversation history, rejected options, or work for a later change.
+10. Use the same names in plan tasks, proposed code, comments, and documentation. Do not give one concept several names or give an existing term a new meaning.
+11. Under Check your assumptions, list the product questions the brief does not settle, such as a feature that behaves differently, something the user relies on that goes away, a path the user will notice is slower, narrowed scope, a new dependency or migration the user has to deal with, or a reading of an ambiguous request that leads to a different product. Most plans have none, one, or two; write `None.` when nothing qualifies. Record your other decisions under Decisions when they need explaining.
+12. Write each entry as the user experiences the product, in the form the template shows: what the plan does that they will notice, and the alternative with what it would cost them. Leave out code names, protocol fields, and internal mechanisms. The user should be able to answer without reading the code.
+13. Do not review the plan yourself or ask another agent to review it.
 
 ## Check your assumptions
 
-12. If the list is `None.`, go to Stage. Otherwise, present the entries to the user in one message, numbered, most consequential first. Give each entry in the same form as in the plan. The user answers only the entries they want changed; the rest stand. Wait for the answer.
-13. Edit the affected lines of the plan for each changed entry; do not rewrite the plan. Mark each entry kept or changed, and to what. If a change reopens other decisions, present the new entries the same way.
+14. If the list is `None.`, go to Stage. Otherwise, present the entries to the user in one message, numbered, most consequential first. Give each entry in the same form as in the plan. The user answers only the entries they want changed; the rest stand. Wait for the answer.
+15. Edit the affected lines of the plan for each changed entry; do not rewrite the plan. Mark each entry kept or changed, and to what. If a change reopens a product question, present it the same way.
 
 ## Stage
 
-14. Stage the plan. Do not stage anything else. Do not commit.
-15. Give the final response and stop.
+16. Stage the plan. Do not stage anything else. Do not commit.
+17. Give the final response and stop.
 
 ## Final response
 

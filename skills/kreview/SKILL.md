@@ -8,7 +8,7 @@ Use this skill only when the user invokes it or explicitly asks for it, or when 
 
 ## Objective
 
-Review the code the user names, fix every finding, and stage the fixes. Fix trivial findings directly, and ask the user to decide the rest before fixing them.
+Review the code the user names, fix every finding, and stage the fixes. Decide every fix yourself except one that raises a product question, which the user decides.
 
 Correctness matters for what happens in normal use. Handling every case that could occur does not.
 
@@ -29,14 +29,14 @@ This skill and `.agents/reviews/` are for code reviews. Plan critiques and stand
 
 6. Mark each finding's fix with one of two labels:
    - `Trivial`: the fix needs no decision from the user.
-   - `Needs decision`: a behavior, design, or interface choice remains unresolved.
+   - `Needs decision`: the fix raises a product question, a choice that changes what the user sees or does in everyday use of the product, and the requirements, brief, plan, and approved decisions do not settle it.
 
-   Use requirements, briefs, existing plans, and approved decisions to establish the intended behavior before deciding a fix needs a new decision. Severity, size, and file count alone do not make a fix non-trivial. An `Intent` fix is `Trivial` when the brief settles how to close the gap.
+   Design, interface, and internal behavior choices are yours, and so is how a rare case behaves, such as a race, a crash, failures that coincide, or a state everyday use does not reach. Handle rare cases the simplest reasonable way. Severity, size, and file count alone do not make a fix non-trivial. An `Intent` fix is `Trivial` when the brief settles how to close the gap.
 
 ## Fix
 
 7. Fix every `Trivial` finding. If a fix turns out to need a decision, revert it and mark the finding `Needs decision`.
-8. Ask the user to decide each `Needs decision` finding, one focused question at a time, and wait for the answer. For each, say what can happen, then give the options, their trade-offs, and a recommendation. Speak clearly and simply.
+8. Ask the user to decide each `Needs decision` finding, one focused question at a time, and wait for the answer. Ask as the user experiences the product: what they would see happen, the options as they would experience them, and a recommendation. Leave out code names and internal mechanisms. The user should be able to answer without reading the code.
 9. Fix each `Needs decision` finding as the user decided.
 10. Validate the fixes. Fix failures before continuing. Change each finding's label to `Fixed`.
 

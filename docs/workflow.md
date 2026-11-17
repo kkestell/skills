@@ -50,9 +50,9 @@ Or give the plan skill a small, clear request directly:
 /kplan add CSV export
 ```
 
-The agent explores the codebase, makes the engineering decisions, and writes an implementation plan to `.agents/plans/`. When there is a brief, the plan delivers its outcome and keeps its decisions. The agent then shows you the plan's **Check your assumptions** list: the decisions and unconfirmed assumptions you would be surprised to find after the code is written, each with what was decided and why, its consequences, an alternative, and the trade-offs. You answer only the entries you want changed, and the agent edits the plan to match.
+The agent explores the codebase, makes the engineering decisions, including how rare cases behave, and writes an implementation plan to `.agents/plans/`. When there is a brief, the plan delivers its outcome and keeps its decisions. The agent then shows you the plan's **Check your assumptions** list: the product questions the plan settles, choices that change what you see or do in everyday use, each written in your terms with the plan's choice and an alternative. Most plans have none or a few. You answer only the entries you want changed, and the agent edits the plan to match.
 
-Planning upfront forces the agent to confront edge cases before writing code and lets you steer the design before bad code is written.
+Planning upfront forces the agent to confront edge cases before writing code and lets you steer the product before bad code is written.
 
 Given an ambiguous or large request without a brief, the plan skill stops and points you to the brief skill.
 
@@ -70,7 +70,7 @@ Once the plan looks right, the work skill takes over. The agent implements the p
 /kreview staged changes for .agents/plans/2026-10-16-001-export.md
 ```
 
-After the implementation is done, the review skill checks it. The agent reviews the changes against the plan and, when there is one, the brief, fixes trivial issues directly, and asks you to decide on anything non-trivial. It writes the review to `.agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
+After the implementation is done, the review skill checks it. The agent reviews the changes against the plan and, when there is one, the brief, fixes every finding, and asks you to decide only fixes that would change what you see or do in everyday use. It writes the review to `.agents/reviews/`, with the findings and how each was resolved, and stages it with the fixes.
 
 ### 5. Commit
 

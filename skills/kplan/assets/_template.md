@@ -18,13 +18,11 @@ Record choices that may not be clear from the tasks. Explain any constraints nee
 
 ## Check your assumptions
 
-Most consequential first, usually three to seven, or `None.`. Once the user has settled the list, mark each entry kept or changed, and to what.
+Product questions only, most consequential first, or `None.`. Write them in the user's terms, without code names. Once the user has settled the list, mark each entry kept or changed, and to what.
 
-1. **The decision that had to be made.**
-   - **Decided:** What you chose, and the evidence behind it in a sentence.
-   - **Consequences:** What the user will notice because of this choice.
-   - **Alternative:** Another option.
-   - **Trade-offs:** What each option gains and costs compared to the other.
+1. **The choice, in a few plain words.**
+   - **Plan:** What the user will see or do with this choice, and why it was chosen, in a sentence or two.
+   - **Alternative:** What the user would see or do instead, and what it would cost them.
 
 ## Test plan
 

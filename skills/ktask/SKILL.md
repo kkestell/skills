@@ -8,13 +8,13 @@ Use this skill only when the user invokes it or explicitly asks for it, or when 
 
 ## Objective
 
-Delegate each stage to its own agent and commit the result. You do not plan, implement, or review, and you do not read the plan, the code, or the review. You do not write the brief. You start the agents, pass each one what the previous one reported, check that the stages produced their files, and commit.
+Delegate each stage to its own agent and retain responsibility for the result. Read the plan, code, and review against the user's requested outcome and scope, resolve unfinished work with the stage agents, and commit the completed change.
 
 ## Agents
 
 Start each stage as a new agent with fresh context, running Opus 5.5 at high effort in this checkout. All the agents share the checkout; none gets its own worktree. In Hypercube, use `create_session` with harness `claude`, model `opus`, effort `high`, and `dir` `"."`. If the host cannot start an agent with that model and effort, tell the user and stop.
 
-Each agent asks the user directly for any decision its skill would ask the user for; the skills bring the user only product questions, choices that change what the user sees or does in everyday use. After you start an agent, wait for its final response without writing to the user. When an agent reports that it could not finish its stage, tell the user what it reported, as they experience the product and without code names, and stop. End each agent once its stage is done.
+Each agent asks the user directly for any decision its skill would ask the user for; the skills bring the user only product questions, choices that change what the user sees or does in everyday use. After you start an agent, wait for its final response without writing to the user. Resolve correctable stage failures within the user's authorization; bring the user a blocker only when progress requires their decision or an external change. End each agent once its stage is done.
 
 ## Start
 
@@ -53,7 +53,7 @@ Each agent asks the user directly for any decision its skill would ask the user 
 
 ## Commit
 
-10. Check that the stages produced their results. If any check fails, tell the user what is missing and stop without committing.
+10. Inspect the resulting plan, code, and review to establish that the user's outcome is complete and the whole implementation is proportionate and easy to follow. Resolve gaps before committing. Also check that the stages produced their results:
     - `git diff --cached --name-only -- . ':(exclude).agents'` lists code changes, or the work agent reported commits.
     - The plan, a work log in `.agents/work/`, and a review in `.agents/reviews/` exist and are staged, or are in a commit the work agent reported.
     - A brief named in the feature description or written by the brief agent is staged or already committed.

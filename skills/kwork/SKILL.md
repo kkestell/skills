@@ -20,9 +20,9 @@ Implement the plan, record what was done, and stage the changes for review.
 ## Implement
 
 3. Read the code the plan references before changing it. Carry out the plan's tasks in order and write the tests it names.
-4. Use the names the plan gives. Do not add work the plan does not call for.
-5. When the code contradicts the plan or a task cannot be done as written, make the smallest departure that still meets the plan's goal, record it in the work log, and report it under Surprises. Do not redesign the change.
-6. Decide every question the work raises yourself, including how rare cases behave, such as races, crashes, failures that coincide, and states everyday use does not reach; handle those the simplest reasonable way. Ask the user only when every departure that meets the plan's goal would change what the user sees or does in everyday use beyond what the plan says. Ask as the user experiences the product, without code names, and wait for the answer.
+4. Keep names consistent across the plan, code, and documentation. Keep the work within the user's authorized scope.
+5. Revise the design when implementation exposes a weakness in the plan or a simpler complete solution. Preserve the user's requirements and accepted decisions, record material departures in the work log, and report them under Surprises.
+6. Decide every question the work raises yourself, including how rare cases behave, such as races, crashes, failures that coincide, and states everyday use does not reach; handle those the simplest reasonable way. Ask the user only when the change needs a product decision beyond their requirements and accepted decisions. Ask as the user experiences the product, without code names, and wait for the answer.
 7. Validate the change. Fix failures before continuing.
 
 ## Write the work log

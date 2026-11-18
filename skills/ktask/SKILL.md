@@ -77,7 +77,7 @@ Two to four sentences saying what was built, how, and whether the plan's goal is
 
 **Brief:** `.agents/briefs/YYYY-MM-DD-NNN-slug.md` · **Plan:** `.agents/plans/YYYY-MM-DD-NNN-slug.md` · **Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Review:** `.agents/reviews/YYYY-MM-DD-NNN-slug.md`
 
-**Commit:** `abc1234` · **Lines:** +120 / −45 (net +75)
+**Commit:** `abc1234` · **Lines:** code +80 / −40 (net +40) · tests +40 / −5 (net +35)
 
 **Files:**
 
@@ -85,4 +85,4 @@ Two to four sentences saying what was built, how, and whether the plan's goal is
 - `src/tokens.rs` (created)
 ```
 
-Drop the Brief link when there was no brief. Write `None.` under Surprises if the work agent reported none. The table is the review agent's findings table; if it had no findings, replace the table with `No findings.` Count lines from the commit, excluding `.agents/`, with `git show --shortstat --format= HEAD -- . ':(exclude).agents'`, and add the lines of any commits the work agent made. List every code file in the commit, marked `(created)` or `(modified)`.
+Drop the Brief link when there was no brief. Write `None.` under Surprises if the work agent reported none. The table is the review agent's findings table; if it had no findings, replace the table with `No findings.` Count lines from the commit, excluding `.agents/`, with `git show --numstat --format= HEAD -- . ':(exclude).agents'`, and add the lines of any commits the work agent made. Count lines in test files and in inline test modules as tests, and the rest as code. List every code file in the commit, marked `(created)` or `(modified)`.

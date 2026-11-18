@@ -33,20 +33,21 @@ Write a plan without changing the code.
 
 8. Read `.agents/plans/_template.md`, or this skill's `assets/_template.md` if the workspace has none, and use it to write the plan in `.agents/plans/`. Name the file `YYYY-MM-DD-NNN-slug.md`, using the next sequence for the day.
 9. Keep the plan to relevant code references, tasks tied to files, decisions that need explanation, names, and tests for this change. Link the brief under Goal instead of restating it. Do not repeat repository rules, standard validation commands, conversation history, rejected options, or work for a later change.
-10. Use the same names in plan tasks, proposed code, comments, and documentation. Do not give one concept several names or give an existing term a new meaning.
-11. Under Check your assumptions, list the product questions the brief does not settle, such as a feature that behaves differently, something the user relies on that goes away, a path the user will notice is slower, narrowed scope, a new dependency or migration the user has to deal with, or a reading of an ambiguous request that leads to a different product. Most plans have none, one, or two; write `None.` when nothing qualifies. Record your other decisions under Decisions when they need explaining.
-12. Write each entry as the user experiences the product, in the form the template shows: what the plan does that they will notice, and the alternative with what it would cost them. Leave out code names, protocol fields, and internal mechanisms. The user should be able to answer without reading the code.
-13. Do not review the plan yourself or ask another agent to review it.
+10. In the Test plan, make each case an assertion in an existing test whose setup already reaches it, and add a new test only when none does. Name the behavior each new test guards and why no existing test can carry it. Each new test fails on the code before the change. A change that replaces behavior replaces the tests of the old behavior.
+11. Use the same names in plan tasks, proposed code, comments, and documentation. Do not give one concept several names or give an existing term a new meaning.
+12. Under Check your assumptions, list the product questions the brief does not settle, such as a feature that behaves differently, something the user relies on that goes away, a path the user will notice is slower, narrowed scope, a new dependency or migration the user has to deal with, or a reading of an ambiguous request that leads to a different product. Most plans have none, one, or two; write `None.` when nothing qualifies. Record your other decisions under Decisions when they need explaining.
+13. Write each entry as the user experiences the product, in the form the template shows: what the plan does that they will notice, and the alternative with what it would cost them. Leave out code names, protocol fields, and internal mechanisms. The user should be able to answer without reading the code.
+14. Do not review the plan yourself or ask another agent to review it.
 
 ## Check your assumptions
 
-14. If the list is `None.`, go to Stage. Otherwise, present the entries to the user in one message, numbered, most consequential first. Give each entry in the same form as in the plan. The user answers only the entries they want changed; the rest stand. Wait for the answer.
-15. Edit the affected lines of the plan for each changed entry; do not rewrite the plan. Mark each entry kept or changed, and to what. If a change reopens a product question, present it the same way.
+15. If the list is `None.`, go to Stage. Otherwise, present the entries to the user in one message, numbered, most consequential first. Give each entry in the same form as in the plan. The user answers only the entries they want changed; the rest stand. Wait for the answer.
+16. Edit the affected lines of the plan for each changed entry; do not rewrite the plan. Mark each entry kept or changed, and to what. If a change reopens a product question, present it the same way.
 
 ## Stage
 
-16. Stage the plan. Do not stage anything else. Do not commit.
-17. Give the final response and stop.
+17. Stage the plan. Do not stage anything else. Do not commit.
+18. Give the final response and stop.
 
 ## Final response
 

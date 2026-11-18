@@ -26,7 +26,7 @@ Product questions only, most consequential first, or `None.`. Write them in the 
 
 ## Test plan
 
-- Expected behavior and relevant error cases.
+- Expected behavior or error case, and the existing test that gets the assertion. For a new test, the behavior it guards and why no existing test can carry it.
 
 ## Implementation plan
 

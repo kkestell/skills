@@ -46,7 +46,7 @@ One or two sentences saying what was built and whether the plan's goal is met.
 
 - A departure from the plan or follow-up work, in plain terms.
 
-**Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Lines:** +120 / −45 (net +75)
+**Work log:** `.agents/work/YYYY-MM-DD-NNN-slug.md` · **Lines:** code +80 / −40 (net +40) · tests +40 / −5 (net +35)
 
 **Files:**
 
@@ -58,4 +58,4 @@ One or two sentences saying what was built and whether the plan's goal is met.
 **Next:** `/kreview staged changes for .agents/plans/YYYY-MM-DD-NNN-slug.md`
 ```
 
-Write `None.` under Surprises if the work went as planned. Count lines from the staged changes, excluding `.agents/`, with `git diff --cached --shortstat -- . ':(exclude).agents'`, and add the lines of any commits you made. List every staged or committed file, marked `(created)` or `(modified)`. If you committed, list the commits under Surprises and name them in the Next line, as in `/kreview staged changes and commits abc1234 for .agents/plans/YYYY-MM-DD-NNN-slug.md`.
+Write `None.` under Surprises if the work went as planned. Count lines from the staged changes, excluding `.agents/`, with `git diff --cached --numstat -- . ':(exclude).agents'`, and add the lines of any commits you made. Count lines in test files and in inline test modules as tests, and the rest as code. List every staged or committed file, marked `(created)` or `(modified)`. If you committed, list the commits under Surprises and name them in the Next line, as in `/kreview staged changes and commits abc1234 for .agents/plans/YYYY-MM-DD-NNN-slug.md`.

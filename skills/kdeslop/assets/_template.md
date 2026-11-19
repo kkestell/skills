@@ -1,63 +1,19 @@
 # Deslop audit
 
-Delete placeholder text and unused sections, including this guidance. Include only independently verified findings. Group them under High, Medium, and Low, with IDs `F1`, `F2`, and so on in severity order. All fixes are `Not fixed`; proposed fixes are recommendations, not work performed.
+Lead with the decisions. Count independent findings that warrant a proportionate change by severity. Nothing fixed.
 
-Severity:
+## Scope and evidence
 
-- `High`: wrong behavior, a broken guarantee, or misleading documentation.
-- `Medium`: will cause mistakes.
-- `Low`: clutter.
+Name the repository, reviewed revision, working-tree state and comparison baseline. Name the consequential workflows traced across components, their observed or source-traced outcomes, material gaps, and the checks that ran. Distinguish source tracing, reproduction and real-use observations.
 
-Lenses: Dead code, Duplication, Broken guarantees, Over-engineering, Hollow tests, Comments and docs vs. code.
+## Findings
 
-## Scope and coverage
+Use IDs in severity order. A detailed entry can take this form. Short rows suffice for straightforward findings when they retain the evidence and disposition.
 
-- **Repository:** absolute path.
-- **Revision:** HEAD commit, or state that there is no HEAD.
-- **Working tree:** local changes reviewed, and any changes during the audit that limit the evidence.
+### F1. Specific problem and consequence
 
-| Area | Owned directories and files | Actual coverage and gaps |
-| ---- | --------------------------- | ------------------------ |
-| Docs | README.md, docs/            | What was checked         |
+**Severity · Lens · Origin relative to baseline · Disposition**
 
-State exclusions and material gaps, including incomplete reviewer passes and unverified documentation claims. Do not imply complete coverage when the audit was partial.
+Describe the affected use and its consequences. Quote exact source locations, including the relevant caller or test. Keep symptoms of a shared cause together. Explain why the project threshold and cost support the disposition, and give the proportionate correction if action is warranted.
 
-## Summary
-
-High: 0 · Medium: 0 · Low: 0. Nothing fixed.
-
-| ID | Severity | Lens              | Fix       | Title                          | Location           |
-| -- | -------- | ----------------- | --------- | ------------------------------ | ------------------ |
-| F1 | High     | Broken guarantees | Not fixed | Cancellation leaves work alive | `src/writer.rs:42` |
-
-If there are no verified findings, replace the table with `No verified findings.` and omit the severity sections. This is not proof that the repository is defect-free.
-
-## High
-
-### F1. Cancellation leaves work alive
-
-High · Broken guarantees · Not fixed · `src/writer.rs:42`
-
-**What's wrong:** Describe the verified problem plainly.
-
-**Consequence:** State the reachable effect and who or what it affects.
-
-**Evidence:** Quote the relevant source lines with exact file and line references. Explain how the orchestrator verified the claim, including callers, usages, and relevant tests checked. Include both sides of a contradiction or duplication when needed.
-
-**Proposed fix:** One line describing the smallest proportionate change; not applied.
-
-## Medium
-
-Use the same finding format. Omit this section if empty.
-
-## Low
-
-Use the same finding format. Omit this section if empty.
-
-## Checks run
-
-List only checks actually run and their results, distinguishing reviewer checks from the orchestrator's independent verification. State when verification was source-only. Put unavailable checks and their effect on confidence in coverage gaps, not in the findings as speculation.
-
-## Verdict
-
-Summarize the verified result and its material limits. Nothing was fixed. Do not add a follow-up plan or next command.
+When project policy requires recording confirmed defects below the fix threshold, give them a brief uncounted record. Omit incidental observations. If no finding warrants a change, say so.
